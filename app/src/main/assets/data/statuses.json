@@ -1,0 +1,50 @@
+[
+  {
+    "id": "status_001",
+    "ownerUserId": "user_002",
+    "ownerName": "Sarah Mitchell",
+    "ownerAvatarUrl": "image/avatars/sarah_mitchell.png",
+    "contentText": "Beautiful morning in Manhattan! ☀️",
+    "contentImageUrl": "image/statuses/sarah_status_001.png",
+    "isViewed": true,
+    "viewedAt": 1711630000000,
+    "publishedAt": 1711612800000,
+    "expiresAt": 1711699200000
+  },
+  {
+    "id": "status_002",
+    "ownerUserId": "user_003",
+    "ownerName": "Marcus Davis",
+    "ownerAvatarUrl": "image/avatars/marcus_davis.png",
+    "contentText": "Just shipped a major feature. Time to celebrate! 🚀",
+    "contentImageUrl": null,
+    "isViewed": false,
+    "viewedAt": null,
+    "publishedAt": 1711641600000,
+    "expiresAt": 1711728000000
+  },
+  {
+    "id": "status_003",
+    "ownerUserId": "user_004",
+    "ownerName": "Emily Chen",
+    "ownerAvatarUrl": "image/avatars/emily_chen.png",
+    "contentText": null,
+    "contentImageUrl": "image/statuses/emily_status_001.png",
+    "isViewed": false,
+    "viewedAt": null,
+    "publishedAt": 1711656000000,
+    "expiresAt": 1711742400000
+  },
+  {
+    "id": "status_004",
+    "ownerUserId": "user_005",
+    "ownerName": "James Walker",
+    "ownerAvatarUrl": null,
+    "contentText": "Phoenix sunsets never get old 🌄",
+    "contentImageUrl": "image/statuses/james_status_001.png",
+    "isViewed": true,
+    "viewedAt": 1711645000000,
+    "publishedAt": 1711598400000,
+    "expiresAt": 1711684800000
+  }
+]

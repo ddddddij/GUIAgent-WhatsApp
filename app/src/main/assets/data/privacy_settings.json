@@ -1,0 +1,12 @@
+[
+  {
+    "userId": "user_001",
+    "lastSeenVisibility": "MY_CONTACTS",
+    "profilePhotoVisibility": "MY_CONTACTS",
+    "aboutVisibility": "EVERYONE",
+    "statusVisibility": "MY_CONTACTS",
+    "readReceiptsEnabled": true,
+    "groupsAddPermission": "MY_CONTACTS",
+    "updatedAt": 1711584000000
+  }
+]

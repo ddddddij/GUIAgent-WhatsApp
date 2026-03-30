@@ -1,0 +1,12 @@
+[
+  {
+    "userId": "user_001",
+    "wallpaperUrl": null,
+    "fontSizeScale": 1.0,
+    "enterToSend": false,
+    "mediaAutoDownloadEnabled": true,
+    "archivedChatIds": ["conv_003"],
+    "mutedChatIds": ["conv_004"],
+    "updatedAt": 1711497600000
+  }
+]

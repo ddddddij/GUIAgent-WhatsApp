@@ -1,0 +1,57 @@
+[
+  {
+    "id": "call_001",
+    "callerId": "user_002",
+    "calleeId": "user_001",
+    "calleeName": "Alex Johnson",
+    "callType": "VOICE",
+    "callStatus": "INCOMING",
+    "startedAt": 1711540000000,
+    "endedAt": 1711540420000,
+    "durationSeconds": 420
+  },
+  {
+    "id": "call_002",
+    "callerId": "user_001",
+    "calleeId": "user_003",
+    "calleeName": "Marcus Davis",
+    "callType": "VIDEO",
+    "callStatus": "OUTGOING",
+    "startedAt": 1711480000000,
+    "endedAt": 1711481800000,
+    "durationSeconds": 1800
+  },
+  {
+    "id": "call_003",
+    "callerId": "user_004",
+    "calleeId": "user_001",
+    "calleeName": "Alex Johnson",
+    "callType": "VOICE",
+    "callStatus": "MISSED",
+    "startedAt": 1711400000000,
+    "endedAt": null,
+    "durationSeconds": 0
+  },
+  {
+    "id": "call_004",
+    "callerId": "user_001",
+    "calleeId": "user_002",
+    "calleeName": "Sarah Mitchell",
+    "callType": "VOICE",
+    "callStatus": "OUTGOING",
+    "startedAt": 1711300000000,
+    "endedAt": 1711300240000,
+    "durationSeconds": 240
+  },
+  {
+    "id": "call_005",
+    "callerId": "user_005",
+    "calleeId": "user_001",
+    "calleeName": "Alex Johnson",
+    "callType": "VIDEO",
+    "callStatus": "MISSED",
+    "startedAt": 1711200000000,
+    "endedAt": null,
+    "durationSeconds": 0
+  }
+]

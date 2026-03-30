@@ -1,0 +1,19 @@
+[
+  {
+    "userId": "user_001",
+    "globalLevel": "ALL",
+    "messageNotifEnabled": true,
+    "groupNotifEnabled": true,
+    "callNotifEnabled": true,
+    "notifToneUrl": null,
+    "vibrationEnabled": true,
+    "conversationOverrides": [
+      {
+        "conversationId": "conv_004",
+        "level": "MENTIONS_ONLY",
+        "mutedUntil": 1714089600000
+      }
+    ],
+    "updatedAt": 1711411200000
+  }
+]

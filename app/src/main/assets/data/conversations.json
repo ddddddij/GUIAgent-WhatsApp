@@ -1,0 +1,62 @@
+[
+  {
+    "id": "conv_001",
+    "participantIds": ["user_001", "user_002"],
+    "participantNames": ["Alex Johnson", "Sarah Mitchell"],
+    "isGroupChat": false,
+    "groupName": null,
+    "lastMessagePreview": "See you at the meeting tomorrow!",
+    "lastMessageAt": 1711670000000,
+    "createdAt": 1709251200000,
+    "creatorId": "user_001",
+    "unreadCount": 0
+  },
+  {
+    "id": "conv_002",
+    "participantIds": ["user_001", "user_003"],
+    "participantNames": ["Alex Johnson", "Marcus Davis"],
+    "isGroupChat": false,
+    "groupName": null,
+    "lastMessagePreview": "Did you push the fix yet?",
+    "lastMessageAt": 1711660000000,
+    "createdAt": 1709337600000,
+    "creatorId": "user_001",
+    "unreadCount": 2
+  },
+  {
+    "id": "conv_003",
+    "participantIds": ["user_001", "user_004"],
+    "participantNames": ["Alex Johnson", "Emily Chen"],
+    "isGroupChat": false,
+    "groupName": null,
+    "lastMessagePreview": "Thanks for dinner, it was great!",
+    "lastMessageAt": 1711580000000,
+    "createdAt": 1709424000000,
+    "creatorId": "user_004",
+    "unreadCount": 1
+  },
+  {
+    "id": "conv_004",
+    "participantIds": ["user_001", "user_002", "user_003", "user_004", "user_005"],
+    "participantNames": ["Alex Johnson", "Sarah Mitchell", "Marcus Davis", "Emily Chen", "James Walker"],
+    "isGroupChat": true,
+    "groupName": "SF Tech Squad",
+    "lastMessagePreview": "Who's joining the hackathon?",
+    "lastMessageAt": 1711665000000,
+    "createdAt": 1710000000000,
+    "creatorId": "user_001",
+    "unreadCount": 5
+  },
+  {
+    "id": "conv_005",
+    "participantIds": ["user_001", "user_002", "user_004"],
+    "participantNames": ["Alex Johnson", "Sarah Mitchell", "Emily Chen"],
+    "isGroupChat": true,
+    "groupName": "Weekend Hiking Crew",
+    "lastMessagePreview": "Trail starts at 7am sharp!",
+    "lastMessageAt": 1711620000000,
+    "createdAt": 1710259200000,
+    "creatorId": "user_002",
+    "unreadCount": 0
+  }
+]

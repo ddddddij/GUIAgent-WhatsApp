@@ -1,0 +1,112 @@
+[
+  {
+    "id": "community_001",
+    "name": "Bay Area Developers",
+    "description": "A community for software developers in the San Francisco Bay Area. Share jobs, events, and tech news.",
+    "iconUrl": "image/communities/bay_area_devs.png",
+    "creatorId": "user_001",
+    "createdAt": 1708646400000,
+    "inviteLink": "https://chat.whatsapp.com/invite/BayAreaDevs001",
+    "members": [
+      {
+        "userId": "user_001",
+        "displayName": "Alex Johnson",
+        "role": "OWNER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1708646400000
+      },
+      {
+        "userId": "user_002",
+        "displayName": "Sarah Mitchell",
+        "role": "ADMIN",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1708732800000
+      },
+      {
+        "userId": "user_003",
+        "displayName": "Marcus Davis",
+        "role": "MEMBER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1708819200000
+      },
+      {
+        "userId": "user_004",
+        "displayName": "Emily Chen",
+        "role": "MEMBER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1708905600000
+      },
+      {
+        "userId": "user_005",
+        "displayName": "James Walker",
+        "role": "MEMBER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1709164800000
+      }
+    ]
+  },
+  {
+    "id": "community_002",
+    "name": "NYC Foodies",
+    "description": "Discover and share the best restaurants, food trucks, and hidden gems across New York City.",
+    "iconUrl": "image/communities/nyc_foodies.png",
+    "creatorId": "user_002",
+    "createdAt": 1709424000000,
+    "inviteLink": "https://chat.whatsapp.com/invite/NYCFoodies002",
+    "members": [
+      {
+        "userId": "user_002",
+        "displayName": "Sarah Mitchell",
+        "role": "OWNER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1709424000000
+      },
+      {
+        "userId": "user_001",
+        "displayName": "Alex Johnson",
+        "role": "MEMBER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1709510400000
+      },
+      {
+        "userId": "user_004",
+        "displayName": "Emily Chen",
+        "role": "ADMIN",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1709510400000
+      }
+    ]
+  },
+  {
+    "id": "community_003",
+    "name": "Chicago Marathon Runners",
+    "description": "Training tips, race schedules, and support for Chicago-area marathon runners.",
+    "iconUrl": null,
+    "creatorId": "user_003",
+    "createdAt": 1710288000000,
+    "inviteLink": "https://chat.whatsapp.com/invite/ChiMarathon003",
+    "members": [
+      {
+        "userId": "user_003",
+        "displayName": "Marcus Davis",
+        "role": "OWNER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1710288000000
+      },
+      {
+        "userId": "user_005",
+        "displayName": "James Walker",
+        "role": "MEMBER",
+        "membershipStatus": "JOINED",
+        "joinedAt": 1710374400000
+      },
+      {
+        "userId": "user_002",
+        "displayName": "Sarah Mitchell",
+        "role": "MEMBER",
+        "membershipStatus": "LEFT",
+        "joinedAt": 1710374400000
+      }
+    ]
+  }
+]

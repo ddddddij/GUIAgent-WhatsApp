@@ -1,0 +1,42 @@
+[
+  {
+    "id": "user_001",
+    "phone": "+1 (415) 555-0192",
+    "displayName": "Alex Johnson",
+    "about": "Hey there! I'm using WhatsApp.",
+    "avatarUrl": "image/avatars/alex_johnson.png",
+    "updatedAt": 1711670400000
+  },
+  {
+    "id": "user_002",
+    "phone": "+1 (212) 555-0347",
+    "displayName": "Sarah Mitchell",
+    "about": "Living life one day at a time 🌟",
+    "avatarUrl": "image/avatars/sarah_mitchell.png",
+    "updatedAt": 1711584000000
+  },
+  {
+    "id": "user_003",
+    "phone": "+1 (312) 555-0815",
+    "displayName": "Marcus Davis",
+    "about": "Coffee addict. Software engineer.",
+    "avatarUrl": "image/avatars/marcus_davis.png",
+    "updatedAt": 1711497600000
+  },
+  {
+    "id": "user_004",
+    "phone": "+1 (713) 555-0263",
+    "displayName": "Emily Chen",
+    "about": "Busy but always here for you!",
+    "avatarUrl": "image/avatars/emily_chen.png",
+    "updatedAt": 1711411200000
+  },
+  {
+    "id": "user_005",
+    "phone": "+1 (602) 555-0934",
+    "displayName": "James Walker",
+    "about": "Available",
+    "avatarUrl": null,
+    "updatedAt": 1711324800000
+  }
+]
