@@ -16,7 +16,7 @@ A local WhatsApp UI simulation app for Android, built with Jetpack Compose + MVV
 | YouTab | ✅ Done |
 | UpdatesTab | ✅ Done |
 | CallsTab | ✅ Done |
-| CommunitiesTab | 🔲 Empty placeholder |
+| CommunitiesTab | ✅ Done |
 
 ## Project Structure
 ```
@@ -26,7 +26,8 @@ app/src/main/java/com/example/whatsapp_sim/
 │   └── repository/
 │       ├── ChatRepositoryImpl.kt
 │       ├── AccountRepositoryImpl.kt
-│       └── CallRepository.kt
+│       ├── CallRepository.kt
+│       └── CommunityRepository.kt
 ├── domain/
 │   ├── model/                         # Data models
 │   └── repository/                    # Repository interfaces
@@ -39,7 +40,8 @@ app/src/main/java/com/example/whatsapp_sim/
 │   │   ├── chats/                     # ChatsTab screen + ViewModel
 │   │   ├── you/                       # YouTab screen + ViewModel
 │   │   ├── updates/                   # UpdatesTab screen + ViewModel
-│   │   └── calls/                     # CallsTab screen + ViewModel
+│   │   ├── calls/                     # CallsTab screen + ViewModel
+│   │   └── communities/               # CommunitiesTab screen + ViewModel
 │   └── theme/
 └── MainActivity.kt
 

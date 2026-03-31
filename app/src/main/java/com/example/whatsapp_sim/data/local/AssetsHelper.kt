@@ -3,6 +3,7 @@ package com.example.whatsapp_sim.data.local
 import android.content.Context
 import com.example.whatsapp_sim.domain.model.Account
 import com.example.whatsapp_sim.domain.model.Call
+import com.example.whatsapp_sim.domain.model.Community
 import com.example.whatsapp_sim.domain.model.Contact
 import com.example.whatsapp_sim.domain.model.Conversation
 import com.example.whatsapp_sim.domain.model.Message
@@ -44,6 +45,13 @@ class AssetsHelper(private val context: Context) {
         val json = context.assets.open("data/contacts.json")
             .bufferedReader().use { it.readText() }
         val type = object : TypeToken<List<Contact>>() {}.type
+        return gson.fromJson(json, type)
+    }
+
+    fun loadCommunities(): List<Community> {
+        val json = context.assets.open("data/communities.json")
+            .bufferedReader().use { it.readText() }
+        val type = object : TypeToken<List<Community>>() {}.type
         return gson.fromJson(json, type)
     }
 }

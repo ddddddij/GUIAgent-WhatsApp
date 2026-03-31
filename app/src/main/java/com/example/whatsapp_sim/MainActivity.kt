@@ -19,6 +19,7 @@ import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.data.repository.AccountRepositoryImpl
 import com.example.whatsapp_sim.data.repository.CallRepository
 import com.example.whatsapp_sim.data.repository.ChatRepositoryImpl
+import com.example.whatsapp_sim.data.repository.CommunityRepository
 import com.example.whatsapp_sim.ui.components.BottomNavTab
 import com.example.whatsapp_sim.ui.components.EmptyTabScreen
 import com.example.whatsapp_sim.ui.components.WhatsAppBottomNavigation
@@ -26,6 +27,8 @@ import com.example.whatsapp_sim.ui.screen.calls.CallsScreen
 import com.example.whatsapp_sim.ui.screen.calls.CallsViewModel
 import com.example.whatsapp_sim.ui.screen.chats.ChatsScreen
 import com.example.whatsapp_sim.ui.screen.chats.ChatsViewModel
+import com.example.whatsapp_sim.ui.screen.communities.CommunitiesScreen
+import com.example.whatsapp_sim.ui.screen.communities.CommunitiesViewModel
 import com.example.whatsapp_sim.ui.screen.updates.UpdatesScreen
 import com.example.whatsapp_sim.ui.screen.updates.UpdatesViewModel
 import com.example.whatsapp_sim.ui.screen.you.YouScreen
@@ -45,17 +48,19 @@ class MainActivity : ComponentActivity() {
         val updatesViewModel = UpdatesViewModel()
         val callRepository = CallRepository(assetsHelper)
         val callsViewModel = CallsViewModel(callRepository)
+        val communityRepository = CommunityRepository(assetsHelper)
+        val communitiesViewModel = CommunitiesViewModel(communityRepository)
 
         setContent {
             Whatsapp_simTheme {
-                MainScreen(chatsViewModel, youViewModel, updatesViewModel, callsViewModel)
+                MainScreen(chatsViewModel, youViewModel, updatesViewModel, callsViewModel, communitiesViewModel)
             }
         }
     }
 }
 
 @Composable
-fun MainScreen(chatsViewModel: ChatsViewModel, youViewModel: YouViewModel, updatesViewModel: UpdatesViewModel, callsViewModel: CallsViewModel) {
+fun MainScreen(chatsViewModel: ChatsViewModel, youViewModel: YouViewModel, updatesViewModel: UpdatesViewModel, callsViewModel: CallsViewModel, communitiesViewModel: CommunitiesViewModel) {
     var selectedTab by remember { mutableStateOf(BottomNavTab.CHATS) }
     val totalUnreadCount by chatsViewModel.totalUnreadCount.collectAsState()
 
@@ -74,7 +79,7 @@ fun MainScreen(chatsViewModel: ChatsViewModel, youViewModel: YouViewModel, updat
                 BottomNavTab.CHATS -> ChatsScreen(chatsViewModel)
                 BottomNavTab.UPDATES -> UpdatesScreen(updatesViewModel)
                 BottomNavTab.CALLS -> CallsScreen(callsViewModel)
-                BottomNavTab.COMMUNITIES -> EmptyTabScreen("Communities")
+                BottomNavTab.COMMUNITIES -> CommunitiesScreen(communitiesViewModel)
                 BottomNavTab.YOU -> YouScreen(youViewModel)
             }
         }

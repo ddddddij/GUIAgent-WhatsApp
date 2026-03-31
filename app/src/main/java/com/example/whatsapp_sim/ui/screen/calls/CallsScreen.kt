@@ -76,7 +76,7 @@ fun CallsScreen(viewModel: CallsViewModel) {
         // Page title
         Text(
             text = "Calls",
-            fontSize = 28.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 12.dp)

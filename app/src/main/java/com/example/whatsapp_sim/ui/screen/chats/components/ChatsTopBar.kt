@@ -91,7 +91,7 @@ fun ChatsTopBar(
         // Title below the icons
         Text(
             text = "Chats",
-            fontSize = 36.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)

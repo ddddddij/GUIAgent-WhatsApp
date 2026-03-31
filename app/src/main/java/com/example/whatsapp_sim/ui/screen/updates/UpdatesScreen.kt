@@ -96,7 +96,7 @@ fun UpdatesScreen(viewModel: UpdatesViewModel) {
         // Page title
         Text(
             text = "Updates",
-            fontSize = 36.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 16.dp)
