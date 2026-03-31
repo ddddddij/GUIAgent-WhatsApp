@@ -6,7 +6,7 @@
     "isGroupChat": false,
     "groupName": null,
     "lastMessagePreview": "See you at the meeting tomorrow!",
-    "lastMessageAt": 1711670000000,
+    "lastMessageAt": 1774919700000,
     "createdAt": 1709251200000,
     "creatorId": "user_001",
     "unreadCount": 0
@@ -18,7 +18,7 @@
     "isGroupChat": false,
     "groupName": null,
     "lastMessagePreview": "Did you push the fix yet?",
-    "lastMessageAt": 1711660000000,
+    "lastMessageAt": 1774917000000,
     "createdAt": 1709337600000,
     "creatorId": "user_001",
     "unreadCount": 2
@@ -30,7 +30,7 @@
     "isGroupChat": false,
     "groupName": null,
     "lastMessagePreview": "Thanks for dinner, it was great!",
-    "lastMessageAt": 1711580000000,
+    "lastMessageAt": 1774879800000,
     "createdAt": 1709424000000,
     "creatorId": "user_004",
     "unreadCount": 1
@@ -41,8 +41,8 @@
     "participantNames": ["Alex Johnson", "Sarah Mitchell", "Marcus Davis", "Emily Chen", "James Walker"],
     "isGroupChat": true,
     "groupName": "SF Tech Squad",
-    "lastMessagePreview": "Who's joining the hackathon?",
-    "lastMessageAt": 1711665000000,
+    "lastMessagePreview": "Check out last year's project!",
+    "lastMessageAt": 1774927200000,
     "createdAt": 1710000000000,
     "creatorId": "user_001",
     "unreadCount": 5
@@ -54,7 +54,7 @@
     "isGroupChat": true,
     "groupName": "Weekend Hiking Crew",
     "lastMessagePreview": "Trail starts at 7am sharp!",
-    "lastMessageAt": 1711620000000,
+    "lastMessageAt": 1774863300000,
     "createdAt": 1710259200000,
     "creatorId": "user_002",
     "unreadCount": 0

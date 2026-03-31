@@ -12,7 +12,7 @@ enum class CommunityRole { OWNER, ADMIN, MEMBER }
 
 enum class MembershipStatus { JOINED, LEFT, KICKED }
 
-enum class MessageType { TEXT, IMAGE, AUDIO, DOCUMENT, LOCATION }
+enum class MessageType { TEXT, IMAGE, AUDIO, DOCUMENT, LOCATION, GIF }
 
 enum class MessageStatus { SENDING, SENT, DELIVERED, READ, FAILED }
 
