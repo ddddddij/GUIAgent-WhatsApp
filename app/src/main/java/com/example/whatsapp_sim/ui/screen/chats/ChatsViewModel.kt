@@ -7,8 +7,6 @@ import com.example.whatsapp_sim.domain.repository.ChatRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-
 class ChatsViewModel(private val repository: ChatRepository) : ViewModel() {
 
     private val _allChats = MutableStateFlow<List<Chat>>(emptyList())
@@ -37,6 +35,10 @@ class ChatsViewModel(private val repository: ChatRepository) : ViewModel() {
     fun selectFilter(filter: ChatFilter) {
         _selectedFilter.value = filter
         applyFilter()
+    }
+
+    fun refreshChats() {
+        loadChats()
     }
 
     private fun applyFilter() {

@@ -9,12 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.data.repository.AccountRepositoryImpl
 import com.example.whatsapp_sim.data.repository.CallRepository
@@ -27,6 +32,7 @@ import com.example.whatsapp_sim.ui.screen.calls.CallsScreen
 import com.example.whatsapp_sim.ui.screen.calls.CallsViewModel
 import com.example.whatsapp_sim.ui.screen.chats.ChatsScreen
 import com.example.whatsapp_sim.ui.screen.chats.ChatsViewModel
+import com.example.whatsapp_sim.ui.screen.chats.NewChatViewModel
 import com.example.whatsapp_sim.ui.screen.communities.CommunitiesScreen
 import com.example.whatsapp_sim.ui.screen.communities.CommunitiesViewModel
 import com.example.whatsapp_sim.ui.screen.updates.UpdatesScreen
@@ -43,26 +49,41 @@ class MainActivity : ComponentActivity() {
         val assetsHelper = AssetsHelper(this)
         val chatRepository = ChatRepositoryImpl(assetsHelper)
         val chatsViewModel = ChatsViewModel(chatRepository)
+        val newChatViewModel = NewChatViewModel(chatRepository)
         val accountRepository = AccountRepositoryImpl(assetsHelper)
         val youViewModel = YouViewModel(accountRepository)
         val updatesViewModel = UpdatesViewModel()
         val callRepository = CallRepository(assetsHelper)
-        val callsViewModel = CallsViewModel(callRepository)
+        val callsViewModel = CallsViewModel(callRepository, assetsHelper)
         val communityRepository = CommunityRepository(assetsHelper)
         val communitiesViewModel = CommunitiesViewModel(communityRepository)
 
         setContent {
             Whatsapp_simTheme {
-                MainScreen(chatsViewModel, youViewModel, updatesViewModel, callsViewModel, communitiesViewModel)
+                MainScreen(chatsViewModel, newChatViewModel, youViewModel, updatesViewModel, callsViewModel, communitiesViewModel)
             }
         }
     }
 }
 
 @Composable
-fun MainScreen(chatsViewModel: ChatsViewModel, youViewModel: YouViewModel, updatesViewModel: UpdatesViewModel, callsViewModel: CallsViewModel, communitiesViewModel: CommunitiesViewModel) {
+fun MainScreen(chatsViewModel: ChatsViewModel, newChatViewModel: NewChatViewModel, youViewModel: YouViewModel, updatesViewModel: UpdatesViewModel, callsViewModel: CallsViewModel, communitiesViewModel: CommunitiesViewModel) {
     var selectedTab by remember { mutableStateOf(BottomNavTab.CHATS) }
     val totalUnreadCount by chatsViewModel.totalUnreadCount.collectAsState()
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner, chatsViewModel) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                chatsViewModel.refreshChats()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -76,7 +97,18 @@ fun MainScreen(chatsViewModel: ChatsViewModel, youViewModel: YouViewModel, updat
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             when (selectedTab) {
-                BottomNavTab.CHATS -> ChatsScreen(chatsViewModel)
+                BottomNavTab.CHATS -> ChatsScreen(
+                    viewModel = chatsViewModel,
+                    newChatViewModel = newChatViewModel,
+                    onChatClick = { conversationId ->
+                        context.startActivity(
+                            ChatDetailActivity.createIntent(
+                                context = context,
+                                conversationId = conversationId
+                            )
+                        )
+                    }
+                )
                 BottomNavTab.UPDATES -> UpdatesScreen(updatesViewModel)
                 BottomNavTab.CALLS -> CallsScreen(callsViewModel)
                 BottomNavTab.COMMUNITIES -> CommunitiesScreen(communitiesViewModel)

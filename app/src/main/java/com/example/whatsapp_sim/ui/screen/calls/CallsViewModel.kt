@@ -1,23 +1,40 @@
 package com.example.whatsapp_sim.ui.screen.calls
 
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.data.repository.CallRepository
 import com.example.whatsapp_sim.data.repository.CallWithContact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class CallsViewModel(private val callRepository: CallRepository) : ViewModel() {
+class CallsViewModel(
+    private val callRepository: CallRepository,
+    private val assetsHelper: AssetsHelper
+) : ViewModel() {
 
     private val _recentCalls = MutableStateFlow<List<CallWithContact>>(emptyList())
     val recentCalls: StateFlow<List<CallWithContact>> = _recentCalls
+
+    private val _showNewCallSheet = MutableStateFlow(false)
+    val showNewCallSheet: StateFlow<Boolean> = _showNewCallSheet.asStateFlow()
+
+    val newCallViewModel = NewCallViewModel(assetsHelper)
 
     init {
         _recentCalls.value = callRepository.getRecentCalls()
     }
 
+    fun onNewCallClick() {
+        _showNewCallSheet.value = true
+    }
+
+    fun onNewCallSheetDismiss() {
+        _showNewCallSheet.value = false
+        newCallViewModel.onCancelClick()
+    }
+
     fun onMoreMenuClick() { /* reserved */ }
-    fun onNewCallClick() { /* reserved */ }
     fun onSearchClick() { /* reserved */ }
     fun onAddFavoriteClick() { /* reserved */ }
     fun onCallItemClick(callId: String) { /* reserved */ }

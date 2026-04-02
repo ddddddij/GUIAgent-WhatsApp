@@ -61,6 +61,7 @@ fun CallsScreen(viewModel: CallsViewModel) {
     val context = LocalContext.current
     val toast = { Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show() }
     val recentCalls by viewModel.recentCalls.collectAsState()
+    val showNewCallSheet by viewModel.showNewCallSheet.collectAsState()
 
     Column(
         modifier = Modifier
@@ -70,7 +71,7 @@ fun CallsScreen(viewModel: CallsViewModel) {
     ) {
         CallsTopBar(
             onMoreMenuClick = { viewModel.onMoreMenuClick(); toast() },
-            onNewCallClick = { viewModel.onNewCallClick(); toast() }
+            onNewCallClick = { viewModel.onNewCallClick() }
         )
 
         // Page title
@@ -111,10 +112,20 @@ fun CallsScreen(viewModel: CallsViewModel) {
         // Call log list
         Column {
             recentCalls.forEachIndexed { index, callWithContact ->
+                val navigateToContact = {
+                    val contactId = callWithContact.contactId
+                    if (contactId != null) {
+                        context.startActivity(
+                            com.example.whatsapp_sim.ContactInfoActivity.createIntent(context, contactId)
+                        )
+                    } else {
+                        toast()
+                    }
+                }
                 CallLogItem(
                     callWithContact = callWithContact,
-                    onItemClick = { viewModel.onCallItemClick(callWithContact.call.id); toast() },
-                    onDetailClick = { viewModel.onCallDetailClick(callWithContact.call.id); toast() }
+                    onItemClick = { navigateToContact() },
+                    onDetailClick = { navigateToContact() }
                 )
                 if (index < recentCalls.lastIndex) {
                     HorizontalDivider(
@@ -127,6 +138,13 @@ fun CallsScreen(viewModel: CallsViewModel) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    if (showNewCallSheet) {
+        NewCallBottomSheet(
+            viewModel = viewModel.newCallViewModel,
+            onDismiss = { viewModel.onNewCallSheetDismiss() }
+        )
     }
 }
 

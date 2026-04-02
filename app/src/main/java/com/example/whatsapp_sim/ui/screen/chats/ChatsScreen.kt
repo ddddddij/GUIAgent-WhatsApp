@@ -8,17 +8,26 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.example.whatsapp_sim.ui.screen.chats.components.ChatListItem
 import com.example.whatsapp_sim.ui.screen.chats.components.ChatsTopBar
 import com.example.whatsapp_sim.ui.screen.chats.components.FilterTabRow
+import com.example.whatsapp_sim.ui.screen.chats.components.NewChatBottomSheet
 
 @Composable
-fun ChatsScreen(viewModel: ChatsViewModel) {
+fun ChatsScreen(
+    viewModel: ChatsViewModel,
+    newChatViewModel: NewChatViewModel,
+    onChatClick: (String) -> Unit
+) {
     val context = LocalContext.current
     val filteredChats by viewModel.filteredChats.collectAsState()
     val selectedFilter by viewModel.selectedFilter.collectAsState()
+    var showNewChatSheet by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         ChatsTopBar(
@@ -29,7 +38,8 @@ fun ChatsScreen(viewModel: ChatsViewModel) {
                 Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
             },
             onNewChatClick = {
-                Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
+                viewModel.onNewChatClick()
+                showNewChatSheet = true
             }
         )
 
@@ -43,10 +53,26 @@ fun ChatsScreen(viewModel: ChatsViewModel) {
                 ChatListItem(
                     chat = chat,
                     onClick = {
-                        Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
+                        viewModel.onChatItemClick(chat.id)
+                        onChatClick(chat.id)
                     }
                 )
             }
         }
+    }
+
+    if (showNewChatSheet) {
+        NewChatBottomSheet(
+            viewModel = newChatViewModel,
+            onDismiss = { showNewChatSheet = false },
+            onQuickActionClick = {
+                Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
+            },
+            onOpenConversation = { conversationId ->
+                showNewChatSheet = false
+                viewModel.refreshChats()
+                onChatClick(conversationId)
+            }
+        )
     }
 }

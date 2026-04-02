@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,6 +59,7 @@ fun CommunitiesScreen(viewModel: CommunitiesViewModel) {
     val context = LocalContext.current
     val toast = { Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show() }
     val communities by viewModel.communities.collectAsState()
+    val showNewCommunitySheet by viewModel.showNewCommunitySheet.collectAsState()
 
     Column(
         modifier = Modifier
@@ -67,7 +69,7 @@ fun CommunitiesScreen(viewModel: CommunitiesViewModel) {
     ) {
         CommunitiesTopBar(
             onMoreMenuClick = { viewModel.onMoreMenuClick(); toast() },
-            onNewCommunityClick = { viewModel.onNewCommunityClick(); toast() }
+            onNewCommunityClick = { viewModel.onNewCommunityClick() }
         )
 
         Text(
@@ -92,6 +94,16 @@ fun CommunitiesScreen(viewModel: CommunitiesViewModel) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+    }
+
+    if (showNewCommunitySheet) {
+        NewCommunityBottomSheet(
+            viewModel = viewModel.newCommunityViewModel,
+            onDismiss = { viewModel.onNewCommunitySheetDismiss() },
+            onCreateCommunity = { community ->
+                viewModel.addCommunity(community)
+            }
+        )
     }
 }
 

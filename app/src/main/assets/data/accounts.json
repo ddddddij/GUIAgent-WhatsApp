@@ -38,5 +38,86 @@
     "about": "Available",
     "avatarUrl": null,
     "updatedAt": 1711324800000
+  },
+  {
+    "id": "user_006",
+    "phone": "+1 (415) 555-0234",
+    "displayName": "Olivia Brown",
+    "about": "Traveler & food lover 🌍",
+    "avatarUrl": null,
+    "updatedAt": 1711238400000
+  },
+  {
+    "id": "user_007",
+    "phone": "+1 (617) 555-0478",
+    "displayName": "Noah Kim",
+    "about": "Music is life 🎵",
+    "avatarUrl": null,
+    "updatedAt": 1711152000000
+  },
+  {
+    "id": "user_008",
+    "phone": "+1 (305) 555-0621",
+    "displayName": "Sophia Lee",
+    "about": "Always positive ✨",
+    "avatarUrl": null,
+    "updatedAt": 1711065600000
+  },
+  {
+    "id": "user_009",
+    "phone": "+1 (512) 555-0732",
+    "displayName": "Liam Patel",
+    "about": "Entrepreneur. Dreamer.",
+    "avatarUrl": null,
+    "updatedAt": 1710979200000
+  },
+  {
+    "id": "user_010",
+    "phone": "+1 (720) 555-0859",
+    "displayName": "Ava Thompson",
+    "about": "Coffee ☕ & code 💻",
+    "avatarUrl": null,
+    "updatedAt": 1710892800000
+  },
+  {
+    "id": "user_011",
+    "phone": "+1 (347) 555-0113",
+    "displayName": "Ethan Garcia",
+    "about": "Hiking every weekend 🏔",
+    "avatarUrl": null,
+    "updatedAt": 1710806400000
+  },
+  {
+    "id": "user_012",
+    "phone": "+1 (214) 555-0267",
+    "displayName": "Isabella Martinez",
+    "about": "Designer & artist 🎨",
+    "avatarUrl": null,
+    "updatedAt": 1710720000000
+  },
+  {
+    "id": "user_013",
+    "phone": "+1 (503) 555-0394",
+    "displayName": "Mason White",
+    "about": "Just chilling 😎",
+    "avatarUrl": null,
+    "updatedAt": 1710633600000
+  },
+  {
+    "id": "user_014",
+    "phone": "+1 (702) 555-0541",
+    "displayName": "Mia Harris",
+    "about": "Cat person 🐱",
+    "avatarUrl": null,
+    "updatedAt": 1710547200000
+  },
+  {
+    "id": "user_015",
+    "phone": "+1 (206) 555-0678",
+    "displayName": "Lucas Anderson",
+    "about": "Gamer & developer 🎮",
+    "avatarUrl": null,
+    "updatedAt": 1710460800000
   }
 ]
+

@@ -11,6 +11,7 @@ import java.util.Locale
 data class CallWithContact(
     val call: Call,
     val contactName: String,
+    val contactId: String?,
     val contactAvatarRes: Int?
 )
 
@@ -21,15 +22,18 @@ class CallRepository(private val assetsHelper: AssetsHelper) {
     fun getRecentCalls(): List<CallWithContact> {
         val calls = assetsHelper.loadCalls()
         val accounts = assetsHelper.loadAccounts()
+        val contacts = assetsHelper.loadContacts()
         val accountMap = accounts.associateBy { it.id }
 
         return calls.map { call ->
             val otherPartyId = if (call.callerId == currentUserId) call.calleeId else call.callerId
             val account = accountMap[otherPartyId]
             val contactName = account?.displayName ?: "Unknown"
+            val contactId = contacts.firstOrNull { it.displayName == contactName }?.id
             CallWithContact(
                 call = call,
                 contactName = contactName,
+                contactId = contactId,
                 contactAvatarRes = null
             )
         }
