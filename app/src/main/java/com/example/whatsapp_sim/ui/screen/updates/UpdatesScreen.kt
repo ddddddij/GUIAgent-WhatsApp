@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,15 +26,12 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.outlined.AddAPhoto
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.whatsapp_sim.domain.model.Channel
 
 private val AvatarBg = Color(0xFFC5B8F0)
@@ -61,6 +61,7 @@ fun UpdatesScreen(viewModel: UpdatesViewModel) {
     val isExpanded by viewModel.isChannelSectionExpanded.collectAsState()
     val channels by viewModel.channels.collectAsState()
     val followingState by viewModel.followingState.collectAsState()
+    val followingChannels = channels.filter { followingState[it.id] == true }
 
     Column(
         modifier = Modifier
@@ -108,87 +109,33 @@ fun UpdatesScreen(viewModel: UpdatesViewModel) {
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
+            modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
         )
 
-        // Add status row
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(72.dp)
-                .clickable { viewModel.onAddStatusClick(); toast() }
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        // Status bubbles: my status + contacts, horizontal scroll
+        LazyRow(
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Avatar with green + overlay
-            Box(modifier = Modifier.size(56.dp)) {
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(AvatarBg),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.Filled.AccountCircle,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        tint = AvatarIcon
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .size(22.dp)
-                        .clip(CircleShape)
-                        .background(Color.White)
-                        .align(Alignment.BottomEnd),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .clip(CircleShape)
-                            .background(WhatsAppGreen),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Filled.Add,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = Color.White
-                        )
-                    }
-                }
+            // My own status bubble (with + badge)
+            item {
+                StatusBubble(
+                    name = "My status",
+                    timeLabel = viewModel.myStatus.timeLabel,
+                    isViewed = false,
+                    showAddBadge = true,
+                    onClick = { viewModel.onAddStatusClick(); toast() }
+                )
             }
-
-            Spacer(modifier = Modifier.width(14.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text("Add status", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                Text("Disappears after 24 hours", fontSize = 13.sp, color = TextSecondary)
-            }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(IconBg)
-                        .clickable { viewModel.onAddStatusCameraClick(); toast() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Outlined.AddAPhoto, contentDescription = "Camera", modifier = Modifier.size(20.dp), tint = IconGray)
-                }
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(IconBg)
-                        .clickable { viewModel.onAddStatusEditClick(); toast() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Outlined.Edit, contentDescription = "Edit", modifier = Modifier.size(20.dp), tint = IconGray)
-                }
+            // Friends' statuses
+            items(viewModel.recentStatuses) { status ->
+                StatusBubble(
+                    name = status.senderName,
+                    timeLabel = status.timeLabel,
+                    isViewed = status.isViewed,
+                    showAddBadge = false,
+                    onClick = toast
+                )
             }
         }
 
@@ -203,15 +150,20 @@ fun UpdatesScreen(viewModel: UpdatesViewModel) {
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
         )
 
-        // Description text
-        Text(
-            text = "Stay updated on topics that matter to you. Find channels to follow below.",
-            fontSize = 14.sp,
-            color = TextSecondary,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 0.dp)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
+        // Followed channels with latest updates
+        if (followingChannels.isNotEmpty()) {
+            followingChannels.forEachIndexed { index, channel ->
+                FollowedChannelUpdateRow(channel = channel, onClick = toast)
+                if (index < followingChannels.lastIndex) {
+                    HorizontalDivider(
+                        color = DividerColor,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(start = 86.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
         // Find channels collapsible header
         Row(
@@ -340,6 +292,97 @@ private fun ChannelItem(
 }
 
 @Composable
+private fun StatusBubble(
+    name: String,
+    timeLabel: String,
+    isViewed: Boolean,
+    showAddBadge: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .width(72.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Box(modifier = Modifier.size(64.dp)) {
+            val ringColor = if (showAddBadge || !isViewed) WhatsAppGreen else TextSecondary
+            Box(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(ringColor),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(58.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(54.dp)
+                            .clip(CircleShape)
+                            .background(AvatarBg),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Filled.AccountCircle,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            tint = AvatarIcon
+                        )
+                    }
+                }
+            }
+            if (showAddBadge) {
+                Box(
+                    modifier = Modifier
+                        .size(22.dp)
+                        .clip(CircleShape)
+                        .background(Color.White)
+                        .align(Alignment.BottomEnd),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clip(CircleShape)
+                            .background(WhatsAppGreen),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Filled.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(12.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = name,
+            fontSize = 12.sp,
+            color = Color.Black,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+        Text(
+            text = timeLabel,
+            fontSize = 11.sp,
+            color = TextSecondary,
+            maxLines = 1,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+        )
+    }
+}
+
+@Composable
 private fun FollowButton(isFollowing: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
@@ -355,5 +398,65 @@ private fun FollowButton(isFollowing: Boolean, onClick: () -> Unit) {
             fontWeight = FontWeight.Bold,
             color = if (isFollowing) TextSecondary else WhatsAppGreen
         )
+    }
+}
+
+@Composable
+private fun FollowedChannelUpdateRow(channel: Channel, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(72.dp)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .clip(CircleShape)
+                .background(AvatarBg),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Filled.AccountCircle,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                tint = AvatarIcon
+            )
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = channel.name,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
+                )
+                if (channel.isVerified) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        Icons.Filled.CheckCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = WhatsAppGreen
+                    )
+                }
+            }
+            Text(
+                text = channel.latestUpdate ?: "",
+                fontSize = 13.sp,
+                color = TextSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+        if (channel.updateTime != null) {
+            Text(channel.updateTime, fontSize = 12.sp, color = TextSecondary)
+        }
     }
 }
