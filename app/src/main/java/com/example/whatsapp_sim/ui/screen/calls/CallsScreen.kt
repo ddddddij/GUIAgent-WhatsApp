@@ -57,7 +57,10 @@ private val DividerColor = Color(0xFFF0F0F0)
 private val AvatarPurple = Color(0xFFC5B8F0)
 
 @Composable
-fun CallsScreen(viewModel: CallsViewModel) {
+fun CallsScreen(
+    viewModel: CallsViewModel,
+    onNewContactClick: () -> Unit
+) {
     val context = LocalContext.current
     val toast = { Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show() }
     val recentCalls by viewModel.recentCalls.collectAsState()
@@ -143,7 +146,8 @@ fun CallsScreen(viewModel: CallsViewModel) {
     if (showNewCallSheet) {
         NewCallBottomSheet(
             viewModel = viewModel.newCallViewModel,
-            onDismiss = { viewModel.onNewCallSheetDismiss() }
+            onDismiss = { viewModel.onNewCallSheetDismiss() },
+            onNewContactClick = onNewContactClick
         )
     }
 }

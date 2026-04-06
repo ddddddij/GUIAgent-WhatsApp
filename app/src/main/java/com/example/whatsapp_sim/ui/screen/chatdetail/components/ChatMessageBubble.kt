@@ -4,11 +4,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -30,15 +38,33 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+// Preset colors for group chat sender names
+private val senderColors = listOf(
+    Color(0xFF00BCD4),
+    Color(0xFF9C27B0),
+    Color(0xFF009688),
+    Color(0xFFE91E63),
+    Color(0xFF3F51B5),
+    Color(0xFFFF5722),
+    Color(0xFF8BC34A),
+    Color(0xFFFF9800),
+)
+
 @Composable
 fun ChatMessageBubble(
     message: Message,
     isSelf: Boolean,
-    topSpacing: Dp
+    topSpacing: Dp,
+    isGroupChat: Boolean = false,
+    showAvatar: Boolean = false,
+    showSenderName: Boolean = false
 ) {
     val messageText = remember(message) { message.toDisplayText() }
     val emojiOnly = remember(messageText) { isEmojiOnlyText(messageText) }
     val maxBubbleWidth = LocalConfiguration.current.screenWidthDp.dp * 0.7f
+
+    val avatarSize = 38.dp
+    val avatarGap = 6.dp
 
     Row(
         modifier = Modifier
@@ -48,8 +74,31 @@ fun ChatMessageBubble(
                 end = if (isSelf) 12.dp else 56.dp,
                 top = topSpacing
             ),
-        horizontalArrangement = if (isSelf) Arrangement.End else Arrangement.Start
+        horizontalArrangement = if (isSelf) Arrangement.End else Arrangement.Start,
+        verticalAlignment = Alignment.Bottom
     ) {
+        // Avatar area for group chat (other people's messages)
+        if (isGroupChat && !isSelf) {
+            if (showAvatar) {
+                Box(
+                    modifier = Modifier
+                        .size(avatarSize)
+                        .background(Color(0xFFC5B8F0), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(avatarSize),
+                        tint = Color(0xFF6B5ECD)
+                    )
+                }
+            } else {
+                Spacer(modifier = Modifier.size(avatarSize))
+            }
+            Spacer(modifier = Modifier.width(avatarGap))
+        }
+
         val contentModifier = if (emojiOnly) {
             Modifier
         } else {
@@ -66,35 +115,48 @@ fun ChatMessageBubble(
                 .padding(horizontal = 10.dp, vertical = 6.dp)
         }
 
-        Row(
-            modifier = contentModifier,
-            verticalAlignment = Alignment.Bottom
-        ) {
-            Text(
-                text = messageText,
-                modifier = if (emojiOnly) Modifier else Modifier.weight(1f, fill = false),
-                color = Color.Black,
-                fontSize = if (emojiOnly) 36.sp else 16.sp,
-                textAlign = TextAlign.Start
-            )
-
-            Row(
-                modifier = Modifier.padding(start = 6.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
+        Column(modifier = contentModifier) {
+            // Sender name in group chat
+            if (isGroupChat && !isSelf && showSenderName && !emojiOnly) {
+                val senderColor = remember(message.senderId) {
+                    senderColors[message.senderId.hashCode().and(0x7FFFFFFF) % senderColors.size]
+                }
                 Text(
-                    text = formatMessageTime(message.sentAt),
-                    color = Color(0xFF8E8E8E),
-                    fontSize = 11.sp
+                    text = message.senderName,
+                    color = senderColor,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(bottom = 2.dp)
+                )
+            }
+
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    text = messageText,
+                    modifier = if (emojiOnly) Modifier else Modifier.weight(1f, fill = false),
+                    color = Color.Black,
+                    fontSize = if (emojiOnly) 36.sp else 16.sp,
+                    textAlign = TextAlign.Start
                 )
 
-                if (isSelf) {
+                Row(
+                    modifier = Modifier.padding(start = 6.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
                     Text(
-                        text = " ${message.messageStatus.toStatusSymbol()}",
-                        color = if (message.messageStatus == MessageStatus.READ) Color(0xFF4FC3F7) else Color(0xFF8E8E8E),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Medium
+                        text = formatMessageTime(message.sentAt),
+                        color = Color(0xFF8E8E8E),
+                        fontSize = 11.sp
                     )
+
+                    if (isSelf) {
+                        Text(
+                            text = " ${message.messageStatus.toStatusSymbol()}",
+                            color = if (message.messageStatus == MessageStatus.READ) Color(0xFF4FC3F7) else Color(0xFF8E8E8E),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
         }

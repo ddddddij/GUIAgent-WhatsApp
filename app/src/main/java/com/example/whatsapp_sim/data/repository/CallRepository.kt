@@ -15,14 +15,17 @@ data class CallWithContact(
     val contactAvatarRes: Int?
 )
 
-class CallRepository(private val assetsHelper: AssetsHelper) {
+class CallRepository(
+    private val assetsHelper: AssetsHelper,
+    private val contactStore: RuntimeContactStore = RuntimeContactStore.getInstance(assetsHelper)
+) {
 
     private val currentUserId = "user_001"
 
     fun getRecentCalls(): List<CallWithContact> {
         val calls = assetsHelper.loadCalls()
         val accounts = assetsHelper.loadAccounts()
-        val contacts = assetsHelper.loadContacts()
+        val contacts = contactStore.getAllContacts()
         val accountMap = accounts.associateBy { it.id }
 
         return calls.map { call ->

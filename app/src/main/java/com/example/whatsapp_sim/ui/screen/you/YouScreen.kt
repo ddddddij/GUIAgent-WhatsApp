@@ -177,7 +177,11 @@ fun YouScreen(viewModel: YouViewModel) {
                 HorizontalDivider(color = DividerColor, thickness = 1.dp, modifier = Modifier.padding(start = 52.dp))
                 SettingsItem(Icons.AutoMirrored.Outlined.ViewList, "Lists") { toast() }
                 HorizontalDivider(color = DividerColor, thickness = 1.dp, modifier = Modifier.padding(start = 52.dp))
-                SettingsItem(Icons.Outlined.Campaign, "Broadcast messages") { toast() }
+                SettingsItem(Icons.Outlined.Campaign, "Broadcast messages") {
+                    context.startActivity(
+                        com.example.whatsapp_sim.BroadcastListActivity.createIntent(context)
+                    )
+                }
                 HorizontalDivider(color = DividerColor, thickness = 1.dp, modifier = Modifier.padding(start = 52.dp))
                 SettingsItem(Icons.Outlined.StarBorder, "Starred") { toast() }
                 HorizontalDivider(color = DividerColor, thickness = 1.dp, modifier = Modifier.padding(start = 52.dp))

@@ -143,6 +143,32 @@
     "readAt": null
   },
   {
+    "id": "msg_011b",
+    "conversationId": "conv_004",
+    "senderId": "user_005",
+    "senderName": "James Walker",
+    "messageType": "TEXT",
+    "textContent": "We should definitely do this again this year!",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774927500000,
+    "deliveredAt": 1774927503000,
+    "readAt": null
+  },
+  {
+    "id": "msg_011c",
+    "conversationId": "conv_004",
+    "senderId": "user_004",
+    "senderName": "Emily Chen",
+    "messageType": "TEXT",
+    "textContent": "Count me in, I'm already thinking of ideas 💡",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774927800000,
+    "deliveredAt": 1774927803000,
+    "readAt": null
+  },
+  {
     "id": "msg_012",
     "conversationId": "conv_005",
     "senderId": "user_002",
@@ -192,6 +218,32 @@
     "messageStatus": "DELIVERED",
     "sentAt": 1774910000000,
     "deliveredAt": 1774910003000,
+    "readAt": null
+  },
+  {
+    "id": "msg_015b",
+    "conversationId": "conv_006",
+    "senderId": "user_006",
+    "senderName": "Olivia Brown",
+    "messageType": "TEXT",
+    "textContent": "It starts at 9pm, don't be late!",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774910300000,
+    "deliveredAt": 1774910303000,
+    "readAt": null
+  },
+  {
+    "id": "msg_015c",
+    "conversationId": "conv_006",
+    "senderId": "user_006",
+    "senderName": "Olivia Brown",
+    "messageType": "TEXT",
+    "textContent": "I'll save you a spot 😊",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774910600000,
+    "deliveredAt": 1774910603000,
     "readAt": null
   },
   {
@@ -309,6 +361,71 @@
     "messageStatus": "DELIVERED",
     "sentAt": 1774920000000,
     "deliveredAt": 1774920003000,
+    "readAt": null
+  },
+  {
+    "id": "msg_024b",
+    "conversationId": "conv_010",
+    "senderId": "user_009",
+    "senderName": "Liam Patel",
+    "messageType": "TEXT",
+    "textContent": "I can help with the deck, I've done this before",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774920300000,
+    "deliveredAt": 1774920303000,
+    "readAt": null
+  },
+  {
+    "id": "msg_024c",
+    "conversationId": "conv_010",
+    "senderId": "user_006",
+    "senderName": "Olivia Brown",
+    "messageType": "TEXT",
+    "textContent": "Let's set up a call this week to align on the vision",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774920600000,
+    "deliveredAt": 1774920603000,
+    "readAt": null
+  },
+  {
+    "id": "msg_024d",
+    "conversationId": "conv_010",
+    "senderId": "user_003",
+    "senderName": "Marcus Davis",
+    "messageType": "TEXT",
+    "textContent": "Thursday works for me",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774920900000,
+    "deliveredAt": 1774920903000,
+    "readAt": null
+  },
+  {
+    "id": "msg_024e",
+    "conversationId": "conv_010",
+    "senderId": "user_009",
+    "senderName": "Liam Patel",
+    "messageType": "TEXT",
+    "textContent": "Same, let's do Thursday 7pm",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774921200000,
+    "deliveredAt": 1774921203000,
+    "readAt": null
+  },
+  {
+    "id": "msg_024f",
+    "conversationId": "conv_010",
+    "senderId": "user_006",
+    "senderName": "Olivia Brown",
+    "messageType": "TEXT",
+    "textContent": "👍 Thursday 7pm it is!",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774921500000,
+    "deliveredAt": 1774921503000,
     "readAt": null
   },
   {
@@ -439,6 +556,45 @@
     "messageStatus": "DELIVERED",
     "sentAt": 1774660000000,
     "deliveredAt": 1774660003000,
+    "readAt": null
+  },
+  {
+    "id": "msg_034b",
+    "conversationId": "conv_015",
+    "senderId": "user_007",
+    "senderName": "Noah Kim",
+    "messageType": "TEXT",
+    "textContent": "Amazing, I'll bring the snacks 🍿",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774660300000,
+    "deliveredAt": 1774660303000,
+    "readAt": null
+  },
+  {
+    "id": "msg_034c",
+    "conversationId": "conv_015",
+    "senderId": "user_011",
+    "senderName": "Ethan Garcia",
+    "messageType": "TEXT",
+    "textContent": "Can't wait, it's been too long!",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774660600000,
+    "deliveredAt": 1774660603000,
+    "readAt": null
+  },
+  {
+    "id": "msg_034d",
+    "conversationId": "conv_015",
+    "senderId": "user_003",
+    "senderName": "Marcus Davis",
+    "messageType": "TEXT",
+    "textContent": "See you all there 🙌",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774660900000,
+    "deliveredAt": 1774660903000,
     "readAt": null
   }
 ]

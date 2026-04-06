@@ -1,6 +1,7 @@
 package com.example.whatsapp_sim
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -25,16 +26,21 @@ import com.example.whatsapp_sim.data.repository.AccountRepositoryImpl
 import com.example.whatsapp_sim.data.repository.CallRepository
 import com.example.whatsapp_sim.data.repository.ChatRepositoryImpl
 import com.example.whatsapp_sim.data.repository.CommunityRepository
+import com.example.whatsapp_sim.data.repository.RuntimeContactStore
 import com.example.whatsapp_sim.ui.components.BottomNavTab
 import com.example.whatsapp_sim.ui.components.EmptyTabScreen
+import com.example.whatsapp_sim.ui.components.NewContactDialog
 import com.example.whatsapp_sim.ui.components.WhatsAppBottomNavigation
+import com.example.whatsapp_sim.ui.screen.broadcast.BroadcastListViewModel
 import com.example.whatsapp_sim.ui.screen.calls.CallsScreen
 import com.example.whatsapp_sim.ui.screen.calls.CallsViewModel
 import com.example.whatsapp_sim.ui.screen.chats.ChatsScreen
 import com.example.whatsapp_sim.ui.screen.chats.ChatsViewModel
 import com.example.whatsapp_sim.ui.screen.chats.NewChatViewModel
+import com.example.whatsapp_sim.ui.screen.chats.NewGroupViewModel
 import com.example.whatsapp_sim.ui.screen.communities.CommunitiesScreen
 import com.example.whatsapp_sim.ui.screen.communities.CommunitiesViewModel
+import com.example.whatsapp_sim.ui.screen.contactcreation.NewContactViewModel
 import com.example.whatsapp_sim.ui.screen.updates.UpdatesScreen
 import com.example.whatsapp_sim.ui.screen.updates.UpdatesViewModel
 import com.example.whatsapp_sim.ui.screen.you.YouScreen
@@ -47,28 +53,53 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val assetsHelper = AssetsHelper(this)
+        val contactStore = RuntimeContactStore.getInstance(assetsHelper)
         val chatRepository = ChatRepositoryImpl(assetsHelper)
         val chatsViewModel = ChatsViewModel(chatRepository)
         val newChatViewModel = NewChatViewModel(chatRepository)
+        val newGroupViewModel = NewGroupViewModel(chatRepository)
+        val newContactViewModel = NewContactViewModel(contactStore)
         val accountRepository = AccountRepositoryImpl(assetsHelper)
         val youViewModel = YouViewModel(accountRepository)
         val updatesViewModel = UpdatesViewModel()
         val callRepository = CallRepository(assetsHelper)
-        val callsViewModel = CallsViewModel(callRepository, assetsHelper)
+        val callsViewModel = CallsViewModel(callRepository, contactStore)
         val communityRepository = CommunityRepository(assetsHelper)
         val communitiesViewModel = CommunitiesViewModel(communityRepository)
+        val broadcastListViewModel = BroadcastListViewModel(contactStore, chatRepository)
 
         setContent {
             Whatsapp_simTheme {
-                MainScreen(chatsViewModel, newChatViewModel, youViewModel, updatesViewModel, callsViewModel, communitiesViewModel)
+                MainScreen(
+                    chatsViewModel = chatsViewModel,
+                    newChatViewModel = newChatViewModel,
+                    newGroupViewModel = newGroupViewModel,
+                    newContactViewModel = newContactViewModel,
+                    youViewModel = youViewModel,
+                    updatesViewModel = updatesViewModel,
+                    callsViewModel = callsViewModel,
+                    communitiesViewModel = communitiesViewModel,
+                    broadcastListViewModel = broadcastListViewModel
+                )
             }
         }
     }
 }
 
 @Composable
-fun MainScreen(chatsViewModel: ChatsViewModel, newChatViewModel: NewChatViewModel, youViewModel: YouViewModel, updatesViewModel: UpdatesViewModel, callsViewModel: CallsViewModel, communitiesViewModel: CommunitiesViewModel) {
+fun MainScreen(
+    chatsViewModel: ChatsViewModel,
+    newChatViewModel: NewChatViewModel,
+    newGroupViewModel: NewGroupViewModel,
+    newContactViewModel: NewContactViewModel,
+    youViewModel: YouViewModel,
+    updatesViewModel: UpdatesViewModel,
+    callsViewModel: CallsViewModel,
+    communitiesViewModel: CommunitiesViewModel,
+    broadcastListViewModel: BroadcastListViewModel
+) {
     var selectedTab by remember { mutableStateOf(BottomNavTab.CHATS) }
+    var showNewContactDialog by remember { mutableStateOf(false) }
     val totalUnreadCount by chatsViewModel.totalUnreadCount.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -100,6 +131,10 @@ fun MainScreen(chatsViewModel: ChatsViewModel, newChatViewModel: NewChatViewMode
                 BottomNavTab.CHATS -> ChatsScreen(
                     viewModel = chatsViewModel,
                     newChatViewModel = newChatViewModel,
+                    newGroupViewModel = newGroupViewModel,
+                    communitiesViewModel = communitiesViewModel,
+                    broadcastListViewModel = broadcastListViewModel,
+                    onNewContactClick = { showNewContactDialog = true },
                     onChatClick = { conversationId ->
                         context.startActivity(
                             ChatDetailActivity.createIntent(
@@ -110,10 +145,27 @@ fun MainScreen(chatsViewModel: ChatsViewModel, newChatViewModel: NewChatViewMode
                     }
                 )
                 BottomNavTab.UPDATES -> UpdatesScreen(updatesViewModel)
-                BottomNavTab.CALLS -> CallsScreen(callsViewModel)
+                BottomNavTab.CALLS -> CallsScreen(
+                    viewModel = callsViewModel,
+                    onNewContactClick = { showNewContactDialog = true }
+                )
                 BottomNavTab.COMMUNITIES -> CommunitiesScreen(communitiesViewModel)
                 BottomNavTab.YOU -> YouScreen(youViewModel)
             }
         }
+    }
+
+    if (showNewContactDialog) {
+        NewContactDialog(
+            viewModel = newContactViewModel,
+            onDismiss = { showNewContactDialog = false },
+            onDone = {
+                showNewContactDialog = false
+                newChatViewModel.refreshContacts()
+                newGroupViewModel.refreshContacts()
+                callsViewModel.newCallViewModel.refreshContacts()
+                Toast.makeText(context, "Contact created", Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 }

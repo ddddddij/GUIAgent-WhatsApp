@@ -38,6 +38,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -45,7 +46,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -60,17 +64,28 @@ import kotlinx.coroutines.launch
 fun NewChatBottomSheet(
     viewModel: NewChatViewModel,
     onDismiss: () -> Unit,
-    onQuickActionClick: () -> Unit,
+    onNewGroupClick: () -> Unit,
+    onNewContactClick: () -> Unit,
+    onNewCommunityClick: () -> Unit,
+    onNewBroadcastClick: () -> Unit,
+    onOtherQuickActionClick: () -> Unit,
     onOpenConversation: (String) -> Unit
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
     val frequentContacts by viewModel.frequentContacts.collectAsState()
     val groupedContacts by viewModel.groupedContacts.collectAsState()
     val selfAccount by viewModel.selfAccount.collectAsState()
+    val scrollTargetContactId by viewModel.scrollTargetContactId.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val groupIndices = remember(groupedContacts) { buildGroupScrollIndexMap(groupedContacts) }
+    val contactIndexMap = remember(groupedContacts) { buildContactScrollIndexMap(groupedContacts) }
+
+    // Scroll to first matching contact when search query changes
+    LaunchedEffect(scrollTargetContactId) {
+        val targetIndex = scrollTargetContactId?.let { contactIndexMap[it] } ?: return@LaunchedEffect
+        listState.animateScrollToItem(targetIndex)
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -79,43 +94,40 @@ fun NewChatBottomSheet(
         containerColor = Color.White,
         dragHandle = null
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.85f)
         ) {
+            SheetHeader(onCloseClick = onDismiss)
+
+            SearchBar(
+                value = searchQuery,
+                onValueChange = viewModel::onSearchQueryChanged
+            )
+
+            Box(modifier = Modifier.weight(1f)) {
             LazyColumn(
                 state = listState,
                 modifier = Modifier.fillMaxSize()
             ) {
                 item {
-                    SheetHeader(onCloseClick = onDismiss)
-                }
-
-                item {
-                    SearchBar(
-                        value = searchQuery,
-                        onValueChange = viewModel::onSearchQueryChanged
-                    )
-                }
-
-                item {
                     QuickActionsCard(
                         onNewGroupClick = {
                             viewModel.onNewGroupClick()
-                            onQuickActionClick()
+                            onNewGroupClick()
                         },
                         onNewContactClick = {
                             viewModel.onNewContactClick()
-                            onQuickActionClick()
+                            onNewContactClick()
                         },
                         onNewCommunityClick = {
                             viewModel.onNewCommunityClick()
-                            onQuickActionClick()
+                            onNewCommunityClick()
                         },
                         onNewBroadcastClick = {
                             viewModel.onNewBroadcastClick()
-                            onQuickActionClick()
+                            onNewBroadcastClick()
                         }
                     )
                 }
@@ -185,13 +197,14 @@ fun NewChatBottomSheet(
                 LetterIndexBar(
                     letters = groupedContacts.map { it.letter },
                     onLetterClick = { letter ->
-                        val targetIndex = groupIndices[letter] ?: return@LetterIndexBar
-                        coroutineScope.launch {
-                            listState.scrollToItem(targetIndex)
-                        }
+                        val group = groupedContacts.firstOrNull { it.letter == letter } ?: return@LetterIndexBar
+                        val firstContactId = group.contacts.firstOrNull()?.id ?: return@LetterIndexBar
+                        val targetIndex = contactIndexMap[firstContactId] ?: return@LetterIndexBar
+                        coroutineScope.launch { listState.animateScrollToItem(targetIndex) }
                     },
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
+            }
             }
         }
     }
@@ -202,32 +215,43 @@ private fun SheetHeader(onCloseClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 12.dp, start = 16.dp, end = 16.dp, bottom = 12.dp),
+            .height(56.dp)
+            .background(Color.White)
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.size(32.dp))
+        // Left spacer symmetric with close button
+        Spacer(modifier = Modifier.width(80.dp))
 
         Text(
             text = "New chat",
             modifier = Modifier.weight(1f),
             color = Color.Black,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
 
         Box(
             modifier = Modifier
-                .size(32.dp)
-                .background(Color(0xFFF2F2F7), CircleShape),
-            contentAlignment = Alignment.Center
+                .width(80.dp)
+                .padding(end = 16.dp),
+            contentAlignment = Alignment.CenterEnd
         ) {
-            IconButton(onClick = onCloseClick, modifier = Modifier.size(32.dp)) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Close",
-                    modifier = Modifier.size(18.dp),
-                    tint = Color(0xFF8E8E8E)
-                )
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .background(Color(0xFFF2F2F7), CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                IconButton(onClick = onCloseClick, modifier = Modifier.size(32.dp)) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "Close",
+                        modifier = Modifier.size(18.dp),
+                        tint = Color(0xFF8E8E8E)
+                    )
+                }
             }
         }
     }
@@ -532,13 +556,18 @@ private fun LetterIndexBar(
     }
 }
 
-private fun buildGroupScrollIndexMap(groups: List<NewChatViewModel.ContactGroup>): Map<String, Int> {
-    var currentIndex = 6
+// Fixed items before groups: QuickActionsCard(0), SectionLabel-Frequent(1),
+// FrequentContactsCard(2), SectionLabel-Contacts(3), SelfAccountCard(4)
+// Then for each group: GroupHeader(+1), contact items (+1 each)
+private fun buildContactScrollIndexMap(groups: List<NewChatViewModel.ContactGroup>): Map<String, Int> {
+    var currentIndex = 5 // after the 5 fixed items
     val map = linkedMapOf<String, Int>()
     groups.forEach { group ->
-        currentIndex += 1
-        map[group.letter] = currentIndex
-        currentIndex += group.contacts.size
+        currentIndex += 1 // GroupHeader item
+        group.contacts.forEach { contact ->
+            map[contact.id] = currentIndex
+            currentIndex += 1
+        }
     }
     return map
 }

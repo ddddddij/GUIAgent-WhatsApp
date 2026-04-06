@@ -2,7 +2,7 @@ package com.example.whatsapp_sim.ui.screen.calls
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.whatsapp_sim.data.local.AssetsHelper
+import com.example.whatsapp_sim.data.repository.RuntimeContactStore
 import com.example.whatsapp_sim.domain.model.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,7 +22,9 @@ data class InviteContact(
     val phoneNumber: String
 )
 
-class NewCallViewModel(private val assetsHelper: AssetsHelper) : ViewModel() {
+class NewCallViewModel(
+    private val contactStore: RuntimeContactStore
+) : ViewModel() {
 
     private val _allContacts = MutableStateFlow<List<Contact>>(emptyList())
 
@@ -37,27 +39,19 @@ class NewCallViewModel(private val assetsHelper: AssetsHelper) : ViewModel() {
         .combine(_allContacts) { ids, _ -> ids.size }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
 
-    // "Start a call" section: first 2 contacts from allContacts, filtered by search
+    // "Start a call" section: first 2 app-user contacts, always shown
     val startCallContacts: StateFlow<List<Contact>> = _allContacts
-        .combine(searchQuery) { contacts, query ->
-            val top2 = contacts.filter { it.isAppUser }.take(2)
-            if (query.isBlank()) top2
-            else top2.filter { it.displayName.contains(query, ignoreCase = true) }
-        }
+        .map { contacts -> contacts.filter { it.isAppUser }.take(2) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    // All app-user contacts grouped by first letter, filtered by search
+    // All app-user contacts grouped by first letter, never filtered
     val groupedContacts: StateFlow<List<ContactGroup>> = _allContacts
-        .combine(searchQuery) { contacts, query ->
+        .map { contacts ->
             val appUsers = contacts.filter { it.isAppUser }
-            val filtered = if (query.isBlank()) appUsers
-            else appUsers.filter { it.displayName.contains(query, ignoreCase = true) }
-
-            filtered
+            appUsers
                 .sortedWith(Comparator { a, b ->
                     val aLetter = letterOf(a.displayName)
                     val bLetter = letterOf(b.displayName)
-                    // '#' sorts before letters
                     if (aLetter == "#" && bLetter != "#") return@Comparator -1
                     if (aLetter != "#" && bLetter == "#") return@Comparator 1
                     a.displayName.compareTo(b.displayName, ignoreCase = true)
@@ -67,18 +61,28 @@ class NewCallViewModel(private val assetsHelper: AssetsHelper) : ViewModel() {
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    // Invite contacts: non-app-user contacts, filtered by search
-    val inviteContacts: StateFlow<List<InviteContact>> = _allContacts
+    // The contact id to scroll to (first fuzzy match among appUsers), null when query is blank
+    val scrollTargetContactId: StateFlow<String?> = _allContacts
         .combine(searchQuery) { contacts, query ->
-            val nonAppUsers = contacts.filter { !it.isAppUser }
-            val filtered = if (query.isBlank()) nonAppUsers
-            else nonAppUsers.filter { it.displayName.contains(query, ignoreCase = true) }
-            filtered.map { InviteContact(it.displayName, it.phone) }
+            if (query.isBlank()) return@combine null
+            val q = query.trim().lowercase()
+            contacts.filter { it.isAppUser }
+                .sortedBy { it.displayName.lowercase() }
+                .firstOrNull { it.displayName.lowercase().contains(q) || it.phone.contains(q) }
+                ?.id
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    // Invite contacts: non-app-user contacts, always shown
+    val inviteContacts: StateFlow<List<InviteContact>> = _allContacts
+        .map { contacts ->
+            contacts.filter { !it.isAppUser }
+                .map { InviteContact(it.displayName, it.phone) }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     init {
-        _allContacts.value = assetsHelper.loadContacts()
+        refreshContacts()
     }
 
     fun onSearchQueryChanged(query: String) {
@@ -94,6 +98,10 @@ class NewCallViewModel(private val assetsHelper: AssetsHelper) : ViewModel() {
     fun onCancelClick() {
         selectedContactIds.value = emptySet()
         searchQuery.value = ""
+    }
+
+    fun refreshContacts() {
+        _allContacts.value = contactStore.getAllContacts()
     }
 
     fun onNewCallLinkClick() { /* reserved */ }

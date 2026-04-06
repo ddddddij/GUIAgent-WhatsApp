@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -52,6 +53,7 @@ fun ChatDetailScreen(
     val messages by viewModel.messages.collectAsState()
     val inputText by viewModel.inputText.collectAsState()
     val showSendButton by viewModel.showSendButton.collectAsState()
+    val isGroupChat = conversation?.isGroupChat == true
     val listState = rememberLazyListState()
     val totalListItems = remember(messages) { calculateListItemCount(messages) }
 
@@ -75,10 +77,11 @@ fun ChatDetailScreen(
                 onSendClick = viewModel::sendMessage
             )
         }
-    ) { _ ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(bottom = paddingValues.calculateBottomPadding())
                 .background(Color(0xFFEDE8DC))
         ) {
             ChatDetailTopBar(
@@ -130,14 +133,23 @@ fun ChatDetailScreen(
                             DateDivider(label = formatDateDivider(message.sentAt))
                         }
 
+                        val isSelf = message.senderId == CURRENT_USER_ID
+                        val isLastInGroup = index == messages.lastIndex ||
+                            messages[index + 1].senderId != message.senderId
+                        val isFirstInGroup = index == 0 ||
+                            messages[index - 1].senderId != message.senderId
+
                         ChatMessageBubble(
                             message = message,
-                            isSelf = message.senderId == CURRENT_USER_ID,
+                            isSelf = isSelf,
                             topSpacing = when {
                                 index == 0 -> 8.dp
                                 messages[index - 1].senderId == message.senderId -> 2.dp
                                 else -> 8.dp
-                            }
+                            },
+                            isGroupChat = isGroupChat,
+                            showAvatar = isGroupChat && !isSelf && isLastInGroup,
+                            showSenderName = isGroupChat && !isSelf && isFirstInGroup
                         )
                     }
                 }

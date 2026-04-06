@@ -15,7 +15,10 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 
-class ChatRepositoryImpl(private val assetsHelper: AssetsHelper) : ChatRepository {
+class ChatRepositoryImpl(
+    private val assetsHelper: AssetsHelper,
+    private val contactStore: RuntimeContactStore = RuntimeContactStore.getInstance(assetsHelper)
+) : ChatRepository {
 
     private val currentUserId = "user_001" // Alex Johnson
     private val currentUserName = "Alex Johnson"
@@ -98,12 +101,12 @@ class ChatRepositoryImpl(private val assetsHelper: AssetsHelper) : ChatRepositor
         }
 
         val contactName = conversation.participantNames.firstOrNull { it != currentUserName } ?: return null
-        return cachedContacts.firstOrNull { it.displayName == contactName }
+        return contactStore.getAllContacts().firstOrNull { it.displayName == contactName }
     }
 
     override fun getAllContacts(): List<Contact> {
         ensureDataLoaded()
-        return cachedContacts.toList()
+        return contactStore.getAllContacts()
     }
 
     override fun getCurrentUserAccount(): Account? {
@@ -168,6 +171,73 @@ class ChatRepositoryImpl(private val assetsHelper: AssetsHelper) : ChatRepositor
         return newConversation.id
     }
 
+    override fun createGroupConversation(groupName: String, memberIds: List<String>, memberNames: List<String>): String {
+        ensureDataLoaded()
+        val now = System.currentTimeMillis()
+        val allIds = (listOf(currentUserId) + memberIds).distinct()
+        val allNames = (listOf(currentUserName) + memberNames).distinct()
+        val newConversation = Conversation(
+            id = "conv_group_$now",
+            participantIds = allIds,
+            participantNames = allNames,
+            isGroupChat = true,
+            groupName = groupName,
+            lastMessagePreview = null,
+            lastMessageAt = now,
+            createdAt = now,
+            creatorId = currentUserId,
+            unreadCount = 0
+        )
+        cachedConversations.add(newConversation)
+        return newConversation.id
+    }
+
+    /**
+     * Fan out a broadcast message into each member's existing 1:1 conversation.
+     * If the conversation doesn't exist yet, it is created.
+     */
+    fun sendBroadcastFanOut(memberId: String, memberName: String, content: String, sentAt: Long) {
+        ensureDataLoaded()
+        // Find or create 1:1 conversation with this member
+        val conv = cachedConversations.firstOrNull { c ->
+            !c.isGroupChat && c.participantNames.contains(memberName)
+        } ?: run {
+            val now = sentAt
+            val newConv = Conversation(
+                id = "conv_$now${memberId.takeLast(4)}",
+                participantIds = listOf(currentUserId, memberId),
+                participantNames = listOf(currentUserName, memberName),
+                isGroupChat = false,
+                groupName = null,
+                lastMessagePreview = content,
+                lastMessageAt = now,
+                createdAt = now,
+                creatorId = currentUserId,
+                unreadCount = 1
+            )
+            cachedConversations.add(newConv)
+            newConv
+        }
+        val fanOutMsg = Message(
+            id = "fanout_${java.util.UUID.randomUUID()}",
+            conversationId = conv.id,
+            senderId = currentUserId,
+            senderName = currentUserName,
+            messageType = MessageType.TEXT,
+            textContent = content,
+            mediaUrl = null,
+            messageStatus = MessageStatus.SENT,
+            sentAt = sentAt,
+            deliveredAt = sentAt,
+            readAt = null
+        )
+        cachedMessages.add(fanOutMsg)
+        cachedConversations = cachedConversations.map { c ->
+            if (c.id == conv.id) c.copy(lastMessagePreview = content, lastMessageAt = sentAt)
+            else c
+        }.toMutableList()
+    }
+
     override fun sendMessage(conversationId: String, content: String): Message {
         ensureDataLoaded()
 
@@ -209,7 +279,6 @@ class ChatRepositoryImpl(private val assetsHelper: AssetsHelper) : ChatRepositor
 
             cachedConversations = assetsHelper.loadConversations().toMutableList()
             cachedMessages = assetsHelper.loadMessages().toMutableList()
-            cachedContacts = assetsHelper.loadContacts()
             cachedAccounts = assetsHelper.loadAccounts()
             isInitialized = true
         }
@@ -253,7 +322,6 @@ class ChatRepositoryImpl(private val assetsHelper: AssetsHelper) : ChatRepositor
         private var isInitialized = false
         private var cachedConversations: MutableList<Conversation> = mutableListOf()
         private var cachedMessages: MutableList<Message> = mutableListOf()
-        private var cachedContacts: List<Contact> = emptyList()
         private var cachedAccounts: List<Account> = emptyList()
     }
 }

@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,7 +67,8 @@ private val WhatsAppGreen = Color(0xFF25D366)
 @Composable
 fun NewCallBottomSheet(
     viewModel: NewCallViewModel,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onNewContactClick: () -> Unit
 ) {
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -80,8 +82,24 @@ fun NewCallBottomSheet(
     val groupedContacts by viewModel.groupedContacts.collectAsState()
     val selectedIds by viewModel.selectedContactIds.collectAsState()
     val inviteContacts by viewModel.inviteContacts.collectAsState()
+    val scrollTargetContactId by viewModel.scrollTargetContactId.collectAsState()
 
     val listState = rememberLazyListState()
+
+    // Scroll to the group containing the first fuzzy-matched contact
+    LaunchedEffect(scrollTargetContactId) {
+        val targetId = scrollTargetContactId ?: return@LaunchedEffect
+        val letter = groupedContacts.firstOrNull { group ->
+            group.contacts.any { it.id == targetId }
+        }?.letter ?: return@LaunchedEffect
+        val groupIndex = groupedContacts.indexOfFirst { it.letter == letter }
+        if (groupIndex < 0) return@LaunchedEffect
+        // fixed items before groups: QuickActions(0) + StartCall(1 if present)
+        val fixedCount = if (startCallContacts.isNotEmpty()) 2 else 1
+        // each group: stickyHeader + card = 2 items
+        val targetIndex = fixedCount + groupIndex * 2
+        listState.animateScrollToItem(targetIndex)
+    }
 
     ModalBottomSheet(
         onDismissRequest = {
@@ -125,7 +143,10 @@ fun NewCallBottomSheet(
                         NewCallQuickActionsCard(
                             onNewCallLink = { viewModel.onNewCallLinkClick(); toast() },
                             onCallANumber = { viewModel.onCallANumberClick(); toast() },
-                            onNewContact = { viewModel.onNewContactClick(); toast() },
+                            onNewContact = {
+                                viewModel.onNewContactClick()
+                                onNewContactClick()
+                            },
                             onScheduleCall = { viewModel.onScheduleCallClick(); toast() }
                         )
                     }
@@ -176,9 +197,10 @@ fun NewCallBottomSheet(
                     CallAlphabetIndexBar(
                         letters = groupedContacts.map { it.letter },
                         listState = listState,
-                        groupedContacts = groupedContacts,
+                        hasStartCallSection = startCallContacts.isNotEmpty(),
                         modifier = Modifier.align(Alignment.CenterEnd)
                     )
+
                 }
             }
         }
@@ -423,14 +445,11 @@ private fun InviteSection(
 private fun CallAlphabetIndexBar(
     letters: List<String>,
     listState: LazyListState,
-    groupedContacts: List<ContactGroup>,
+    hasStartCallSection: Boolean,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
-
-    // Calculate item index for each letter group in the LazyColumn
-    // Items layout: QuickActions(0), StartCall(1), then for each group: stickyHeader + card
-    // stickyHeader indices start at 2 (index 0=QuickActions, 1=StartCall, then groups)
+    val fixedCount = if (hasStartCallSection) 2 else 1
     Column(
         modifier = modifier.padding(end = 4.dp),
         verticalArrangement = Arrangement.Center
@@ -444,10 +463,7 @@ private fun CallAlphabetIndexBar(
                     .height(18.dp)
                     .clickable {
                         scope.launch {
-                            // Fixed items before groups: QuickActions + StartCall = 2 items
-                            // Each group has: stickyHeader + card = 2 items
-                            val targetIndex = 2 + i * 2
-                            listState.animateScrollToItem(targetIndex)
+                            listState.animateScrollToItem(fixedCount + i * 2)
                         }
                     }
             )

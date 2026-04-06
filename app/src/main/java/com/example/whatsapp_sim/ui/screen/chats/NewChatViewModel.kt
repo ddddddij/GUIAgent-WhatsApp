@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class NewChatViewModel(
@@ -30,31 +31,45 @@ class NewChatViewModel(
     private val _selfAccount = MutableStateFlow(repository.getCurrentUserAccount())
     val selfAccount: StateFlow<Account?> = _selfAccount.asStateFlow()
 
-    val frequentContacts: StateFlow<List<Contact>> = combine(_allContacts, _searchQuery) { contacts, query ->
-        contacts
-            .take(3)
-            .filter { contact -> matchesQuery(contact, query) }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = emptyList()
-    )
+    // Always show all frequent contacts (first 3), not filtered
+    val frequentContacts: StateFlow<List<Contact>> = _allContacts
+        .map { it.take(3) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
-    val groupedContacts: StateFlow<List<ContactGroup>> = combine(_allContacts, _searchQuery) { contacts, query ->
-        contacts
-            .filter { contact -> matchesQuery(contact, query) }
-            .groupBy(::resolveGroupLetter)
-            .toSortedMap(contactGroupComparator)
-            .map { (letter, groupContacts) ->
-                ContactGroup(
-                    letter = letter,
-                    contacts = groupContacts.sortedBy { it.displayName.lowercase() }
-                )
-            }
+    // Always show all contacts grouped, never filter them out
+    val groupedContacts: StateFlow<List<ContactGroup>> = _allContacts
+        .map { contacts ->
+            contacts
+                .groupBy(::resolveGroupLetter)
+                .toSortedMap(contactGroupComparator)
+                .map { (letter, groupContacts) ->
+                    ContactGroup(
+                        letter = letter,
+                        contacts = groupContacts.sortedBy { it.displayName.lowercase() }
+                    )
+                }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
+
+    // The contact id to scroll to (first fuzzy match), null when query is blank
+    val scrollTargetContactId: StateFlow<String?> = combine(_allContacts, _searchQuery) { contacts, query ->
+        if (query.isBlank()) return@combine null
+        val q = query.trim().lowercase()
+        contacts.firstOrNull { contact ->
+            contact.displayName.lowercase().contains(q) || contact.phone.lowercase().contains(q)
+        }?.id
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = emptyList()
+        initialValue = null
     )
 
     fun onSearchQueryChanged(query: String) {
@@ -77,13 +92,8 @@ class NewChatViewModel(
 
     fun onNewBroadcastClick() = Unit
 
-    private fun matchesQuery(contact: Contact, query: String): Boolean {
-        if (query.isBlank()) {
-            return true
-        }
-        val normalizedQuery = query.trim().lowercase()
-        return contact.displayName.lowercase().contains(normalizedQuery) ||
-            contact.phone.lowercase().contains(normalizedQuery)
+    fun refreshContacts() {
+        _allContacts.value = repository.getAllContacts().sortedBy { it.displayName.lowercase() }
     }
 
     private fun resolveGroupLetter(contact: Contact): String {
