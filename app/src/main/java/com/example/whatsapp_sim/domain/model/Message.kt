@@ -11,5 +11,8 @@ data class Message(
     val messageStatus: MessageStatus,
     val sentAt: Long,
     val deliveredAt: Long?,
-    val readAt: Long?
+    val readAt: Long?,
+    val forwardedFrom: String? = null,
+    val forwardedImageResName: String? = null,
+    val forwardedChannelId: String? = null
 )

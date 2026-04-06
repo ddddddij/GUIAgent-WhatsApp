@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.domain.model.MessageStatus
 import com.example.whatsapp_sim.domain.model.MessageType
+import com.example.whatsapp_sim.ui.components.ForwardedStatusCard
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -62,6 +63,23 @@ fun ChatMessageBubble(
     val messageText = remember(message) { message.toDisplayText() }
     val emojiOnly = remember(messageText) { isEmojiOnlyText(messageText) }
     val maxBubbleWidth = LocalConfiguration.current.screenWidthDp.dp * 0.7f
+
+    // Forwarded status card has its own layout
+    if (message.messageType == MessageType.FORWARDED_STATUS) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = if (isSelf) 56.dp else 12.dp,
+                    end = if (isSelf) 12.dp else 56.dp,
+                    top = topSpacing
+                ),
+            horizontalArrangement = if (isSelf) Arrangement.End else Arrangement.Start
+        ) {
+            ForwardedStatusCard(message = message)
+        }
+        return
+    }
 
     val avatarSize = 38.dp
     val avatarGap = 6.dp
@@ -225,6 +243,8 @@ private fun Message.toDisplayText(): String {
         MessageType.DOCUMENT -> textContent ?: "\uD83D\uDCC4 Document"
         MessageType.LOCATION -> textContent ?: "\uD83D\uDCCD Location"
         MessageType.GIF -> textContent ?: "GIF"
+        MessageType.FORWARDED_STATUS -> textContent ?: "[Channel post]"
+        MessageType.COMMUNITY_ANNOUNCEMENT -> textContent ?: "[Community announcement]"
     }
 }
 

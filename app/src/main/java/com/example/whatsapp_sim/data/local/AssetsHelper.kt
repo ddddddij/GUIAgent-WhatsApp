@@ -7,6 +7,7 @@ import com.example.whatsapp_sim.domain.model.Community
 import com.example.whatsapp_sim.domain.model.Contact
 import com.example.whatsapp_sim.domain.model.Conversation
 import com.example.whatsapp_sim.domain.model.Message
+import com.example.whatsapp_sim.domain.model.Status
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -52,6 +53,13 @@ class AssetsHelper(private val context: Context) {
         val json = context.assets.open("data/communities.json")
             .bufferedReader().use { it.readText() }
         val type = object : TypeToken<List<Community>>() {}.type
+        return gson.fromJson(json, type)
+    }
+
+    fun loadStatuses(): List<Status> {
+        val json = context.assets.open("data/statuses.json")
+            .bufferedReader().use { it.readText() }
+        val type = object : TypeToken<List<Status>>() {}.type
         return gson.fromJson(json, type)
     }
 }

@@ -1,9 +1,9 @@
 package com.example.whatsapp_sim.ui.screen.updates
 
 import androidx.lifecycle.ViewModel
+import com.example.whatsapp_sim.UserStatusStore
 import com.example.whatsapp_sim.data.repository.ChannelRepository
 import com.example.whatsapp_sim.domain.model.Channel
-import com.example.whatsapp_sim.domain.model.UserStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,41 +21,15 @@ class UpdatesViewModel : ViewModel() {
     private val _followingState = MutableStateFlow<Map<String, Boolean>>(emptyMap())
     val followingState: StateFlow<Map<String, Boolean>> = _followingState.asStateFlow()
 
-    // My own status that I posted
-    val myStatus: UserStatus = UserStatus(
-        id = "my_status_001",
-        senderName = "Alex Johnson",
-        preview = "Living the moment 🌅",
-        timeLabel = "10:32 AM",
-        isViewed = false
-    )
-
-    // Recent statuses from contacts
-    val recentStatuses: List<UserStatus> = listOf(
-        UserStatus(
-            id = "status_002",
-            senderName = "Sophia Chen",
-            preview = "Weekend vibes ☀️",
-            timeLabel = "9:15 AM",
-            isViewed = false
-        ),
-        UserStatus(
-            id = "status_003",
-            senderName = "Marcus Johnson",
-            preview = "Coffee time ☕",
-            timeLabel = "8:47 AM",
-            isViewed = true
-        )
-    )
+    // Data lives in UserStatusStore (shared singleton)
+    val myStatus get() = UserStatusStore.statuses.first { it.id == "my_status_001" }
+    val recentStatuses get() = UserStatusStore.statuses.filter { it.id != "my_status_001" }
 
     init {
         val channelList = repository.getChannels()
         _channels.value = channelList
         _followingState.value = channelList.associate { it.id to it.initiallyFollowing }
     }
-
-    fun followingChannels(): List<Channel> =
-        _channels.value.filter { _followingState.value[it.id] == true }
 
     fun toggleChannelSection() {
         _isChannelSectionExpanded.value = !_isChannelSectionExpanded.value
@@ -68,9 +42,6 @@ class UpdatesViewModel : ViewModel() {
     }
 
     fun onMoreMenuClick() { /* Coming soon */ }
-    fun onAddStatusCameraClick() { /* Coming soon */ }
-    fun onAddStatusEditClick() { /* Coming soon */ }
     fun onAddStatusClick() { /* Coming soon */ }
     fun onExploreMoreClick() { /* Coming soon */ }
 }
-

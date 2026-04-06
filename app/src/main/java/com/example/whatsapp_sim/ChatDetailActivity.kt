@@ -75,6 +75,11 @@ class ChatDetailActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshMessages()
+    }
+
     private fun showComingSoon() {
         Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
     }

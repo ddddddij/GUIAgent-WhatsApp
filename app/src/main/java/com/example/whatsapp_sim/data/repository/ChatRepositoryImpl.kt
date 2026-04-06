@@ -49,6 +49,8 @@ class ChatRepositoryImpl(
                     MessageType.DOCUMENT -> "\uD83D\uDCC4 Document"
                     MessageType.LOCATION -> "\uD83D\uDCCD Location"
                     MessageType.GIF -> "GIF"
+                    MessageType.FORWARDED_STATUS -> "📢 ${msg.forwardedFrom ?: "Channel post"}"
+                    MessageType.COMMUNITY_ANNOUNCEMENT -> "📣 ${msg.textContent.orEmpty()}"
                 }
             } ?: conv.lastMessagePreview.orEmpty()
 
@@ -190,6 +192,24 @@ class ChatRepositoryImpl(
         )
         cachedConversations.add(newConversation)
         return newConversation.id
+    }
+
+    fun getGroupConversations(): List<Conversation> {
+        ensureDataLoaded()
+        return cachedConversations.filter { it.isGroupChat }
+    }
+
+    /**
+     * Directly add a pre-built message (e.g. forwarded status) to the cache.
+     */
+    fun addMessage(message: Message) {
+        ensureDataLoaded()
+        cachedMessages.add(message)
+        cachedConversations = cachedConversations.map { conv ->
+            if (conv.id == message.conversationId)
+                conv.copy(lastMessagePreview = message.textContent ?: "[Forwarded]", lastMessageAt = message.sentAt)
+            else conv
+        }.toMutableList()
     }
 
     /**

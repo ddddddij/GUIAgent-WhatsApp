@@ -70,6 +70,10 @@ class ChatDetailViewModel(
     fun onMicClick() = Unit
 
     fun onLearnMoreClick() = Unit
+
+    fun refreshMessages() {
+        _messages.value = repository.getMessages(conversationId)
+    }
 }
 
 class ChatDetailViewModelFactory(
