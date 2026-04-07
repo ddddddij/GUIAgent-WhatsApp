@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.domain.model.Community
 import com.example.whatsapp_sim.domain.model.Contact
 import com.example.whatsapp_sim.domain.model.Conversation
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 
 private val AvatarPurple = Color(0xFFC5B8F0)
 private val AvatarDark = Color(0xFF6B5ECD)
@@ -190,14 +191,7 @@ fun StatusShareSheet(
                                             .padding(horizontal = 16.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(44.dp)
-                                                .background(AvatarPurple, CircleShape),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Icon(Icons.Filled.AccountCircle, null, modifier = Modifier.size(44.dp), tint = AvatarDark)
-                                        }
+                                        ContactAvatar(avatarUrl = contact.avatarUrl, size = 44.dp)
                                         Spacer(Modifier.width(12.dp))
                                         Text(contact.displayName, fontSize = 16.sp, color = Color.Black)
                                     }

@@ -67,7 +67,17 @@ fun ChatsScreen(
                     onClick = {
                         viewModel.onChatItemClick(chat.id)
                         onChatClick(chat.id)
-                    }
+                    },
+                    onAvatarClick = if (!chat.isGroup) {
+                        {
+                            val contact = viewModel.findContactByName(chat.name)
+                            if (contact != null) {
+                                context.startActivity(
+                                    com.example.whatsapp_sim.ContactInfoActivity.createIntent(context, contact.id)
+                                )
+                            }
+                        }
+                    } else null
                 )
             }
         }

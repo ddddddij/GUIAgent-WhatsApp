@@ -46,6 +46,32 @@ class ContactInfoActivity : ComponentActivity() {
                         startActivity(
                             ChatDetailActivity.createIntent(this, conversationId)
                         )
+                    },
+                    onAudioCallClick = {
+                        val contact = viewModel.contact.value ?: return@ContactInfoScreen
+                        val conversationId = viewModel.onMessageClick()
+                        startActivity(
+                            CallActivity.createIntent(
+                                context = this,
+                                contactName = contact.displayName,
+                                avatarUrl = contact.avatarUrl,
+                                contactId = contact.id,
+                                conversationId = conversationId
+                            )
+                        )
+                    },
+                    onVideoCallClick = {
+                        val contact = viewModel.contact.value ?: return@ContactInfoScreen
+                        val conversationId = viewModel.onMessageClick()
+                        startActivity(
+                            VideoCallActivity.createIntent(
+                                context = this,
+                                contactName = contact.displayName,
+                                avatarUrl = contact.avatarUrl,
+                                contactId = contact.id,
+                                conversationId = conversationId
+                            )
+                        )
                     }
                 )
             }

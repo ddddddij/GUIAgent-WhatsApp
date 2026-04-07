@@ -83,15 +83,12 @@ fun ForwardedStatusCard(
 
             // ③ Image placeholder (if has image)
             if (message.forwardedImageResName != null) {
-                Box(
+                AssetImage(
+                    imagePath = parseAssetImagePaths(message.forwardedImageResName).firstOrNull(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp)
-                        .background(Color(0xFFCCCCCC)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("📷", fontSize = 40.sp)
-                }
+                )
             }
 
             // ④ Text content

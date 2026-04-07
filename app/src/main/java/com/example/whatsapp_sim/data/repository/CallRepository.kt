@@ -2,61 +2,72 @@ package com.example.whatsapp_sim.data.repository
 
 import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.domain.model.Call
-import com.example.whatsapp_sim.domain.model.Contact
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 data class CallWithContact(
     val call: Call,
     val contactName: String,
     val contactId: String?,
-    val contactAvatarRes: Int?
+    val contactAvatarRes: Int?,
+    val contactAvatarUrl: String? = null
 )
 
-class CallRepository(
+class CallRepository private constructor(
     private val assetsHelper: AssetsHelper,
     private val contactStore: RuntimeContactStore = RuntimeContactStore.getInstance(assetsHelper)
 ) {
 
-    private val currentUserId = "user_001"
+    private val _calls = MutableStateFlow<List<CallWithContact>>(emptyList())
+    val calls: StateFlow<List<CallWithContact>> = _calls.asStateFlow()
 
-    fun getRecentCalls(): List<CallWithContact> {
-        val calls = assetsHelper.loadCalls()
+    init {
+        loadCalls()
+    }
+
+    private fun loadCalls() {
+        val rawCalls = assetsHelper.loadCalls()
         val accounts = assetsHelper.loadAccounts()
         val contacts = contactStore.getAllContacts()
         val accountMap = accounts.associateBy { it.id }
 
-        return calls.map { call ->
-            val otherPartyId = if (call.callerId == currentUserId) call.calleeId else call.callerId
-            val account = accountMap[otherPartyId]
+        val callsWithContact = rawCalls.map { call ->
+            val contactId = call.contactIds.firstOrNull()
+            val account = contactId?.let { accountMap[it] }
             val contactName = account?.displayName ?: "Unknown"
-            val contactId = contacts.firstOrNull { it.displayName == contactName }?.id
+            val contact = contacts.firstOrNull { it.displayName == contactName }
             CallWithContact(
                 call = call,
                 contactName = contactName,
-                contactId = contactId,
-                contactAvatarRes = null
+                contactId = contact?.id,
+                contactAvatarRes = null,
+                contactAvatarUrl = contact?.avatarUrl
             )
         }
+        _calls.value = callsWithContact
+    }
+
+    fun getRecentCalls(): List<CallWithContact> = _calls.value
+
+    fun addCall(call: Call, displayName: String, displayContactId: String?, displayAvatarUrl: String?) {
+        val callWithContact = CallWithContact(
+            call = call,
+            contactName = displayName,
+            contactId = displayContactId,
+            contactAvatarRes = null,
+            contactAvatarUrl = displayAvatarUrl
+        )
+        _calls.value = listOf(callWithContact) + _calls.value
     }
 
     companion object {
-        fun formatTimestamp(millis: Long): String {
-            val callCal = Calendar.getInstance().apply { timeInMillis = millis }
-            val nowCal = Calendar.getInstance()
-            val callDay = callCal.get(Calendar.DAY_OF_YEAR)
-            val nowDay = nowCal.get(Calendar.DAY_OF_YEAR)
-            val callYear = callCal.get(Calendar.YEAR)
-            val nowYear = nowCal.get(Calendar.YEAR)
-            return when {
-                callYear == nowYear && callDay == nowDay ->
-                    SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(millis))
-                callYear == nowYear && callDay == nowDay - 1 ->
-                    "Yesterday"
-                else ->
-                    SimpleDateFormat("MM/dd", Locale.getDefault()).format(Date(millis))
+        @Volatile
+        private var instance: CallRepository? = null
+
+        fun getInstance(assetsHelper: AssetsHelper): CallRepository {
+            return instance ?: synchronized(this) {
+                instance ?: CallRepository(assetsHelper).also { instance = it }
             }
         }
     }

@@ -12,6 +12,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Whatsapp_sim">
         <activity
+            android:name=".CallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Whatsapp_sim" />
+        <activity
+            android:name=".VideoCallActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Whatsapp_sim" />
+        <activity
             android:name=".ChatDetailActivity"
             android:exported="false"
             android:theme="@style/Theme.Whatsapp_sim"

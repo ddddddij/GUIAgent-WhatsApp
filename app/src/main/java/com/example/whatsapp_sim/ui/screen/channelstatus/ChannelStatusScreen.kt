@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
@@ -32,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,6 +38,7 @@ import com.example.whatsapp_sim.domain.model.Community
 import com.example.whatsapp_sim.domain.model.Contact
 import com.example.whatsapp_sim.domain.model.Conversation
 import com.example.whatsapp_sim.domain.model.Status
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 import com.example.whatsapp_sim.ui.components.ReactionBar
 import com.example.whatsapp_sim.ui.components.StatusPostCard
 import com.example.whatsapp_sim.ui.screen.chatdetail.components.DateDivider
@@ -83,20 +81,7 @@ fun ChannelStatusScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.Outlined.ArrowBackIosNew, "Back", tint = Color(0xFF3C3C43))
                     }
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFFC5B8F0)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Filled.AccountCircle,
-                            null,
-                            modifier = Modifier.size(40.dp),
-                            tint = Color(0xFF6B5ECD)
-                        )
-                    }
+                    ContactAvatar(avatarUrl = channel?.avatarUrl, size = 40.dp)
                     Spacer(Modifier.width(8.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {

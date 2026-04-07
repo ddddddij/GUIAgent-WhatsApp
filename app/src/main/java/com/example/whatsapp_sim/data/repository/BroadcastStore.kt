@@ -21,7 +21,7 @@ object BroadcastStore {
     private val _messages = mutableMapOf<String, MutableList<Message>>()
 
     private const val CURRENT_USER_ID = "user_001"
-    private const val CURRENT_USER_NAME = "Alex Johnson"
+    private const val CURRENT_USER_NAME = "JiayiDai"
 
     fun createBroadcastList(
         memberIds: List<String>,

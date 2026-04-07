@@ -20,13 +20,21 @@ class ChatRepositoryImpl(
     private val contactStore: RuntimeContactStore = RuntimeContactStore.getInstance(assetsHelper)
 ) : ChatRepository {
 
-    private val currentUserId = "user_001" // Alex Johnson
-    private val currentUserName = "Alex Johnson"
+    private val currentUserId = "user_001" // JiayiDai
+    private val currentUserName = "JiayiDai"
+
+    private val groupAvatarMap = mapOf(
+        "SF Tech Squad" to "image/群聊头像/SF Tech Squad.jpg",
+        "Weekend Hiking Crew" to "image/群聊头像/Weekend Hiking Crew.jpg",
+        "Startup Ideas 💡" to "image/群聊头像/Startup Ideas.jpg",
+        "Friday Night Plans 🍕" to "image/群聊头像/Friday Night Plans.jpg"
+    )
 
     override fun getAllChats(): List<Chat> {
         ensureDataLoaded()
         val conversations = cachedConversations.toList()
         val messages = cachedMessages.toList()
+        val contacts = contactStore.getAllContacts()
 
         return conversations.mapNotNull { conv ->
             val lastMsg = messages
@@ -51,6 +59,8 @@ class ChatRepositoryImpl(
                     MessageType.GIF -> "GIF"
                     MessageType.FORWARDED_STATUS -> "📢 ${msg.forwardedFrom ?: "Channel post"}"
                     MessageType.COMMUNITY_ANNOUNCEMENT -> "📣 ${msg.textContent.orEmpty()}"
+                    MessageType.VOICE_CALL -> "Voice call"
+                    MessageType.VIDEO_CALL -> "Video call"
                 }
             } ?: conv.lastMessagePreview.orEmpty()
 
@@ -62,10 +72,16 @@ class ChatRepositoryImpl(
 
             val status = if (lastMsg?.senderId == currentUserId) lastMsg.messageStatus else null
 
+            val contactAvatarUrl = if (!conv.isGroupChat) {
+                contacts.firstOrNull { it.displayName == displayName }?.avatarUrl
+            } else {
+                groupAvatarMap[conv.groupName]
+            }
+
             Chat(
                 id = conv.id,
                 name = displayName,
-                avatarUrl = null,
+                avatarUrl = contactAvatarUrl,
                 lastMessage = lastMessagePreview,
                 lastMessageSender = lastMessageSender,
                 lastMessageType = lastMsg?.messageType ?: MessageType.TEXT,

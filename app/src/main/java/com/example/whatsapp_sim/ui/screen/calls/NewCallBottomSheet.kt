@@ -70,12 +70,18 @@ private val WhatsAppGreen = Color(0xFF25D366)
 fun NewCallBottomSheet(
     viewModel: NewCallViewModel,
     onDismiss: () -> Unit,
-    onNewContactClick: () -> Unit
+    onNewContactClick: () -> Unit,
+    onStartCall: (contacts: List<com.example.whatsapp_sim.domain.model.Contact>) -> Unit = {}
 ) {
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val toast = { Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show() }
+    val navigateToContactInfo = { contactId: String ->
+        context.startActivity(
+            com.example.whatsapp_sim.ContactInfoActivity.createIntent(context, contactId)
+        )
+    }
 
     val searchQuery by viewModel.searchQuery.collectAsState()
     val selectedCount by viewModel.selectedCount.collectAsState()
@@ -126,6 +132,16 @@ fun NewCallBottomSheet(
                         viewModel.onCancelClick()
                         onDismiss()
                     }
+                },
+                onNextClick = {
+                    val selected = viewModel.getSelectedContacts()
+                    if (selected.isNotEmpty()) {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            onStartCall(selected)
+                            viewModel.onCancelClick()
+                            onDismiss()
+                        }
+                    }
                 }
             )
 
@@ -159,7 +175,8 @@ fun NewCallBottomSheet(
                             StartCallSection(
                                 contacts = startCallContacts,
                                 selectedIds = selectedIds,
-                                onToggle = viewModel::onContactToggled
+                                onToggle = viewModel::onContactToggled,
+                                onAvatarClick = navigateToContactInfo
                             )
                         }
                     }
@@ -173,7 +190,8 @@ fun NewCallBottomSheet(
                             AlphabetGroupCard(
                                 group = group,
                                 selectedIds = selectedIds,
-                                onToggle = viewModel::onContactToggled
+                                onToggle = viewModel::onContactToggled,
+                                onAvatarClick = navigateToContactInfo
                             )
                         }
                     }
@@ -213,7 +231,8 @@ fun NewCallBottomSheet(
 private fun NewCallTitleBar(
     selectedCount: Int,
     totalCount: Int,
-    onCancelClick: () -> Unit
+    onCancelClick: () -> Unit,
+    onNextClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -235,8 +254,16 @@ private fun NewCallTitleBar(
             Text(text = "$selectedCount/$totalCount", fontSize = 13.sp, color = TextSecondary)
         }
 
-        // Right spacer symmetric with Cancel button
-        Spacer(modifier = Modifier.width(80.dp))
+        TextButton(
+            onClick = onNextClick,
+            enabled = selectedCount > 0
+        ) {
+            Text(
+                text = "Next",
+                fontSize = 14.sp,
+                color = if (selectedCount > 0) WhatsAppGreen else TextSecondary
+            )
+        }
     }
 }
 
@@ -327,7 +354,8 @@ private fun QuickActionRow(icon: ImageVector, label: String, onClick: () -> Unit
 private fun StartCallSection(
     contacts: List<com.example.whatsapp_sim.domain.model.Contact>,
     selectedIds: Set<String>,
-    onToggle: (String) -> Unit
+    onToggle: (String) -> Unit,
+    onAvatarClick: (String) -> Unit = {}
 ) {
     Text(
         text = "Start a call",
@@ -348,7 +376,9 @@ private fun StartCallSection(
                 name = contact.displayName,
                 statusText = null,
                 isSelected = contact.id in selectedIds,
-                onToggle = { onToggle(contact.id) }
+                onToggle = { onToggle(contact.id) },
+                avatarUrl = contact.avatarUrl,
+                onAvatarClick = { onAvatarClick(contact.id) }
             )
             if (index < contacts.lastIndex) {
                 HorizontalDivider(
@@ -379,7 +409,8 @@ private fun GroupLetterHeader(letter: String) {
 private fun AlphabetGroupCard(
     group: ContactGroup,
     selectedIds: Set<String>,
-    onToggle: (String) -> Unit
+    onToggle: (String) -> Unit,
+    onAvatarClick: (String) -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -394,7 +425,9 @@ private fun AlphabetGroupCard(
                 name = contact.displayName,
                 statusText = null,
                 isSelected = contact.id in selectedIds,
-                onToggle = { onToggle(contact.id) }
+                onToggle = { onToggle(contact.id) },
+                avatarUrl = contact.avatarUrl,
+                onAvatarClick = { onAvatarClick(contact.id) }
             )
             if (index < group.contacts.lastIndex) {
                 HorizontalDivider(

@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.domain.model.Contact
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 import com.example.whatsapp_sim.ui.screen.chats.NewGroupViewModel
 import kotlinx.coroutines.launch
 
@@ -337,19 +338,7 @@ fun NewGroupBottomSheet(
                                         .padding(horizontal = 16.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(44.dp)
-                                            .background(AvatarPurple, CircleShape),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Filled.AccountCircle,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(44.dp),
-                                            tint = AvatarDark
-                                        )
-                                    }
+                                    ContactAvatar(avatarUrl = contact.avatarUrl, size = 44.dp)
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Text(
                                         text = contact.displayName,
@@ -457,19 +446,7 @@ private fun SelectedContactsChips(
                 modifier = Modifier.width(56.dp)
             ) {
                 Box {
-                    Box(
-                        modifier = Modifier
-                            .size(44.dp)
-                            .background(AvatarPurple, CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = null,
-                            modifier = Modifier.size(44.dp),
-                            tint = AvatarDark
-                        )
-                    }
+                    ContactAvatar(avatarUrl = contact.avatarUrl, size = 44.dp)
                     Box(
                         modifier = Modifier
                             .size(18.dp)
@@ -535,19 +512,7 @@ private fun GroupContactCard(
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .background(AvatarPurple, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(44.dp),
-                        tint = AvatarDark
-                    )
-                }
+                ContactAvatar(avatarUrl = contact.avatarUrl, size = 44.dp)
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = contact.displayName,

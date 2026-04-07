@@ -142,7 +142,7 @@ fun NewCommunityBottomSheet(
                             members = listOf(
                                 CommunityMember(
                                     userId = "user_001",
-                                    displayName = "Alex Johnson",
+                                    displayName = "JiayiDai",
                                     role = CommunityRole.ADMIN,
                                     membershipStatus = MembershipStatus.JOINED,
                                     joinedAt = System.currentTimeMillis()

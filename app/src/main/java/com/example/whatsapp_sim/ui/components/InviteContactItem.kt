@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -22,7 +19,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val InviteAvatarGray = Color(0xFFC7C7CC)
 private val WhatsAppGreen = Color(0xFF25D366)
 private val TextSecondary = Color(0xFF8E8E8E)
 
@@ -31,6 +27,7 @@ fun InviteContactItem(
     name: String,
     phoneNumber: String,
     onInviteClick: () -> Unit,
+    avatarUrl: String? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -40,12 +37,7 @@ fun InviteContactItem(
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = null,
-            modifier = Modifier.size(52.dp),
-            tint = InviteAvatarGray
-        )
+        ContactAvatar(avatarUrl = avatarUrl, size = 52.dp)
 
         Spacer(modifier = Modifier.width(12.dp))
 

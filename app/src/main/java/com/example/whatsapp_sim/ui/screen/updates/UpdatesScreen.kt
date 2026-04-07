@@ -26,11 +26,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
@@ -55,9 +53,8 @@ import com.example.whatsapp_sim.UserStatusDetailActivity
 import com.example.whatsapp_sim.UserStatusStore
 import com.example.whatsapp_sim.domain.model.Channel
 import com.example.whatsapp_sim.domain.model.UserStatus
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 
-private val AvatarBg = Color(0xFFC5B8F0)
-private val AvatarIcon = Color(0xFF6B5ECD)
 private val WhatsAppGreen = Color(0xFF25D366)
 private val IconBg = Color(0xFFF2F2F7)
 private val IconGray = Color(0xFF3C3C43)
@@ -216,24 +213,6 @@ fun UpdatesScreen(viewModel: UpdatesViewModel) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Explore more button
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .height(52.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(IconBg)
-                .clickable { viewModel.onExploreMoreClick(); toast() },
-            contentAlignment = Alignment.Center
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                Icon(Icons.Outlined.GridView, null, modifier = Modifier.size(20.dp), tint = IconGray)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Explore more", fontSize = 16.sp, color = IconGray)
-            }
-        }
-
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
@@ -329,15 +308,8 @@ private fun FriendStatusCard(status: UserStatus, onClick: () -> Unit) {
                     .size(26.dp)
                     .border(2.dp, Color.White, CircleShape)
                     .clip(CircleShape)
-                    .background(AvatarBg),
-                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    Icons.Filled.AccountCircle,
-                    null,
-                    modifier = Modifier.size(26.dp),
-                    tint = AvatarIcon
-                )
+                ContactAvatar(avatarUrl = status.avatarUrl, size = 26.dp)
             }
         }
         Spacer(Modifier.height(4.dp))
@@ -369,12 +341,7 @@ private fun ChannelItem(
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier.size(56.dp).clip(CircleShape).background(AvatarBg),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Filled.AccountCircle, null, modifier = Modifier.fillMaxSize(), tint = AvatarIcon)
-        }
+        ContactAvatar(avatarUrl = channel.avatarUrl, size = 56.dp)
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -419,12 +386,7 @@ private fun FollowedChannelUpdateRow(channel: Channel, onClick: () -> Unit) {
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier.size(56.dp).clip(CircleShape).background(AvatarBg),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Filled.AccountCircle, null, modifier = Modifier.fillMaxSize(), tint = AvatarIcon)
-        }
+        ContactAvatar(avatarUrl = channel.avatarUrl, size = 56.dp)
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {

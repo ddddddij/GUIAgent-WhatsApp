@@ -3,6 +3,7 @@ package com.example.whatsapp_sim.ui.screen.chats
 import androidx.lifecycle.ViewModel
 import com.example.whatsapp_sim.domain.model.Chat
 import com.example.whatsapp_sim.domain.model.ChatFilter
+import com.example.whatsapp_sim.domain.model.Contact
 import com.example.whatsapp_sim.domain.repository.ChatRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -64,5 +65,9 @@ class ChatsViewModel(private val repository: ChatRepository) : ViewModel() {
 
     fun onMoreMenuClick() {
         // Coming soon
+    }
+
+    fun findContactByName(name: String): Contact? {
+        return repository.getAllContacts().firstOrNull { it.displayName == name }
     }
 }

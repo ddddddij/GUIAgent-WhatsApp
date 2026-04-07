@@ -1,57 +1,38 @@
 [
   {
     "id": "call_001",
-    "callerId": "user_002",
-    "calleeId": "user_001",
-    "calleeName": "Alex Johnson",
+    "conversationId": "conv_001",
+    "contactIds": ["user_002"],
     "callType": "VOICE",
-    "callStatus": "INCOMING",
-    "startedAt": 1774944000000,
-    "endedAt": 1774944420000,
-    "durationSeconds": 420
+    "callResult": "COMPLETED",
+    "timestamp": "6:21 PM",
+    "dateLabel": "Today",
+    "durationSeconds": 420,
+    "durationDisplay": "7 min",
+    "isSelf": true
   },
   {
     "id": "call_002",
-    "callerId": "user_001",
-    "calleeId": "user_003",
-    "calleeName": "Marcus Davis",
+    "conversationId": "conv_002",
+    "contactIds": ["user_003"],
     "callType": "VIDEO",
-    "callStatus": "OUTGOING",
-    "startedAt": 1774936800000,
-    "endedAt": 1774938600000,
-    "durationSeconds": 1800
+    "callResult": "COMPLETED",
+    "timestamp": "2:30 PM",
+    "dateLabel": "Today",
+    "durationSeconds": 1800,
+    "durationDisplay": "30 min",
+    "isSelf": true
   },
   {
     "id": "call_003",
-    "callerId": "user_004",
-    "calleeId": "user_001",
-    "calleeName": "Alex Johnson",
+    "conversationId": "conv_001",
+    "contactIds": ["user_002"],
     "callType": "VOICE",
-    "callStatus": "MISSED",
-    "startedAt": 1774926000000,
-    "endedAt": null,
-    "durationSeconds": 0
-  },
-  {
-    "id": "call_004",
-    "callerId": "user_001",
-    "calleeId": "user_002",
-    "calleeName": "Sarah Mitchell",
-    "callType": "VOICE",
-    "callStatus": "OUTGOING",
-    "startedAt": 1774857600000,
-    "endedAt": 1774857840000,
-    "durationSeconds": 240
-  },
-  {
-    "id": "call_005",
-    "callerId": "user_005",
-    "calleeId": "user_001",
-    "calleeName": "Alex Johnson",
-    "callType": "VIDEO",
-    "callStatus": "MISSED",
-    "startedAt": 1774918800000,
-    "endedAt": null,
-    "durationSeconds": 0
+    "callResult": "NO_ANSWER",
+    "timestamp": "11:00 AM",
+    "dateLabel": "Yesterday",
+    "durationSeconds": 0,
+    "durationDisplay": "No answer",
+    "isSelf": false
   }
 ]

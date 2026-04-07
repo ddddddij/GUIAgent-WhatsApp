@@ -12,5 +12,6 @@ data class UserStatus(
     val likeCount: Int = 0,
     val userLiked: Boolean = false,
     val emojiReactions: List<UserStatusReaction> = emptyList(),
-    val userReaction: String? = null
+    val userReaction: String? = null,
+    val avatarUrl: String? = null
 )

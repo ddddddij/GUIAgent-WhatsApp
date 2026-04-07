@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
@@ -58,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.ui.components.ContactInfoSettingItem
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 
 private val PageBg = Color(0xFFF2F2F7)
 private val CardWhite = Color(0xFFFFFFFF)
@@ -75,7 +75,9 @@ private val CreateGroupIcon = Color(0xFF5C5C5C)
 fun ContactInfoScreen(
     viewModel: ContactInfoViewModel,
     onBackClick: () -> Unit,
-    onNavigateToChat: (String) -> Unit
+    onNavigateToChat: (String) -> Unit,
+    onAudioCallClick: () -> Unit = {},
+    onVideoCallClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val toast = { Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show() }
@@ -117,7 +119,8 @@ fun ContactInfoScreen(
             item {
                 ContactHeroSection(
                     name = contactName,
-                    phone = phone
+                    phone = phone,
+                    avatarUrl = contact?.avatarUrl
                 )
             }
 
@@ -128,8 +131,8 @@ fun ContactInfoScreen(
                         val convId = viewModel.onMessageClick()
                         if (convId.isNotEmpty()) onNavigateToChat(convId)
                     },
-                    onAudioClick = { viewModel.onAudioClick(); toast() },
-                    onVideoClick = { viewModel.onVideoClick(); toast() }
+                    onAudioClick = { onAudioCallClick() },
+                    onVideoClick = { onVideoCallClick() }
                 )
             }
 
@@ -222,19 +225,14 @@ private fun ContactInfoTopBar(
 }
 
 @Composable
-private fun ContactHeroSection(name: String, phone: String) {
+private fun ContactHeroSection(name: String, phone: String, avatarUrl: String? = null) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = null,
-            modifier = Modifier.size(96.dp),
-            tint = AvatarPurple
-        )
+        ContactAvatar(avatarUrl = avatarUrl, size = 96.dp)
 
         Spacer(modifier = Modifier.height(12.dp))
 

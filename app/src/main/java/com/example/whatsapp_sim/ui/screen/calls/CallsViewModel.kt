@@ -1,29 +1,26 @@
 package com.example.whatsapp_sim.ui.screen.calls
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.whatsapp_sim.data.repository.CallRepository
 import com.example.whatsapp_sim.data.repository.CallWithContact
 import com.example.whatsapp_sim.data.repository.RuntimeContactStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class CallsViewModel(
     private val callRepository: CallRepository,
     contactStore: RuntimeContactStore
 ) : ViewModel() {
 
-    private val _recentCalls = MutableStateFlow<List<CallWithContact>>(emptyList())
-    val recentCalls: StateFlow<List<CallWithContact>> = _recentCalls
+    val recentCalls: StateFlow<List<CallWithContact>> = callRepository.calls
 
     private val _showNewCallSheet = MutableStateFlow(false)
     val showNewCallSheet: StateFlow<Boolean> = _showNewCallSheet.asStateFlow()
 
     val newCallViewModel = NewCallViewModel(contactStore)
-
-    init {
-        _recentCalls.value = callRepository.getRecentCalls()
-    }
 
     fun onNewCallClick() {
         _showNewCallSheet.value = true

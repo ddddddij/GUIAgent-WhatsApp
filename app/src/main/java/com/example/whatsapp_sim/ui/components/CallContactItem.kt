@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material3.Icon
@@ -23,7 +22,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val AvatarPurple = Color(0xFFC5B8F0)
 private val WhatsAppGreen = Color(0xFF25D366)
 private val UncheckedGray = Color(0xFFC7C7CC)
 private val TextSecondary = Color(0xFF8E8E8E)
@@ -34,6 +32,8 @@ fun CallContactItem(
     statusText: String?,
     isSelected: Boolean,
     onToggle: () -> Unit,
+    avatarUrl: String? = null,
+    onAvatarClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -44,12 +44,7 @@ fun CallContactItem(
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = null,
-            modifier = Modifier.size(52.dp),
-            tint = AvatarPurple
-        )
+        ContactAvatar(avatarUrl = avatarUrl, size = 52.dp, onClick = onAvatarClick)
 
         Spacer(modifier = Modifier.width(12.dp))
 

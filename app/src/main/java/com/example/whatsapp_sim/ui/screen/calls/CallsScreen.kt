@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.CallMade
 import androidx.compose.material.icons.automirrored.filled.CallMissed
 import androidx.compose.material.icons.automirrored.filled.CallReceived
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.outlined.Info
@@ -43,10 +42,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.whatsapp_sim.data.repository.CallRepository
 import com.example.whatsapp_sim.data.repository.CallWithContact
-import com.example.whatsapp_sim.domain.model.CallStatus
+import com.example.whatsapp_sim.domain.model.CallResult
 import com.example.whatsapp_sim.domain.model.CallType
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 
 private val WhatsAppGreen = Color(0xFF25D366)
 private val IconBg = Color(0xFFF2F2F7)
@@ -54,7 +53,6 @@ private val IconGray = Color(0xFF3C3C43)
 private val TextSecondary = Color(0xFF8E8E8E)
 private val MissedRed = Color(0xFFE53935)
 private val DividerColor = Color(0xFFF0F0F0)
-private val AvatarPurple = Color(0xFFC5B8F0)
 
 @Composable
 fun CallsScreen(
@@ -128,7 +126,8 @@ fun CallsScreen(
                 CallLogItem(
                     callWithContact = callWithContact,
                     onItemClick = { navigateToContact() },
-                    onDetailClick = { navigateToContact() }
+                    onDetailClick = { navigateToContact() },
+                    onAvatarClick = { navigateToContact() }
                 )
                 if (index < recentCalls.lastIndex) {
                     HorizontalDivider(
@@ -147,7 +146,21 @@ fun CallsScreen(
         NewCallBottomSheet(
             viewModel = viewModel.newCallViewModel,
             onDismiss = { viewModel.onNewCallSheetDismiss() },
-            onNewContactClick = onNewContactClick
+            onNewContactClick = onNewContactClick,
+            onStartCall = { selectedContacts ->
+                val names = selectedContacts.map { it.displayName }.toTypedArray()
+                val avatars = selectedContacts.map { it.avatarUrl ?: "" }.toTypedArray()
+                val ids = selectedContacts.map { it.id }.toTypedArray()
+                context.startActivity(
+                    com.example.whatsapp_sim.CallActivity.createIntent(
+                        context = context,
+                        contactNames = names,
+                        avatarUrls = avatars,
+                        contactIds = ids,
+                        conversationId = ""
+                    )
+                )
+            }
         )
     }
 }
@@ -257,23 +270,25 @@ fun AddFavoriteRow(onClick: () -> Unit) {
 fun CallLogItem(
     callWithContact: CallWithContact,
     onItemClick: () -> Unit,
-    onDetailClick: () -> Unit
+    onDetailClick: () -> Unit,
+    onAvatarClick: (() -> Unit)? = null
 ) {
     val call = callWithContact.call
-    val isMissed = call.callStatus == CallStatus.MISSED
+    val isMissed = call.callResult == CallResult.MISSED || call.callResult == CallResult.NO_ANSWER
     val nameColor = if (isMissed) MissedRed else Color.Black
-    val timestamp = CallRepository.formatTimestamp(call.startedAt)
 
-    // Determine call type display info using callStatus and callType
+    // Determine call type display info using callResult, isSelf, and callType
     val (callIcon, callIconTint, callTypeText) = when {
-        isMissed -> Triple(Icons.AutoMirrored.Filled.CallMissed, MissedRed, "Missed")
-        call.callStatus == CallStatus.INCOMING && call.callType == CallType.VIDEO ->
+        call.callResult == CallResult.MISSED ->
+            Triple(Icons.AutoMirrored.Filled.CallMissed, MissedRed, "Missed")
+        call.callResult == CallResult.NO_ANSWER ->
+            Triple(Icons.AutoMirrored.Filled.CallMade, MissedRed, "No answer")
+        call.callType == CallType.VIDEO ->
             Triple(Icons.Outlined.Videocam, TextSecondary, "Video")
-        call.callStatus == CallStatus.INCOMING ->
+        call.isSelf ->
+            Triple(Icons.AutoMirrored.Filled.CallMade, TextSecondary, "Outgoing")
+        else ->
             Triple(Icons.AutoMirrored.Filled.CallReceived, TextSecondary, "Incoming")
-        call.callStatus == CallStatus.OUTGOING && call.callType == CallType.VIDEO ->
-            Triple(Icons.Outlined.Videocam, TextSecondary, "Video")
-        else -> Triple(Icons.AutoMirrored.Filled.CallMade, TextSecondary, "Outgoing")
     }
 
     Row(
@@ -285,11 +300,10 @@ fun CallLogItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Avatar
-        Icon(
-            Icons.Filled.AccountCircle,
-            contentDescription = null,
-            modifier = Modifier.size(52.dp),
-            tint = AvatarPurple
+        ContactAvatar(
+            avatarUrl = callWithContact.contactAvatarUrl,
+            size = 52.dp,
+            onClick = onAvatarClick
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -319,7 +333,7 @@ fun CallLogItem(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = timestamp, fontSize = 12.sp, color = TextSecondary)
+            Text(text = call.timestamp, fontSize = 12.sp, color = TextSecondary)
             IconButton(
                 onClick = { onDetailClick() },
                 modifier = Modifier.size(28.dp)

@@ -21,7 +21,7 @@ object CommunityChannelStore {
     val changeVersion: StateFlow<Int> = _changeVersion.asStateFlow()
 
     private const val CURRENT_USER_ID = "user_001"
-    private const val CURRENT_USER_NAME = "Alex Johnson"
+    private const val CURRENT_USER_NAME = "JiayiDai"
 
     fun initialize(communities: List<Community>) {
         communities.forEach { community ->

@@ -2,7 +2,7 @@ package com.example.whatsapp_sim.domain.model
 
 enum class CallType { VOICE, VIDEO }
 
-enum class CallStatus { MISSED, INCOMING, OUTGOING }
+enum class CallResult { COMPLETED, NO_ANSWER, MISSED }
 
 enum class ContactStatus { SAVED, INVITED, BLOCKED }
 
@@ -12,7 +12,7 @@ enum class CommunityRole { OWNER, ADMIN, MEMBER }
 
 enum class MembershipStatus { JOINED, LEFT, KICKED }
 
-enum class MessageType { TEXT, IMAGE, AUDIO, DOCUMENT, LOCATION, GIF, FORWARDED_STATUS, COMMUNITY_ANNOUNCEMENT }
+enum class MessageType { TEXT, IMAGE, AUDIO, DOCUMENT, LOCATION, GIF, FORWARDED_STATUS, COMMUNITY_ANNOUNCEMENT, VOICE_CALL, VIDEO_CALL }
 
 enum class MessageStatus { SENDING, SENT, DELIVERED, READ, FAILED }
 

@@ -47,12 +47,44 @@ class ChatDetailActivity : ComponentActivity() {
                     viewModel = viewModel,
                     onBackClick = ::finish,
                     onVideoCallClick = {
-                        viewModel.onVideoCallClick()
-                        showComingSoon()
+                        val contact = viewModel.contact.value
+                        val conversation = viewModel.conversation.value
+                        val contactName = contact?.displayName
+                            ?: conversation?.groupName
+                            ?: conversation?.participantNames?.firstOrNull { it != "JiayiDai" }
+                            ?: "Unknown"
+                        val contactId = contact?.id ?: ""
+                        val avatarUrl = viewModel.chatAvatarUrl
+
+                        startActivity(
+                            VideoCallActivity.createIntent(
+                                context = this,
+                                contactName = contactName,
+                                avatarUrl = avatarUrl,
+                                contactId = contactId,
+                                conversationId = conversationId
+                            )
+                        )
                     },
                     onVoiceCallClick = {
-                        viewModel.onVoiceCallClick()
-                        showComingSoon()
+                        val contact = viewModel.contact.value
+                        val conversation = viewModel.conversation.value
+                        val contactName = contact?.displayName
+                            ?: conversation?.groupName
+                            ?: conversation?.participantNames?.firstOrNull { it != "JiayiDai" }
+                            ?: "Unknown"
+                        val contactId = contact?.id ?: ""
+                        val avatarUrl = viewModel.chatAvatarUrl
+
+                        startActivity(
+                            CallActivity.createIntent(
+                                context = this,
+                                contactName = contactName,
+                                avatarUrl = avatarUrl,
+                                contactId = contactId,
+                                conversationId = conversationId
+                            )
+                        )
                     },
                     onAddAttachmentClick = {
                         viewModel.onAddAttachmentClick()
@@ -69,6 +101,14 @@ class ChatDetailActivity : ComponentActivity() {
                     onLearnMoreClick = {
                         viewModel.onLearnMoreClick()
                         showComingSoon()
+                    },
+                    onAvatarClick = {
+                        val contact = viewModel.contact.value
+                        if (contact != null) {
+                            startActivity(
+                                ContactInfoActivity.createIntent(this, contact.id)
+                            )
+                        }
                     }
                 )
             }

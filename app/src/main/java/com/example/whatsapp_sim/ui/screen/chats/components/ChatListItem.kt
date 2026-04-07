@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.PushPin
@@ -34,11 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.domain.model.Chat
 import com.example.whatsapp_sim.domain.model.MessageStatus
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 
 @Composable
 fun ChatListItem(
     chat: Chat,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onAvatarClick: (() -> Unit)? = null
 ) {
     val whatsAppGreen = Color(0xFF25D366)
     val textSecondary = Color(0xFF8E8E8E)
@@ -55,21 +55,12 @@ fun ChatListItem(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar - 56dp circle with purple background (same as UpdatesTab)
-            Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(CircleShape)
-                    .background(avatarBg),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Filled.AccountCircle,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    tint = avatarIcon
-                )
-            }
+            // Avatar
+            ContactAvatar(
+                avatarUrl = chat.avatarUrl,
+                size = 56.dp,
+                onClick = onAvatarClick
+            )
 
             Spacer(modifier = Modifier.width(12.dp))
 

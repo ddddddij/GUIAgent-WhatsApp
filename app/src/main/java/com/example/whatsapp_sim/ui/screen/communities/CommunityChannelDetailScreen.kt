@@ -22,8 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.whatsapp_sim.R
+import com.example.whatsapp_sim.data.local.AssetsHelper
+import com.example.whatsapp_sim.data.repository.RuntimeContactStore
 import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.ui.screen.chatdetail.components.ChatDetailTopBar
 import com.example.whatsapp_sim.ui.screen.chatdetail.components.ChatInputBar
@@ -40,13 +43,22 @@ private const val CURRENT_USER_ID = "user_001"
 @Composable
 fun CommunityChannelDetailScreen(
     viewModel: CommunityChannelDetailViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onVideoCallClick: () -> Unit = {},
+    onVoiceCallClick: () -> Unit = {}
 ) {
     val messages by viewModel.messages.collectAsState()
     val inputText by viewModel.inputText.collectAsState()
     val showSendButton by viewModel.showSendButton.collectAsState()
     val listState = rememberLazyListState()
     val totalListItems = remember(messages) { calculateListItemCount(messages) }
+    val context = LocalContext.current
+    val contactAvatarMap = remember {
+        val store = RuntimeContactStore.getInstance(AssetsHelper(context))
+        store.getAllContacts()
+            .filter { it.avatarUrl != null }
+            .associate { it.displayName to it.avatarUrl!! }
+    }
 
     LaunchedEffect(totalListItems) {
         if (totalListItems > 0) {
@@ -79,8 +91,8 @@ fun CommunityChannelDetailScreen(
                 title = viewModel.title,
                 showOnlineStatus = false,
                 onBackClick = onBackClick,
-                onVideoCallClick = viewModel::onVideoCallClick,
-                onVoiceCallClick = viewModel::onVoiceCallClick,
+                onVideoCallClick = onVideoCallClick,
+                onVoiceCallClick = onVoiceCallClick,
                 modifier = Modifier.statusBarsPadding()
             )
 
@@ -135,7 +147,8 @@ fun CommunityChannelDetailScreen(
                             },
                             isGroupChat = true,
                             showAvatar = !isSelf && isLastInGroup,
-                            showSenderName = !isSelf && isFirstInGroup
+                            showSenderName = !isSelf && isFirstInGroup,
+                            senderAvatarUrl = contactAvatarMap[message.senderName]
                         )
                     }
                 }

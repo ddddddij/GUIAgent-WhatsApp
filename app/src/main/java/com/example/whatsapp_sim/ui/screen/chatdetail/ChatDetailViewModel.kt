@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 private const val CURRENT_USER_ID = "user_001"
-private const val CURRENT_USER_NAME = "Alex Johnson"
+private const val CURRENT_USER_NAME = "JiayiDai"
 
 class ChatDetailViewModel(
     private val repository: ChatRepository,
@@ -28,6 +28,18 @@ class ChatDetailViewModel(
 
     private val _contact = MutableStateFlow(repository.getContactForConversation(conversationId))
     val contact: StateFlow<Contact?> = _contact.asStateFlow()
+
+    /** avatarUrl for the chat (works for both 1:1 and group chats) */
+    val chatAvatarUrl: String? by lazy {
+        repository.getAllChats().firstOrNull { it.id == conversationId }?.avatarUrl
+    }
+
+    /** Map of sender name -> avatarUrl for group chat member avatars */
+    val contactAvatarMap: Map<String, String> by lazy {
+        repository.getAllContacts()
+            .filter { it.avatarUrl != null }
+            .associate { it.displayName to it.avatarUrl!! }
+    }
 
     private val _messages = MutableStateFlow(repository.getMessages(conversationId))
     val messages: StateFlow<List<Message>> = _messages.asStateFlow()

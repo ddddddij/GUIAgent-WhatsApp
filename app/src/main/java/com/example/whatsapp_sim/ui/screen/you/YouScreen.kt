@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.R
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 import com.example.whatsapp_sim.ui.components.SettingsItem
 
 private val HeroBg = Color(0xFFF5F0E8)
@@ -126,16 +127,10 @@ fun YouScreen(viewModel: YouViewModel) {
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)
-                        .background(AvatarBg)
                         .clickable { viewModel.onAvatarClick(); toast() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        Icons.Filled.AccountCircle,
-                        contentDescription = "Avatar",
-                        modifier = Modifier.fillMaxSize(),
-                        tint = AvatarIcon
-                    )
+                    ContactAvatar(avatarUrl = currentUser?.avatarUrl, size = 120.dp)
                 }
             }
         } // end Hero Box

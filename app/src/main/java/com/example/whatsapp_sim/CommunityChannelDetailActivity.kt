@@ -50,9 +50,34 @@ class CommunityChannelDetailActivity : ComponentActivity() {
 
         setContent {
             Whatsapp_simTheme {
+                val channelTitle = viewModel.title
+                val communityName = viewModel.community.name
+
                 CommunityChannelDetailScreen(
                     viewModel = viewModel,
-                    onBackClick = ::finish
+                    onBackClick = ::finish,
+                    onVideoCallClick = {
+                        startActivity(
+                            VideoCallActivity.createIntent(
+                                context = this,
+                                contactName = "$communityName - $channelTitle",
+                                avatarUrl = viewModel.community.iconUrl,
+                                contactId = communityId,
+                                conversationId = "community_${communityId}_${channelType.name}"
+                            )
+                        )
+                    },
+                    onVoiceCallClick = {
+                        startActivity(
+                            CallActivity.createIntent(
+                                context = this,
+                                contactName = "$communityName - $channelTitle",
+                                avatarUrl = viewModel.community.iconUrl,
+                                contactId = communityId,
+                                conversationId = "community_${communityId}_${channelType.name}"
+                            )
+                        )
+                    }
                 )
             }
         }

@@ -9,7 +9,7 @@ class ChannelRepository {
             name = "Liverpool Football Club",
             followersCount = "18.4M followers",
             isVerified = true,
-            avatarRes = null,
+            avatarUrl = "image/Channel头像/liverpool.PNG",
             latestUpdate = "🔴 YNWA! Match day against Chelsea — 3:00 PM kick off. Come on Reds! 💪",
             updateTime = "2h ago",
             initiallyFollowing = true
@@ -19,14 +19,14 @@ class ChannelRepository {
             name = "Real Madrid C.F.",
             followersCount = "67.7M followers",
             isVerified = true,
-            avatarRes = null,
+            avatarUrl = "image/Channel头像/C.F.jpg",
             latestUpdate = "⚽ Matchday preview: Real Madrid vs Atlético tonight at the Bernabéu. Hala Madrid!",
             updateTime = "5h ago",
             initiallyFollowing = true
         ),
-        Channel("premier_league", "Premier League", "18.5M followers", true, null),
-        Channel("man_united", "Manchester United", "17M followers", true, null),
-        Channel("spotify", "Spotify", "12.1M followers", true, null),
-        Channel("netflix", "Netflix", "24.6M followers", true, null)
+        Channel("premier_league", "Premier League", "18.5M followers", true, "image/Channel头像/premier.PNG"),
+        Channel("man_united", "Manchester United", "17M followers", true, "image/Channel头像/manchester.PNG"),
+        Channel("spotify", "Spotify", "12.1M followers", true, "image/Channel头像/Spotify.jpg"),
+        Channel("netflix", "Netflix", "24.6M followers", true, "image/Channel头像/Netflix.jpg")
     )
 }

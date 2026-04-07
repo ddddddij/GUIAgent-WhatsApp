@@ -1,9 +1,7 @@
 package com.example.whatsapp_sim
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import com.example.whatsapp_sim.domain.model.UserStatus
 import com.example.whatsapp_sim.domain.model.UserStatusReaction
 
@@ -27,7 +25,7 @@ object UserStatusStore {
             ),
             UserStatus(
                 id = "status_002",
-                senderName = "Sophia Chen",
+                senderName = "Emily Chen",
                 preview = "Weekend vibes ☀️",
                 timeLabel = "9:15 AM",
                 isViewed = false,
@@ -37,22 +35,24 @@ object UserStatusStore {
                 emojiReactions = listOf(
                     UserStatusReaction("❤️", 3),
                     UserStatusReaction("😍", 2)
-                )
+                ),
+                avatarUrl = "image/联系人头像/艺术.jpg"
             ),
             UserStatus(
                 id = "status_003",
-                senderName = "Marcus Johnson",
+                senderName = "Marcus Davis",
                 preview = "Coffee time ☕",
                 timeLabel = "8:47 AM",
                 isViewed = true,
                 bgColor = 0xFF5C3317,
                 likeCount = 2,
                 userLiked = false,
-                emojiReactions = listOf(UserStatusReaction("😂", 2))
+                emojiReactions = listOf(UserStatusReaction("😂", 2)),
+                avatarUrl = "image/联系人头像/运动.jpg"
             ),
             UserStatus(
                 id = "status_004",
-                senderName = "Emma Wilson",
+                senderName = "Olivia Brown",
                 preview = "New chapter begins 📖",
                 timeLabel = "Yesterday",
                 isViewed = true,
@@ -63,7 +63,8 @@ object UserStatusStore {
                     UserStatusReaction("🎉", 6),
                     UserStatusReaction("❤️", 4),
                     UserStatusReaction("👍", 2)
-                )
+                ),
+                avatarUrl = "image/联系人头像/小猫.jpg"
             )
         )
     )

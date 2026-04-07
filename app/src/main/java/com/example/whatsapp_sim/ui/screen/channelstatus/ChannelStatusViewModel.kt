@@ -88,7 +88,7 @@ class ChannelStatusViewModel(
             id = "msg_$now",
             conversationId = targetConversationId,
             senderId = "user_001",
-            senderName = "Alex Johnson",
+            senderName = "JiayiDai",
             messageType = MessageType.FORWARDED_STATUS,
             textContent = status.textContent,
             mediaUrl = null,

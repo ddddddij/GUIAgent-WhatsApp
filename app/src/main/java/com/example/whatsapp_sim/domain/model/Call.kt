@@ -2,12 +2,13 @@ package com.example.whatsapp_sim.domain.model
 
 data class Call(
     val id: String,
-    val callerId: String,
-    val calleeId: String,
-    val calleeName: String,
+    val conversationId: String = "",
+    val contactIds: List<String> = emptyList(),
     val callType: CallType,
-    val callStatus: CallStatus,
-    val startedAt: Long,
-    val endedAt: Long?,
-    val durationSeconds: Int
+    val callResult: CallResult,
+    val timestamp: String,
+    val dateLabel: String,
+    val durationSeconds: Int,
+    val durationDisplay: String,
+    val isSelf: Boolean
 )

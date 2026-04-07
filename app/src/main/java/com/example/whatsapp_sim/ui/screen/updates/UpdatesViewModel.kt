@@ -43,5 +43,4 @@ class UpdatesViewModel : ViewModel() {
 
     fun onMoreMenuClick() { /* Coming soon */ }
     fun onAddStatusClick() { /* Coming soon */ }
-    fun onExploreMoreClick() { /* Coming soon */ }
 }

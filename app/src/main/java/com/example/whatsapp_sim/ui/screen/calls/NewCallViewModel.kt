@@ -110,6 +110,12 @@ class NewCallViewModel(
     fun onScheduleCallClick() { /* reserved */ }
     fun onInviteClick(contact: InviteContact) { /* reserved */ }
 
+    /** Returns currently selected contacts in order */
+    fun getSelectedContacts(): List<Contact> {
+        val ids = selectedContactIds.value
+        return _allContacts.value.filter { it.id in ids }
+    }
+
     private fun letterOf(name: String): String {
         val first = name.firstOrNull() ?: return "#"
         return if (first.isLetter() && first.code < 128) first.uppercaseChar().toString() else "#"

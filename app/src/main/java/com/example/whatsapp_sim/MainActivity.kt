@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
         val accountRepository = AccountRepositoryImpl(assetsHelper)
         val youViewModel = YouViewModel(accountRepository)
         val updatesViewModel = UpdatesViewModel()
-        val callRepository = CallRepository(assetsHelper)
+        val callRepository = CallRepository.getInstance(assetsHelper)
         val callsViewModel = CallsViewModel(callRepository, contactStore)
         val communityRepository = CommunityRepository(assetsHelper)
         val communitiesViewModel = CommunitiesViewModel(communityRepository)

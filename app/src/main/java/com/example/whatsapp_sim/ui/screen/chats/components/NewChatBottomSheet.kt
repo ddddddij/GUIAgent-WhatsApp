@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.domain.model.Account
 import com.example.whatsapp_sim.domain.model.Contact
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 import com.example.whatsapp_sim.ui.screen.chats.NewChatViewModel
 import kotlinx.coroutines.launch
 
@@ -170,6 +171,7 @@ fun NewChatBottomSheet(
                         ContactRow(
                             name = contact.displayName,
                             subtitle = null,
+                            avatarUrl = contact.avatarUrl,
                             onClick = {
                                 onOpenConversation(viewModel.onContactSelected(contact))
                             }
@@ -381,6 +383,7 @@ private fun FrequentContactsCard(
                 ContactRow(
                     name = contact.displayName,
                     subtitle = null,
+                    avatarUrl = contact.avatarUrl,
                     onClick = { onContactClick(contact) },
                     useCardPadding = false,
                     showDivider = index < contacts.lastIndex
@@ -413,7 +416,7 @@ private fun SelfAccountCard(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AvatarPlaceholder(size = 52.dp)
+            ContactAvatar(avatarUrl = null, size = 52.dp)
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -460,6 +463,7 @@ private fun ContactRow(
     name: String,
     subtitle: String?,
     onClick: () -> Unit,
+    avatarUrl: String? = null,
     useCardPadding: Boolean = true,
     showDivider: Boolean = true
 ) {
@@ -476,7 +480,7 @@ private fun ContactRow(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AvatarPlaceholder(size = 52.dp)
+            ContactAvatar(avatarUrl = avatarUrl, size = 52.dp)
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -501,23 +505,6 @@ private fun ContactRow(
         if (showDivider) {
             DividerWithInset(86.dp, horizontalPadding = if (useCardPadding) 16.dp else 0.dp)
         }
-    }
-}
-
-@Composable
-private fun AvatarPlaceholder(size: Dp) {
-    Box(
-        modifier = Modifier
-            .size(size)
-            .background(Color(0xFFC5B8F0), CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            tint = Color(0xFF6B5ECD)
-        )
     }
 }
 

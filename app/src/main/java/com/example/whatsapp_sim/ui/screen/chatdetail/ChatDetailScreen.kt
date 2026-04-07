@@ -46,7 +46,8 @@ fun ChatDetailScreen(
     onAddAttachmentClick: () -> Unit,
     onCameraClick: () -> Unit,
     onMicClick: () -> Unit,
-    onLearnMoreClick: () -> Unit
+    onLearnMoreClick: () -> Unit,
+    onAvatarClick: (() -> Unit)? = null
 ) {
     val conversation by viewModel.conversation.collectAsState()
     val contact by viewModel.contact.collectAsState()
@@ -54,6 +55,7 @@ fun ChatDetailScreen(
     val inputText by viewModel.inputText.collectAsState()
     val showSendButton by viewModel.showSendButton.collectAsState()
     val isGroupChat = conversation?.isGroupChat == true
+    val contactAvatarMap = remember { viewModel.contactAvatarMap }
     val listState = rememberLazyListState()
     val totalListItems = remember(messages) { calculateListItemCount(messages) }
 
@@ -87,13 +89,15 @@ fun ChatDetailScreen(
             ChatDetailTopBar(
                 title = conversation?.groupName
                     ?: contact?.displayName
-                    ?: conversation?.participantNames?.firstOrNull { it != "Alex Johnson" }
+                    ?: conversation?.participantNames?.firstOrNull { it != "JiayiDai" }
                     ?: conversation?.participantNames?.firstOrNull()
                     ?: "Chat",
                 showOnlineStatus = conversation?.isGroupChat == false && contact?.isOnline == true,
+                avatarUrl = viewModel.chatAvatarUrl,
                 onBackClick = onBackClick,
                 onVideoCallClick = onVideoCallClick,
                 onVoiceCallClick = onVoiceCallClick,
+                onAvatarClick = onAvatarClick,
                 modifier = Modifier.statusBarsPadding()
             )
 
@@ -149,7 +153,8 @@ fun ChatDetailScreen(
                             },
                             isGroupChat = isGroupChat,
                             showAvatar = isGroupChat && !isSelf && isLastInGroup,
-                            showSenderName = isGroupChat && !isSelf && isFirstInGroup
+                            showSenderName = isGroupChat && !isSelf && isFirstInGroup,
+                            senderAvatarUrl = contactAvatarMap[message.senderName]
                         )
                     }
                 }

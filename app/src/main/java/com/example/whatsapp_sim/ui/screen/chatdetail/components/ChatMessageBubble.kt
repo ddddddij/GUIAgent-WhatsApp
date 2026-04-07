@@ -12,11 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -34,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.domain.model.MessageStatus
 import com.example.whatsapp_sim.domain.model.MessageType
+import com.example.whatsapp_sim.ui.components.ContactAvatar
+import com.example.whatsapp_sim.ui.components.CallRecordCard
 import com.example.whatsapp_sim.ui.components.ForwardedStatusCard
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -58,7 +56,8 @@ fun ChatMessageBubble(
     topSpacing: Dp,
     isGroupChat: Boolean = false,
     showAvatar: Boolean = false,
-    showSenderName: Boolean = false
+    showSenderName: Boolean = false,
+    senderAvatarUrl: String? = null
 ) {
     val messageText = remember(message) { message.toDisplayText() }
     val emojiOnly = remember(messageText) { isEmojiOnlyText(messageText) }
@@ -81,6 +80,29 @@ fun ChatMessageBubble(
         return
     }
 
+    // Call record card has its own layout
+    if (message.messageType == MessageType.VOICE_CALL || message.messageType == MessageType.VIDEO_CALL) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = if (isSelf) 56.dp else 12.dp,
+                    end = if (isSelf) 12.dp else 56.dp,
+                    top = topSpacing
+                ),
+            horizontalArrangement = if (isSelf) Arrangement.End else Arrangement.Start
+        ) {
+            CallRecordCard(
+                messageType = message.messageType,
+                callResult = message.callResult,
+                callDurationDisplay = message.callDurationDisplay,
+                isSelf = isSelf,
+                timestamp = formatMessageTime(message.sentAt)
+            )
+        }
+        return
+    }
+
     val avatarSize = 38.dp
     val avatarGap = 6.dp
 
@@ -98,19 +120,7 @@ fun ChatMessageBubble(
         // Avatar area for group chat (other people's messages)
         if (isGroupChat && !isSelf) {
             if (showAvatar) {
-                Box(
-                    modifier = Modifier
-                        .size(avatarSize)
-                        .background(Color(0xFFC5B8F0), CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(avatarSize),
-                        tint = Color(0xFF6B5ECD)
-                    )
-                }
+                ContactAvatar(avatarUrl = senderAvatarUrl, size = avatarSize)
             } else {
                 Spacer(modifier = Modifier.size(avatarSize))
             }
@@ -245,6 +255,8 @@ private fun Message.toDisplayText(): String {
         MessageType.GIF -> textContent ?: "GIF"
         MessageType.FORWARDED_STATUS -> textContent ?: "[Channel post]"
         MessageType.COMMUNITY_ANNOUNCEMENT -> textContent ?: "[Community announcement]"
+        MessageType.VOICE_CALL -> "Voice call"
+        MessageType.VIDEO_CALL -> "Video call"
     }
 }
 

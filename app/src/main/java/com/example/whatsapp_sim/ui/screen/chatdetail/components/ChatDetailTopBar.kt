@@ -5,14 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.Call
 import androidx.compose.material.icons.outlined.Videocam
@@ -22,19 +19,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 
 @Composable
 fun ChatDetailTopBar(
     title: String,
     showOnlineStatus: Boolean,
+    avatarUrl: String? = null,
     onBackClick: () -> Unit,
     onVideoCallClick: () -> Unit,
     onVoiceCallClick: () -> Unit,
+    onAvatarClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -53,21 +52,12 @@ fun ChatDetailTopBar(
             )
         }
 
-        Box(
-            modifier = Modifier
-                .padding(start = 4.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFE5E5EA)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Filled.AccountCircle,
-                contentDescription = null,
-                modifier = Modifier.fillMaxHeight(),
-                tint = Color(0xFF8E8E93)
-            )
-        }
+        ContactAvatar(
+            avatarUrl = avatarUrl,
+            size = 40.dp,
+            modifier = Modifier.padding(start = 4.dp),
+            onClick = onAvatarClick
+        )
 
         Column(
             modifier = Modifier

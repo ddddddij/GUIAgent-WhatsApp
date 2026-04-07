@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,11 +55,14 @@ fun StatusPostCard(
                     Spacer(Modifier.height(8.dp))
                 }
                 StatusContentType.IMAGE_ONLY, StatusContentType.IMAGE_WITH_TEXT -> {
-                    ImagePlaceholder()
+                    ImagePlaceholder(imagePath = parseAssetImagePaths(status.imageResName).firstOrNull())
                     Spacer(Modifier.height(8.dp))
                 }
                 StatusContentType.MULTI_IMAGE -> {
-                    MultiImageGrid(timestamp = status.timestamp)
+                    MultiImageGrid(
+                        imagePaths = parseAssetImagePaths(status.imageResName),
+                        timestamp = status.timestamp
+                    )
                     Spacer(Modifier.height(8.dp))
                 }
                 StatusContentType.TEXT_ONLY -> { /* no media */ }
@@ -122,34 +125,33 @@ private fun VideoPlaceholder(duration: String) {
 }
 
 @Composable
-private fun ImagePlaceholder() {
-    Box(
+private fun ImagePlaceholder(imagePath: String?) {
+    AssetImage(
+        imagePath = imagePath,
         modifier = Modifier
             .fillMaxWidth()
             .height(220.dp)
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFCCCCCC)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("📷", fontSize = 40.sp)
-    }
+    )
 }
 
 @Composable
-private fun MultiImageGrid(timestamp: String) {
+private fun MultiImageGrid(imagePaths: List<String>, timestamp: String) {
     Column {
         Row(modifier = Modifier.fillMaxWidth()) {
-            repeat(2) {
+            repeat(2) { index ->
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .aspectRatio(1f)
                         .padding(1.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(Color(0xFFCCCCCC)),
+                        .clip(RoundedCornerShape(4.dp)),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    Text("📷", fontSize = 24.sp, modifier = Modifier.align(Alignment.Center))
+                    AssetImage(
+                        imagePath = imagePaths.getOrNull(index),
+                        modifier = Modifier.fillMaxSize()
+                    )
                     Text(
                         text = timestamp,
                         fontSize = 11.sp,
@@ -162,17 +164,20 @@ private fun MultiImageGrid(timestamp: String) {
             }
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            repeat(2) {
+            repeat(2) { offset ->
+                val index = offset + 2
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .aspectRatio(1f)
                         .padding(1.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(Color(0xFFCCCCCC)),
+                        .clip(RoundedCornerShape(4.dp)),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    Text("📷", fontSize = 24.sp, modifier = Modifier.align(Alignment.Center))
+                    AssetImage(
+                        imagePath = imagePaths.getOrNull(index),
+                        modifier = Modifier.fillMaxSize()
+                    )
                     Text(
                         text = timestamp,
                         fontSize = 11.sp,

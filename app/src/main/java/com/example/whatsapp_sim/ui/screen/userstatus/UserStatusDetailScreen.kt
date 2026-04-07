@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.whatsapp_sim.data.repository.StatusRepository
 import com.example.whatsapp_sim.domain.model.UserStatus
+import com.example.whatsapp_sim.ui.components.ContactAvatar
 
 private val WhatsAppGreen = Color(0xFF25D366)
 
@@ -81,20 +82,7 @@ fun UserStatusDetailScreen(
             IconButton(onClick = onBackClick) {
                 Icon(Icons.Filled.ArrowBackIosNew, null, tint = Color.White)
             }
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.3f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Filled.AccountCircle,
-                    null,
-                    modifier = Modifier.size(36.dp),
-                    tint = Color.White
-                )
-            }
+            ContactAvatar(avatarUrl = status.avatarUrl, size = 36.dp)
             Spacer(Modifier.width(8.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(

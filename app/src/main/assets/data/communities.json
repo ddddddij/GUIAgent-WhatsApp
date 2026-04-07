@@ -10,7 +10,7 @@
     "members": [
       {
         "userId": "user_001",
-        "displayName": "Alex Johnson",
+        "displayName": "JiayiDai",
         "role": "OWNER",
         "membershipStatus": "JOINED",
         "joinedAt": 1708646400000
@@ -63,7 +63,7 @@
       },
       {
         "userId": "user_001",
-        "displayName": "Alex Johnson",
+        "displayName": "JiayiDai",
         "role": "MEMBER",
         "membershipStatus": "JOINED",
         "joinedAt": 1709510400000

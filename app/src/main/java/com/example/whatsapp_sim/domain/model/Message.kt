@@ -14,5 +14,7 @@ data class Message(
     val readAt: Long?,
     val forwardedFrom: String? = null,
     val forwardedImageResName: String? = null,
-    val forwardedChannelId: String? = null
+    val forwardedChannelId: String? = null,
+    val callResult: CallResult? = null,
+    val callDurationDisplay: String? = null
 )
