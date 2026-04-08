@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.example.whatsapp_sim.data.local.AssetsHelper
+import com.example.whatsapp_sim.data.repository.ChannelRepository
 import com.example.whatsapp_sim.data.repository.ChatRepositoryImpl
 import com.example.whatsapp_sim.data.repository.CommunityRepository
 import com.example.whatsapp_sim.data.repository.RuntimeContactStore
@@ -27,10 +28,12 @@ class ChannelStatusActivity : ComponentActivity() {
 
     private val chatRepository by lazy { ChatRepositoryImpl(assetsHelper) }
 
+    private val channelRepository by lazy { ChannelRepository.getInstance(assetsHelper) }
+
     private val statusRepository by lazy { StatusRepository.getInstance(assetsHelper) }
 
     private val viewModel: ChannelStatusViewModel by viewModels {
-        ChannelStatusViewModelFactory(channelId, statusRepository, chatRepository)
+        ChannelStatusViewModelFactory(channelId, channelRepository, statusRepository, chatRepository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

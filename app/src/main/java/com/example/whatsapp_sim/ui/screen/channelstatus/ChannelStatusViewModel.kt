@@ -3,16 +3,16 @@ package com.example.whatsapp_sim.ui.screen.channelstatus
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.whatsapp_sim.data.repository.ChannelRepository
-import com.example.whatsapp_sim.data.repository.ChatRepositoryImpl
-import com.example.whatsapp_sim.data.repository.StatusRepository
-import com.example.whatsapp_sim.domain.model.Channel
 import com.example.whatsapp_sim.data.repository.CommunityChannelStore
 import com.example.whatsapp_sim.data.repository.CommunityChannelType
+import com.example.whatsapp_sim.data.repository.ChatRepositoryImpl
+import com.example.whatsapp_sim.data.repository.StatusRepository
 import com.example.whatsapp_sim.domain.model.Community
 import com.example.whatsapp_sim.domain.model.Contact
+import com.example.whatsapp_sim.domain.model.Channel
+import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.domain.model.MessageStatus
 import com.example.whatsapp_sim.domain.model.MessageType
-import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.domain.model.Status
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class ChannelStatusViewModel(
     private val channelId: String,
+    private val channelRepository: ChannelRepository,
     private val statusRepository: StatusRepository,
     private val chatRepository: ChatRepositoryImpl
 ) : ViewModel() {
@@ -35,13 +36,15 @@ class ChannelStatusViewModel(
     val shareSheetStatusId = MutableStateFlow<String?>(null)
 
     init {
-        val allChannels = ChannelRepository().getChannels()
-        _channel.value = allChannels.firstOrNull { it.id == channelId }
+        _channel.value = channelRepository.getChannel(channelId)
         _statusPosts.value = statusRepository.getStatusesByChannelId(channelId)
+        isMuted.value = _channel.value?.isNotificationMuted ?: false
     }
 
     fun toggleMute() {
-        isMuted.value = !isMuted.value
+        val updatedChannel = channelRepository.toggleMute(channelId) ?: return
+        _channel.value = updatedChannel
+        isMuted.value = updatedChannel.isNotificationMuted
     }
 
     fun onEmojiClick(statusId: String) {
@@ -118,13 +121,14 @@ class ChannelStatusViewModel(
 
 class ChannelStatusViewModelFactory(
     private val channelId: String,
+    private val channelRepository: ChannelRepository,
     private val statusRepository: StatusRepository,
     private val chatRepository: ChatRepositoryImpl
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ChannelStatusViewModel::class.java)) {
-            return ChannelStatusViewModel(channelId, statusRepository, chatRepository) as T
+            return ChannelStatusViewModel(channelId, channelRepository, statusRepository, chatRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
     }

@@ -1,6 +1,7 @@
 package com.example.whatsapp_sim.ui.screen.chatdetail.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ fun ChatDetailTopBar(
     onVideoCallClick: () -> Unit,
     onVoiceCallClick: () -> Unit,
     onAvatarClick: (() -> Unit)? = null,
+    onTitleClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -62,7 +64,14 @@ fun ChatDetailTopBar(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 8.dp),
+                .padding(start = 8.dp)
+                .then(
+                    if (onTitleClick != null) {
+                        Modifier.clickable(onClick = onTitleClick)
+                    } else {
+                        Modifier
+                    }
+                ),
             verticalArrangement = Arrangement.Center
         ) {
             Text(

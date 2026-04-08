@@ -53,6 +53,9 @@ import com.example.whatsapp_sim.domain.model.CommunityMember
 import com.example.whatsapp_sim.domain.model.CommunityRole
 import com.example.whatsapp_sim.domain.model.MembershipStatus
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private val SheetBg = Color(0xFFF2F2F7)
 private val CardWhite = Color(0xFFFFFFFF)
@@ -132,23 +135,27 @@ fun NewCommunityBottomSheet(
                 CreateCommunityButton(
                     enabled = isCreateEnabled,
                     onClick = {
+                        val now = System.currentTimeMillis()
                         val newCommunity = Community(
-                            id = "community_${System.currentTimeMillis()}",
+                            id = "community_$now",
                             name = communityName.trim(),
                             description = communityDescription.trim(),
                             iconUrl = null,
                             creatorId = "user_001",
-                            createdAt = System.currentTimeMillis(),
+                            createdAt = now,
                             members = listOf(
                                 CommunityMember(
                                     userId = "user_001",
                                     displayName = "JiayiDai",
-                                    role = CommunityRole.ADMIN,
+                                    role = CommunityRole.OWNER,
                                     membershipStatus = MembershipStatus.JOINED,
-                                    joinedAt = System.currentTimeMillis()
+                                    joinedAt = now
                                 )
                             ),
-                            inviteLink = "https://chat.whatsapp.com/invite/${System.currentTimeMillis()}"
+                            inviteLink = "https://chat.whatsapp.com/invite/$now",
+                            createdBy = "you",
+                            createdAtDisplay = SimpleDateFormat("MMM d, h:mm a", Locale.getDefault()).format(Date(now)),
+                            isMuted = false
                         )
                         onCreateCommunity(newCommunity)
                         dismissSheet()

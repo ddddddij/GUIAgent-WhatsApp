@@ -119,24 +119,24 @@ fun ChatListItem(
                     color = if (chat.unreadCount > 0) whatsAppGreen else textSecondary,
                     fontSize = 13.sp
                 )
-                when {
-                    chat.unreadCount > 0 -> {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clip(CircleShape)
-                                .background(whatsAppGreen),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = chat.unreadCount.toString(), color = Color.White, fontSize = 12.sp)
-                        }
+                if (chat.unreadCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(whatsAppGreen),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = chat.unreadCount.toString(), color = Color.White, fontSize = 12.sp)
                     }
-                    chat.isPinned -> {
-                        Icon(Icons.Filled.PushPin, contentDescription = "Pinned", modifier = Modifier.size(16.dp), tint = textSecondary)
-                    }
-                    chat.isMuted -> {
-                        Icon(Icons.Outlined.NotificationsOff, contentDescription = "Muted", modifier = Modifier.size(16.dp), tint = textSecondary)
-                    }
+                } else if (chat.isPinned && !chat.isMuted) {
+                    Icon(Icons.Filled.PushPin, contentDescription = "Pinned", modifier = Modifier.size(16.dp), tint = textSecondary)
+                }
+
+                if (chat.isMuted) {
+                    Icon(Icons.Outlined.NotificationsOff, contentDescription = "Muted", modifier = Modifier.size(16.dp), tint = textSecondary)
+                } else if (chat.isPinned && chat.unreadCount > 0) {
+                    Icon(Icons.Filled.PushPin, contentDescription = "Pinned", modifier = Modifier.size(16.dp), tint = textSecondary)
                 }
             }
         }

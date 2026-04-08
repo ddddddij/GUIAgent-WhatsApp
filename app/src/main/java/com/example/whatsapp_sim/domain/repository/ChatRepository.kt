@@ -16,5 +16,6 @@ interface ChatRepository {
     fun findOrCreateConversationForContact(contact: Contact): String
     fun findOrCreateConversationForCurrentUser(): String
     fun sendMessage(conversationId: String, content: String): Message
+    fun sendImageMessage(conversationId: String, imagePath: String, caption: String? = null): Message
     fun createGroupConversation(groupName: String, memberIds: List<String>, memberNames: List<String>): String
 }

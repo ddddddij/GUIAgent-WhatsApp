@@ -4,7 +4,7 @@ import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.domain.model.Status
 import com.example.whatsapp_sim.domain.model.StatusReaction
 
-class StatusRepository private constructor(assetsHelper: AssetsHelper) {
+class StatusRepository private constructor(private val assetsHelper: AssetsHelper) {
 
     // In-memory mutable copy so reactions can be updated at runtime
     private val _statuses: MutableList<Status> = assetsHelper.loadStatuses().toMutableList()
@@ -50,6 +50,7 @@ class StatusRepository private constructor(assetsHelper: AssetsHelper) {
             reactionCount = status.reactionCount + countDelta,
             userReaction = emoji
         )
+        assetsHelper.saveStatuses(_statuses)
     }
 
     /** Increment share count on a status (in-memory only). */
@@ -57,6 +58,7 @@ class StatusRepository private constructor(assetsHelper: AssetsHelper) {
         val index = _statuses.indexOfFirst { it.id == statusId }
         if (index < 0) return
         _statuses[index] = _statuses[index].copy(shareCount = _statuses[index].shareCount + 1)
+        assetsHelper.saveStatuses(_statuses)
     }
 
     companion object {

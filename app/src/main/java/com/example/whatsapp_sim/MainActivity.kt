@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.data.repository.AccountRepositoryImpl
 import com.example.whatsapp_sim.data.repository.CallRepository
+import com.example.whatsapp_sim.data.repository.ChannelRepository
 import com.example.whatsapp_sim.data.repository.ChatRepositoryImpl
 import com.example.whatsapp_sim.data.repository.CommunityRepository
 import com.example.whatsapp_sim.data.repository.RuntimeContactStore
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val assetsHelper = AssetsHelper(this)
+        UserStatusStore.initialize(assetsHelper)
         val contactStore = RuntimeContactStore.getInstance(assetsHelper)
         val chatRepository = ChatRepositoryImpl(assetsHelper)
         val chatsViewModel = ChatsViewModel(chatRepository)
@@ -61,7 +63,8 @@ class MainActivity : ComponentActivity() {
         val newContactViewModel = NewContactViewModel(contactStore)
         val accountRepository = AccountRepositoryImpl(assetsHelper)
         val youViewModel = YouViewModel(accountRepository)
-        val updatesViewModel = UpdatesViewModel()
+        val channelRepository = ChannelRepository.getInstance(assetsHelper)
+        val updatesViewModel = UpdatesViewModel(channelRepository)
         val callRepository = CallRepository.getInstance(assetsHelper)
         val callsViewModel = CallsViewModel(callRepository, contactStore)
         val communityRepository = CommunityRepository(assetsHelper)
@@ -108,6 +111,7 @@ fun MainScreen(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 chatsViewModel.refreshChats()
+                youViewModel.refreshCurrentUser()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)

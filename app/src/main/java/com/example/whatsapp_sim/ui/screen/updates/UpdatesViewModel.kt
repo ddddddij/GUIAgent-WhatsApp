@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class UpdatesViewModel : ViewModel() {
-
-    private val repository = ChannelRepository()
+class UpdatesViewModel(
+    private val repository: ChannelRepository
+) : ViewModel() {
 
     private val _isChannelSectionExpanded = MutableStateFlow(true)
     val isChannelSectionExpanded: StateFlow<Boolean> = _isChannelSectionExpanded.asStateFlow()
@@ -26,9 +26,7 @@ class UpdatesViewModel : ViewModel() {
     val recentStatuses get() = UserStatusStore.statuses.filter { it.id != "my_status_001" }
 
     init {
-        val channelList = repository.getChannels()
-        _channels.value = channelList
-        _followingState.value = channelList.associate { it.id to it.initiallyFollowing }
+        refreshChannels()
     }
 
     fun toggleChannelSection() {
@@ -36,11 +34,16 @@ class UpdatesViewModel : ViewModel() {
     }
 
     fun toggleFollow(channelId: String) {
-        val current = _followingState.value.toMutableMap()
-        current[channelId] = !(current[channelId] ?: false)
-        _followingState.value = current
+        repository.toggleFollow(channelId)
+        refreshChannels()
     }
 
     fun onMoreMenuClick() { /* Coming soon */ }
     fun onAddStatusClick() { /* Coming soon */ }
+
+    private fun refreshChannels() {
+        val channelList = repository.getChannels()
+        _channels.value = channelList
+        _followingState.value = channelList.associate { it.id to it.initiallyFollowing }
+    }
 }

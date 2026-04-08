@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
+import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.ui.screen.userstatus.UserStatusDetailScreen
 import com.example.whatsapp_sim.ui.theme.Whatsapp_simTheme
 
@@ -21,6 +22,7 @@ class UserStatusDetailActivity : ComponentActivity() {
         if (statusId.isBlank()) { finish(); return }
 
         enableEdgeToEdge()
+        UserStatusStore.initialize(AssetsHelper(this))
 
         val isMine = statusId == "my_status_001"
         // Mark viewed when entering

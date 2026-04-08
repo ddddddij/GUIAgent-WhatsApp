@@ -13,10 +13,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 
-private const val CURRENT_USER_ID = "user_001"
-private const val CURRENT_USER_NAME = "JiayiDai"
+private val demoImageAssetPaths = listOf(
+    "image/Liverpool/IMG_2021.jpg",
+    "image/Madrid/IMG_2032.jpg",
+    "image/Manchester/IMG_2060.jpg",
+    "image/Premier/IMG_2048.jpg",
+    "image/Spotify/IMG_2009.jpg"
+)
 
 class ChatDetailViewModel(
     private val repository: ChatRepository,
@@ -47,6 +51,8 @@ class ChatDetailViewModel(
     private val _inputText = MutableStateFlow("")
     val inputText: MutableStateFlow<String> = _inputText
 
+    private var nextDemoImageIndex = 0
+
     val showSendButton: StateFlow<Boolean> = _inputText
         .map { it.isNotBlank() }
         .stateIn(
@@ -75,9 +81,13 @@ class ChatDetailViewModel(
 
     fun onVoiceCallClick() = Unit
 
-    fun onAddAttachmentClick() = Unit
+    fun onAddAttachmentClick() {
+        sendDemoImage(caption = null)
+    }
 
-    fun onCameraClick() = Unit
+    fun onCameraClick() {
+        sendDemoImage(caption = "Shot just now")
+    }
 
     fun onMicClick() = Unit
 
@@ -85,6 +95,14 @@ class ChatDetailViewModel(
 
     fun refreshMessages() {
         _messages.value = repository.getMessages(conversationId)
+    }
+
+    private fun sendDemoImage(caption: String?) {
+        val imagePath = demoImageAssetPaths[nextDemoImageIndex % demoImageAssetPaths.size]
+        nextDemoImageIndex += 1
+        repository.sendImageMessage(conversationId, imagePath, caption)
+        _messages.value = repository.getMessages(conversationId)
+        _conversation.value = repository.getConversation(conversationId)
     }
 }
 

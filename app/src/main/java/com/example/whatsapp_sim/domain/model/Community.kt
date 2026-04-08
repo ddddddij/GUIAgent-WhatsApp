@@ -16,5 +16,8 @@ data class Community(
     val creatorId: String,
     val createdAt: Long,
     val members: List<CommunityMember>,
-    val inviteLink: String
+    val inviteLink: String,
+    val createdBy: String? = null,
+    val createdAtDisplay: String? = null,
+    val isMuted: Boolean = false
 )

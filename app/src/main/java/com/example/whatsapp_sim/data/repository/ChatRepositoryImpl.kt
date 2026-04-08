@@ -5,6 +5,7 @@ import com.example.whatsapp_sim.domain.model.Account
 import com.example.whatsapp_sim.domain.model.Chat
 import com.example.whatsapp_sim.domain.model.Contact
 import com.example.whatsapp_sim.domain.model.Conversation
+import com.example.whatsapp_sim.domain.model.GroupDetail
 import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.domain.model.MessageStatus
 import com.example.whatsapp_sim.domain.model.MessageType
@@ -23,7 +24,7 @@ class ChatRepositoryImpl(
     private val currentUserId = "user_001" // JiayiDai
     private val currentUserName = "JiayiDai"
 
-    private val groupAvatarMap = mapOf(
+    private val fallbackGroupAvatarMap = mapOf(
         "SF Tech Squad" to "image/群聊头像/SF Tech Squad.jpg",
         "Weekend Hiking Crew" to "image/群聊头像/Weekend Hiking Crew.jpg",
         "Startup Ideas 💡" to "image/群聊头像/Startup Ideas.jpg",
@@ -32,9 +33,10 @@ class ChatRepositoryImpl(
 
     override fun getAllChats(): List<Chat> {
         ensureDataLoaded()
-        val conversations = cachedConversations.toList()
+        val conversations = cachedConversations.map(::mergeConversationWithGroupDetail)
         val messages = cachedMessages.toList()
         val contacts = contactStore.getAllContacts()
+        val groupDetailsByConversationId = cachedGroupDetails.associateBy { it.conversationId }
 
         return conversations.mapNotNull { conv ->
             val lastMsg = messages
@@ -75,7 +77,8 @@ class ChatRepositoryImpl(
             val contactAvatarUrl = if (!conv.isGroupChat) {
                 contacts.firstOrNull { it.displayName == displayName }?.avatarUrl
             } else {
-                groupAvatarMap[conv.groupName]
+                groupDetailsByConversationId[conv.id]?.avatarUrl
+                    ?: fallbackGroupAvatarMap[conv.groupName]
             }
 
             Chat(
@@ -88,7 +91,11 @@ class ChatRepositoryImpl(
                 timestamp = conv.lastMessageAt?.let(::formatTimestamp).orEmpty(),
                 unreadCount = conv.unreadCount,
                 isPinned = conv.id == "conv_004",
-                isMuted = conv.id == "conv_005",
+                isMuted = if (conv.isGroupChat) {
+                    groupDetailsByConversationId[conv.id]?.isMuted ?: false
+                } else {
+                    false
+                },
                 isGroup = conv.isGroupChat,
                 isTyping = conv.id == "conv_003" && lastMsg != null,
                 lastMessageStatus = status
@@ -101,7 +108,9 @@ class ChatRepositoryImpl(
 
     override fun getConversation(conversationId: String): Conversation? {
         ensureDataLoaded()
-        return cachedConversations.firstOrNull { it.id == conversationId }
+        return cachedConversations
+            .firstOrNull { it.id == conversationId }
+            ?.let(::mergeConversationWithGroupDetail)
     }
 
     override fun getMessages(conversationId: String): List<Message> {
@@ -157,6 +166,7 @@ class ChatRepositoryImpl(
             unreadCount = 0
         )
         cachedConversations.add(newConversation)
+        persistConversations()
         return newConversation.id
     }
 
@@ -186,6 +196,7 @@ class ChatRepositoryImpl(
             unreadCount = 0
         )
         cachedConversations.add(newConversation)
+        persistConversations()
         return newConversation.id
     }
 
@@ -194,8 +205,9 @@ class ChatRepositoryImpl(
         val now = System.currentTimeMillis()
         val allIds = (listOf(currentUserId) + memberIds).distinct()
         val allNames = (listOf(currentUserName) + memberNames).distinct()
+        val conversationId = "conv_group_$now"
         val newConversation = Conversation(
-            id = "conv_group_$now",
+            id = conversationId,
             participantIds = allIds,
             participantNames = allNames,
             isGroupChat = true,
@@ -207,12 +219,98 @@ class ChatRepositoryImpl(
             unreadCount = 0
         )
         cachedConversations.add(newConversation)
-        return newConversation.id
+        cachedGroupDetails.add(
+            GroupDetail(
+                conversationId = conversationId,
+                groupName = groupName,
+                avatarUrl = null,
+                memberIds = memberIds.distinct(),
+                adminIds = listOf(currentUserId),
+                description = null,
+                createdBy = "you",
+                createdAtDisplay = formatGroupCreatedAt(now),
+                isMuted = false,
+                isLocked = false
+            )
+        )
+        persistGroupData()
+        return conversationId
     }
 
     fun getGroupConversations(): List<Conversation> {
         ensureDataLoaded()
-        return cachedConversations.filter { it.isGroupChat }
+        return cachedConversations
+            .filter { it.isGroupChat }
+            .map(::mergeConversationWithGroupDetail)
+    }
+
+    fun getGroupDetail(conversationId: String): GroupDetail? {
+        ensureDataLoaded()
+        return cachedGroupDetails.firstOrNull { it.conversationId == conversationId }
+    }
+
+    fun setGroupMuted(conversationId: String, isMuted: Boolean): GroupDetail? {
+        ensureDataLoaded()
+        val updated = cachedGroupDetails.firstOrNull { it.conversationId == conversationId }
+            ?.copy(isMuted = isMuted)
+            ?: return null
+        replaceGroupDetail(updated)
+        return updated
+    }
+
+    fun setGroupLocked(conversationId: String, isLocked: Boolean): GroupDetail? {
+        ensureDataLoaded()
+        val updated = cachedGroupDetails.firstOrNull { it.conversationId == conversationId }
+            ?.copy(isLocked = isLocked)
+            ?: return null
+        replaceGroupDetail(updated)
+        return updated
+    }
+
+    fun addGroupMember(conversationId: String, contact: Contact): Conversation? {
+        ensureDataLoaded()
+        val participantId = resolveParticipantId(contact)
+        val detail = cachedGroupDetails.firstOrNull { it.conversationId == conversationId } ?: return null
+        if (detail.memberIds.contains(participantId)) {
+            return getConversation(conversationId)
+        }
+
+        val updatedDetail = detail.copy(memberIds = detail.memberIds + participantId)
+        replaceGroupDetail(updatedDetail)
+        return getConversation(conversationId)
+    }
+
+    fun resolveParticipantIdForContact(contact: Contact): String {
+        ensureDataLoaded()
+        return resolveParticipantId(contact)
+    }
+
+    fun findContactByParticipantId(participantId: String): Contact? {
+        ensureDataLoaded()
+        return findContactByParticipantIdInternal(participantId)
+    }
+
+    fun getAccountById(accountId: String): Account? {
+        ensureDataLoaded()
+        return cachedAccounts.firstOrNull { it.id == accountId }
+    }
+
+    fun getParticipantDisplayName(participantId: String): String {
+        ensureDataLoaded()
+        return cachedAccounts.firstOrNull { it.id == participantId }?.displayName
+            ?: findContactByParticipantIdInternal(participantId)?.displayName
+            ?: participantId
+    }
+
+    fun getParticipantAvatarUrl(participantId: String): String? {
+        ensureDataLoaded()
+        return cachedAccounts.firstOrNull { it.id == participantId }?.avatarUrl
+            ?: findContactByParticipantIdInternal(participantId)?.avatarUrl
+    }
+
+    fun getParticipantAbout(participantId: String): String? {
+        ensureDataLoaded()
+        return cachedAccounts.firstOrNull { it.id == participantId }?.about
     }
 
     /**
@@ -226,6 +324,24 @@ class ChatRepositoryImpl(
                 conv.copy(lastMessagePreview = message.textContent ?: "[Forwarded]", lastMessageAt = message.sentAt)
             else conv
         }.toMutableList()
+        persistChatData()
+    }
+
+    fun removeConversation(conversationId: String) {
+        ensureDataLoaded()
+        cachedConversations = cachedConversations.filter { it.id != conversationId }.toMutableList()
+        cachedGroupDetails = cachedGroupDetails
+            .filter { it.conversationId != conversationId }
+            .toMutableList()
+        persistGroupData()
+    }
+
+    fun updateConversation(conversation: Conversation) {
+        ensureDataLoaded()
+        cachedConversations = cachedConversations.map {
+            if (it.id == conversation.id) conversation else it
+        }.toMutableList()
+        persistConversations()
     }
 
     /**
@@ -272,6 +388,7 @@ class ChatRepositoryImpl(
             if (c.id == conv.id) c.copy(lastMessagePreview = content, lastMessageAt = sentAt)
             else c
         }.toMutableList()
+        persistChatData()
     }
 
     override fun sendMessage(conversationId: String, content: String): Message {
@@ -292,19 +409,65 @@ class ChatRepositoryImpl(
             readAt = null
         )
 
+        appendMessage(message, content, now)
+
+        return message
+    }
+
+    override fun sendImageMessage(conversationId: String, imagePath: String, caption: String?): Message {
+        ensureDataLoaded()
+
+        val now = System.currentTimeMillis()
+        val message = Message(
+            id = "local_${UUID.randomUUID()}",
+            conversationId = conversationId,
+            senderId = currentUserId,
+            senderName = currentUserName,
+            messageType = MessageType.IMAGE,
+            textContent = caption,
+            mediaUrl = imagePath,
+            messageStatus = MessageStatus.SENT,
+            sentAt = now,
+            deliveredAt = now,
+            readAt = null
+        )
+
+        appendMessage(message, caption ?: "\uD83D\uDCF7 Photo", now)
+
+        return message
+    }
+
+    private fun appendMessage(message: Message, conversationPreview: String, sentAt: Long) {
         cachedMessages.add(message)
         cachedConversations = cachedConversations.map { conversation ->
-            if (conversation.id == conversationId) {
+            if (conversation.id == message.conversationId) {
                 conversation.copy(
-                    lastMessagePreview = content,
-                    lastMessageAt = now
+                    lastMessagePreview = conversationPreview,
+                    lastMessageAt = sentAt
                 )
             } else {
                 conversation
             }
         }.toMutableList()
+        persistChatData()
+    }
 
-        return message
+    private fun persistConversations() {
+        assetsHelper.saveConversations(cachedConversations)
+    }
+
+    private fun persistGroupDetails() {
+        assetsHelper.saveGroupDetails(cachedGroupDetails)
+    }
+
+    private fun persistGroupData() {
+        persistConversations()
+        persistGroupDetails()
+    }
+
+    private fun persistChatData() {
+        assetsHelper.saveMessages(cachedMessages)
+        assetsHelper.saveConversations(cachedConversations)
     }
 
     private fun ensureDataLoaded() {
@@ -316,6 +479,10 @@ class ChatRepositoryImpl(
             cachedConversations = assetsHelper.loadConversations().toMutableList()
             cachedMessages = assetsHelper.loadMessages().toMutableList()
             cachedAccounts = assetsHelper.loadAccounts()
+            cachedGroupDetails = assetsHelper.loadGroupDetails().toMutableList()
+            cachedConversations = cachedConversations
+                .map(::mergeConversationWithGroupDetail)
+                .toMutableList()
             isInitialized = true
         }
     }
@@ -325,6 +492,98 @@ class ChatRepositoryImpl(
             account.displayName == contact.displayName || account.phone == contact.phone
         }
         return matchedAccount?.id ?: contact.id
+    }
+
+    private fun findContactByParticipantIdInternal(participantId: String): Contact? {
+        val account = cachedAccounts.firstOrNull { it.id == participantId }
+        return account?.let { resolvedAccount ->
+            contactStore.getAllContacts().firstOrNull { contact ->
+                contact.displayName == resolvedAccount.displayName || contact.phone == resolvedAccount.phone
+            }
+        } ?: contactStore.getAllContacts().firstOrNull { it.id == participantId }
+    }
+
+    private fun mergeConversationWithGroupDetail(conversation: Conversation): Conversation {
+        if (!conversation.isGroupChat) {
+            return conversation
+        }
+
+        val detail = cachedGroupDetails.firstOrNull { it.conversationId == conversation.id }
+            ?: createGroupDetailFromConversation(conversation)
+
+        val participantIds = (listOf(currentUserId) + detail.memberIds).distinct()
+        val participantNames = participantIds.map(::resolveDisplayNameForId)
+
+        return conversation.copy(
+            participantIds = participantIds,
+            participantNames = participantNames,
+            groupName = detail.groupName,
+            memberIds = detail.memberIds,
+            adminIds = detail.adminIds,
+            description = detail.description,
+            createdBy = detail.createdBy,
+            createdAtDisplay = detail.createdAtDisplay
+        )
+    }
+
+    private fun createGroupDetailFromConversation(conversation: Conversation): GroupDetail {
+        val detail = GroupDetail(
+            conversationId = conversation.id,
+            groupName = conversation.groupName ?: "Group",
+            avatarUrl = fallbackGroupAvatarMap[conversation.groupName],
+            memberIds = conversation.memberIds.ifEmpty {
+                conversation.participantIds.filterNot { it == currentUserId }
+            },
+            adminIds = conversation.adminIds.ifEmpty { listOf(conversation.creatorId) },
+            description = conversation.description,
+            createdBy = conversation.createdBy,
+            createdAtDisplay = conversation.createdAtDisplay.ifBlank {
+                formatGroupCreatedAt(conversation.createdAt)
+            },
+            isMuted = false,
+            isLocked = false
+        )
+        cachedGroupDetails.add(detail)
+        persistGroupDetails()
+        return detail
+    }
+
+    private fun syncConversationWithGroupDetail(conversationId: String, detail: GroupDetail) {
+        cachedConversations = cachedConversations.map { conversation ->
+            if (conversation.id == conversationId) {
+                val participantIds = (listOf(currentUserId) + detail.memberIds).distinct()
+                conversation.copy(
+                    participantIds = participantIds,
+                    participantNames = participantIds.map(::resolveDisplayNameForId),
+                    groupName = detail.groupName,
+                    memberIds = detail.memberIds,
+                    adminIds = detail.adminIds,
+                    description = detail.description,
+                    createdBy = detail.createdBy,
+                    createdAtDisplay = detail.createdAtDisplay
+                )
+            } else {
+                conversation
+            }
+        }.toMutableList()
+        persistGroupData()
+    }
+
+    private fun replaceGroupDetail(detail: GroupDetail) {
+        cachedGroupDetails = cachedGroupDetails.map {
+            if (it.conversationId == detail.conversationId) detail else it
+        }.toMutableList()
+        syncConversationWithGroupDetail(detail.conversationId, detail)
+    }
+
+    private fun resolveDisplayNameForId(participantId: String): String {
+        return cachedAccounts.firstOrNull { it.id == participantId }?.displayName
+            ?: findContactByParticipantIdInternal(participantId)?.displayName
+            ?: participantId
+    }
+
+    private fun formatGroupCreatedAt(timestamp: Long): String {
+        return SimpleDateFormat("MMM d, h:mm a", Locale.getDefault()).format(Date(timestamp))
     }
 
     private fun formatTimestamp(millis: Long): String {
@@ -357,6 +616,7 @@ class ChatRepositoryImpl(
         private val lock = Any()
         private var isInitialized = false
         private var cachedConversations: MutableList<Conversation> = mutableListOf()
+        private var cachedGroupDetails: MutableList<GroupDetail> = mutableListOf()
         private var cachedMessages: MutableList<Message> = mutableListOf()
         private var cachedAccounts: List<Account> = emptyList()
     }

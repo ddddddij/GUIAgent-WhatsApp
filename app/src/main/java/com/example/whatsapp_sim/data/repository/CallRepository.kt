@@ -21,13 +21,15 @@ class CallRepository private constructor(
 
     private val _calls = MutableStateFlow<List<CallWithContact>>(emptyList())
     val calls: StateFlow<List<CallWithContact>> = _calls.asStateFlow()
+    private val rawCalls = mutableListOf<Call>()
 
     init {
         loadCalls()
     }
 
     private fun loadCalls() {
-        val rawCalls = assetsHelper.loadCalls()
+        rawCalls.clear()
+        rawCalls.addAll(assetsHelper.loadCalls())
         val accounts = assetsHelper.loadAccounts()
         val contacts = contactStore.getAllContacts()
         val accountMap = accounts.associateBy { it.id }
@@ -51,6 +53,8 @@ class CallRepository private constructor(
     fun getRecentCalls(): List<CallWithContact> = _calls.value
 
     fun addCall(call: Call, displayName: String, displayContactId: String?, displayAvatarUrl: String?) {
+        rawCalls.add(0, call)
+        assetsHelper.saveCalls(rawCalls)
         val callWithContact = CallWithContact(
             call = call,
             contactName = displayName,

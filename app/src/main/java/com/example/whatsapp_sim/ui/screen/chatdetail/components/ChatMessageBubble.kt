@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.SpanStyle
@@ -27,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.whatsapp_sim.ui.components.AssetImage
 import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.domain.model.MessageStatus
 import com.example.whatsapp_sim.domain.model.MessageType
@@ -143,15 +146,23 @@ fun ChatMessageBubble(
                 .padding(horizontal = 10.dp, vertical = 6.dp)
         }
 
+        if (message.messageType == MessageType.IMAGE) {
+            ImageMessageContent(
+                message = message,
+                isSelf = isSelf,
+                isGroupChat = isGroupChat,
+                showSenderName = showSenderName,
+                maxBubbleWidth = maxBubbleWidth
+            )
+            return@Row
+        }
+
         Column(modifier = contentModifier) {
             // Sender name in group chat
             if (isGroupChat && !isSelf && showSenderName && !emojiOnly) {
-                val senderColor = remember(message.senderId) {
-                    senderColors[message.senderId.hashCode().and(0x7FFFFFFF) % senderColors.size]
-                }
                 Text(
                     text = message.senderName,
-                    color = senderColor,
+                    color = rememberSenderColor(message.senderId),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = 2.dp)
@@ -188,6 +199,86 @@ fun ChatMessageBubble(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun ImageMessageContent(
+    message: Message,
+    isSelf: Boolean,
+    isGroupChat: Boolean,
+    showSenderName: Boolean,
+    maxBubbleWidth: Dp
+) {
+    Column(
+        modifier = Modifier
+            .widthIn(max = maxBubbleWidth)
+            .background(
+                color = if (isSelf) Color(0xFFDCF8C6) else Color.White,
+                shape = if (isSelf) {
+                    RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 2.dp)
+                } else {
+                    RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp, bottomStart = 2.dp, bottomEnd = 12.dp)
+                }
+            )
+            .padding(4.dp)
+    ) {
+        if (isGroupChat && !isSelf && showSenderName) {
+            Text(
+                text = message.senderName,
+                color = rememberSenderColor(message.senderId),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp, end = 8.dp, bottom = 6.dp)
+            )
+        }
+
+        AssetImage(
+            imagePath = message.mediaUrl,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(RoundedCornerShape(10.dp))
+        )
+
+        if (!message.textContent.isNullOrBlank()) {
+            Text(
+                text = message.textContent.orEmpty(),
+                color = Color.Black,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, top = 6.dp, end = 8.dp, bottom = 4.dp),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = formatMessageTime(message.sentAt),
+                color = Color(0xFF8E8E8E),
+                fontSize = 11.sp
+            )
+
+            if (isSelf) {
+                Text(
+                    text = " ${message.messageStatus.toStatusSymbol()}",
+                    color = if (message.messageStatus == MessageStatus.READ) Color(0xFF4FC3F7) else Color(0xFF8E8E8E),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun rememberSenderColor(senderId: String): Color {
+    return remember(senderId) {
+        senderColors[senderId.hashCode().and(0x7FFFFFFF) % senderColors.size]
     }
 }
 

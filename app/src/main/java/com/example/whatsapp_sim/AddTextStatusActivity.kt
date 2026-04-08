@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.ui.screen.userstatus.AddTextStatusScreen
 import com.example.whatsapp_sim.ui.theme.Whatsapp_simTheme
 import java.text.SimpleDateFormat
@@ -17,6 +18,7 @@ class AddTextStatusActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        UserStatusStore.initialize(AssetsHelper(this))
 
         setContent {
             Whatsapp_simTheme {

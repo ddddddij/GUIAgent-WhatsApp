@@ -1,0 +1,68 @@
+[
+  {
+    "id": "liverpool_fc",
+    "name": "Liverpool Football Club",
+    "followersCount": "18.4M followers",
+    "isVerified": true,
+    "avatarUrl": "image/Channel头像/liverpool.PNG",
+    "latestUpdate": "🔴 YNWA! Match day against Chelsea — 3:00 PM kick off. Come on Reds! 💪",
+    "updateTime": "2h ago",
+    "initiallyFollowing": true,
+    "isNotificationMuted": false
+  },
+  {
+    "id": "real_madrid",
+    "name": "Real Madrid C.F.",
+    "followersCount": "67.7M followers",
+    "isVerified": true,
+    "avatarUrl": "image/Channel头像/C.F.jpg",
+    "latestUpdate": "⚽ Matchday preview: Real Madrid vs Atlético tonight at the Bernabéu. Hala Madrid!",
+    "updateTime": "5h ago",
+    "initiallyFollowing": true,
+    "isNotificationMuted": false
+  },
+  {
+    "id": "premier_league",
+    "name": "Premier League",
+    "followersCount": "18.5M followers",
+    "isVerified": true,
+    "avatarUrl": "image/Channel头像/premier.PNG",
+    "latestUpdate": "📸 The best images from Gameweek 32 are live now.",
+    "updateTime": "1d ago",
+    "initiallyFollowing": false,
+    "isNotificationMuted": false
+  },
+  {
+    "id": "man_united",
+    "name": "Manchester United",
+    "followersCount": "17M followers",
+    "isVerified": true,
+    "avatarUrl": "image/Channel头像/manchester.PNG",
+    "latestUpdate": "Training ground scenes ahead of the weekend fixture.",
+    "updateTime": "1d ago",
+    "initiallyFollowing": false,
+    "isNotificationMuted": false
+  },
+  {
+    "id": "spotify",
+    "name": "Spotify",
+    "followersCount": "12.1M followers",
+    "isVerified": true,
+    "avatarUrl": "image/Channel头像/Spotify.jpg",
+    "latestUpdate": "Fresh Friday playlist update just dropped.",
+    "updateTime": "3h ago",
+    "initiallyFollowing": false,
+    "isNotificationMuted": false
+  },
+  {
+    "id": "netflix",
+    "name": "Netflix",
+    "followersCount": "24.6M followers",
+    "isVerified": true,
+    "avatarUrl": "image/Channel头像/Netflix.jpg",
+    "latestUpdate": "New trailer out now. Tap to watch the first look.",
+    "updateTime": "6h ago",
+    "initiallyFollowing": false,
+    "isNotificationMuted": false
+  }
+]

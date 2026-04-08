@@ -10,5 +10,11 @@ data class Conversation(
     val lastMessageAt: Long?,
     val createdAt: Long,
     val creatorId: String,
-    val unreadCount: Int
+    val unreadCount: Int,
+    // Group-specific fields (null for non-group chats)
+    val memberIds: List<String> = emptyList(),
+    val adminIds: List<String> = emptyList(),
+    val description: String? = null,
+    val createdBy: String = "you",
+    val createdAtDisplay: String = ""
 )

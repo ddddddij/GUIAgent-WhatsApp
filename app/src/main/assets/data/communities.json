@@ -6,6 +6,9 @@
     "iconUrl": "image/communities/bay_area_devs.png",
     "creatorId": "user_001",
     "createdAt": 1708646400000,
+    "createdBy": "you",
+    "createdAtDisplay": "Feb 23, 10:00 AM",
+    "isMuted": false,
     "inviteLink": "https://chat.whatsapp.com/invite/BayAreaDevs001",
     "members": [
       {
@@ -52,6 +55,9 @@
     "iconUrl": "image/communities/nyc_foodies.png",
     "creatorId": "user_002",
     "createdAt": 1709424000000,
+    "createdBy": "Sarah Mitchell",
+    "createdAtDisplay": "Mar 3, 9:00 AM",
+    "isMuted": false,
     "inviteLink": "https://chat.whatsapp.com/invite/NYCFoodies002",
     "members": [
       {
@@ -84,6 +90,9 @@
     "iconUrl": null,
     "creatorId": "user_003",
     "createdAt": 1710288000000,
+    "createdBy": "Marcus Davis",
+    "createdAtDisplay": "Mar 13, 9:00 AM",
+    "isMuted": true,
     "inviteLink": "https://chat.whatsapp.com/invite/ChiMarathon003",
     "members": [
       {

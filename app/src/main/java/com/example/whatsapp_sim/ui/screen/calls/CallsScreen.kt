@@ -113,9 +113,27 @@ fun CallsScreen(
         // Call log list
         Column {
             recentCalls.forEachIndexed { index, callWithContact ->
-                val navigateToContact = {
+                val navigateToDetail = {
+                    val conversationId = callWithContact.call.conversationId
                     val contactId = callWithContact.contactId
-                    if (contactId != null) {
+                    if (conversationId.isNotEmpty()) {
+                        // Check if it's a group call by checking if conversation exists and is group
+                        val repository = com.example.whatsapp_sim.data.repository.ChatRepositoryImpl(
+                            com.example.whatsapp_sim.data.local.AssetsHelper(context)
+                        )
+                        val conversation = repository.getConversation(conversationId)
+                        if (conversation?.isGroupChat == true) {
+                            context.startActivity(
+                                com.example.whatsapp_sim.GroupInfoActivity.createIntent(context, conversationId)
+                            )
+                        } else if (contactId != null) {
+                            context.startActivity(
+                                com.example.whatsapp_sim.ContactInfoActivity.createIntent(context, contactId)
+                            )
+                        } else {
+                            toast()
+                        }
+                    } else if (contactId != null) {
                         context.startActivity(
                             com.example.whatsapp_sim.ContactInfoActivity.createIntent(context, contactId)
                         )
@@ -125,9 +143,9 @@ fun CallsScreen(
                 }
                 CallLogItem(
                     callWithContact = callWithContact,
-                    onItemClick = { navigateToContact() },
-                    onDetailClick = { navigateToContact() },
-                    onAvatarClick = { navigateToContact() }
+                    onItemClick = { navigateToDetail() },
+                    onDetailClick = { navigateToDetail() },
+                    onAvatarClick = { navigateToDetail() }
                 )
                 if (index < recentCalls.lastIndex) {
                     HorizontalDivider(

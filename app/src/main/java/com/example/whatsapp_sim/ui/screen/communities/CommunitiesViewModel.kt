@@ -77,7 +77,9 @@ class CommunitiesViewModel(private val communityRepository: CommunityRepository)
     }
 
     fun addCommunity(community: Community) {
-        _communities.update { listOf(community) + it }
+        communityRepository.addCommunity(community)
+        CommunityChannelStore.initialize(listOf(community))
+        _communities.value = communityRepository.getCommunities()
     }
 
     fun onMoreMenuClick() { /* reserved */ }

@@ -47,7 +47,8 @@ fun ChatDetailScreen(
     onCameraClick: () -> Unit,
     onMicClick: () -> Unit,
     onLearnMoreClick: () -> Unit,
-    onAvatarClick: (() -> Unit)? = null
+    onAvatarClick: (() -> Unit)? = null,
+    onTitleClick: (() -> Unit)? = null
 ) {
     val conversation by viewModel.conversation.collectAsState()
     val contact by viewModel.contact.collectAsState()
@@ -98,6 +99,7 @@ fun ChatDetailScreen(
                 onVideoCallClick = onVideoCallClick,
                 onVoiceCallClick = onVoiceCallClick,
                 onAvatarClick = onAvatarClick,
+                onTitleClick = onTitleClick,
                 modifier = Modifier.statusBarsPadding()
             )
 

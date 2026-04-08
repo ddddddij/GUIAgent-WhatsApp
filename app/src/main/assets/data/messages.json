@@ -52,6 +52,19 @@
     "readAt": 1774919800000
   },
   {
+    "id": "msg_004b",
+    "conversationId": "conv_001",
+    "senderId": "user_002",
+    "senderName": "Sarah Mitchell",
+    "messageType": "IMAGE",
+    "textContent": "This was the poster I was talking about",
+    "mediaUrl": "image/Madrid/IMG_2028.jpg",
+    "messageStatus": "READ",
+    "sentAt": 1774920000000,
+    "deliveredAt": 1774920003000,
+    "readAt": 1774920060000
+  },
+  {
     "id": "msg_005",
     "conversationId": "conv_002",
     "senderId": "user_001",
@@ -136,7 +149,7 @@
     "senderName": "Marcus Davis",
     "messageType": "IMAGE",
     "textContent": "Check out last year's project!",
-    "mediaUrl": "image/hackathon_2023.png",
+    "mediaUrl": "image/Premier/IMG_2042.jpg",
     "messageStatus": "DELIVERED",
     "sentAt": 1774927200000,
     "deliveredAt": 1774927203000,
@@ -244,6 +257,19 @@
     "messageStatus": "DELIVERED",
     "sentAt": 1774910600000,
     "deliveredAt": 1774910603000,
+    "readAt": null
+  },
+  {
+    "id": "msg_015d",
+    "conversationId": "conv_006",
+    "senderId": "user_006",
+    "senderName": "Olivia Brown",
+    "messageType": "IMAGE",
+    "textContent": "Outfit check for tonight 😄",
+    "mediaUrl": "image/Spotify/IMG_2008.jpg",
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774910900000,
+    "deliveredAt": 1774910903000,
     "readAt": null
   },
   {
@@ -505,6 +531,19 @@
     "sentAt": 1774720000000,
     "deliveredAt": 1774720003000,
     "readAt": 1774720600000
+  },
+  {
+    "id": "msg_030b",
+    "conversationId": "conv_013",
+    "senderId": "user_012",
+    "senderName": "Isabella Martinez",
+    "messageType": "IMAGE",
+    "textContent": "Mockup v2, what do you think?",
+    "mediaUrl": "image/Manchester/IMG_2063.jpg",
+    "messageStatus": "READ",
+    "sentAt": 1774720600000,
+    "deliveredAt": 1774720603000,
+    "readAt": 1774720900000
   },
   {
     "id": "msg_031",

@@ -45,7 +45,12 @@
     "lastMessageAt": 1774927200000,
     "createdAt": 1710000000000,
     "creatorId": "user_001",
-    "unreadCount": 5
+    "unreadCount": 5,
+    "memberIds": ["user_002", "user_003", "user_004", "user_005"],
+    "adminIds": ["user_001"],
+    "description": "San Francisco tech enthusiasts group 🚀",
+    "createdBy": "you",
+    "createdAtDisplay": "Mon at 10:00 AM"
   },
   {
     "id": "conv_005",
@@ -57,7 +62,12 @@
     "lastMessageAt": 1774863300000,
     "createdAt": 1710259200000,
     "creatorId": "user_002",
-    "unreadCount": 0
+    "unreadCount": 0,
+    "memberIds": ["user_002", "user_004"],
+    "adminIds": ["user_002"],
+    "description": null,
+    "createdBy": "Sarah Mitchell",
+    "createdAtDisplay": "Wed at 9:15 AM"
   },
   {
     "id": "conv_006",
@@ -117,7 +127,12 @@
     "lastMessageAt": 1774920000000,
     "createdAt": 1710691200000,
     "creatorId": "user_001",
-    "unreadCount": 7
+    "unreadCount": 7,
+    "memberIds": ["user_003", "user_006", "user_009"],
+    "adminIds": ["user_001"],
+    "description": "Sharing startup ideas and resources",
+    "createdBy": "you",
+    "createdAtDisplay": "Fri at 2:00 PM"
   },
   {
     "id": "conv_011",
@@ -177,6 +192,11 @@
     "lastMessageAt": 1774660000000,
     "createdAt": 1711123200000,
     "creatorId": "user_002",
-    "unreadCount": 4
+    "unreadCount": 4,
+    "memberIds": ["user_002", "user_003", "user_007", "user_011"],
+    "adminIds": ["user_002"],
+    "description": null,
+    "createdBy": "Sarah Mitchell",
+    "createdAtDisplay": "Thu at 6:30 PM"
   }
 ]

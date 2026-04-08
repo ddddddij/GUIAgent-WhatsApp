@@ -56,6 +56,7 @@ class CommunityChannelDetailActivity : ComponentActivity() {
                 CommunityChannelDetailScreen(
                     viewModel = viewModel,
                     onBackClick = ::finish,
+                    avatarUrl = viewModel.community.iconUrl,
                     onVideoCallClick = {
                         startActivity(
                             VideoCallActivity.createIntent(
@@ -75,6 +76,22 @@ class CommunityChannelDetailActivity : ComponentActivity() {
                                 avatarUrl = viewModel.community.iconUrl,
                                 contactId = communityId,
                                 conversationId = "community_${communityId}_${channelType.name}"
+                            )
+                        )
+                    },
+                    onAvatarClick = {
+                        startActivity(
+                            CommunityInfoActivity.createIntent(
+                                context = this,
+                                communityId = communityId
+                            )
+                        )
+                    },
+                    onTitleClick = {
+                        startActivity(
+                            CommunityInfoActivity.createIntent(
+                                context = this,
+                                communityId = communityId
                             )
                         )
                     }

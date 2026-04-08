@@ -1,0 +1,50 @@
+[
+  {
+    "conversationId": "conv_004",
+    "groupName": "SF Tech Squad",
+    "avatarUrl": "image/群聊头像/SF Tech Squad.jpg",
+    "memberIds": ["user_002", "user_003", "user_004", "user_005"],
+    "adminIds": ["user_001"],
+    "description": "San Francisco tech enthusiasts group 🚀",
+    "createdBy": "you",
+    "createdAtDisplay": "Mon at 10:00 AM",
+    "isMuted": false,
+    "isLocked": false
+  },
+  {
+    "conversationId": "conv_005",
+    "groupName": "Weekend Hiking Crew",
+    "avatarUrl": "image/群聊头像/Weekend Hiking Crew.jpg",
+    "memberIds": ["user_002", "user_004"],
+    "adminIds": ["user_002"],
+    "description": null,
+    "createdBy": "Sarah Mitchell",
+    "createdAtDisplay": "Wed at 9:15 AM",
+    "isMuted": true,
+    "isLocked": false
+  },
+  {
+    "conversationId": "conv_010",
+    "groupName": "Startup Ideas 💡",
+    "avatarUrl": "image/群聊头像/Startup Ideas.jpg",
+    "memberIds": ["user_003", "user_006", "user_009"],
+    "adminIds": ["user_001"],
+    "description": "Sharing startup ideas and resources",
+    "createdBy": "you",
+    "createdAtDisplay": "Fri at 2:00 PM",
+    "isMuted": false,
+    "isLocked": false
+  },
+  {
+    "conversationId": "conv_015",
+    "groupName": "Friday Night Plans 🍕",
+    "avatarUrl": "image/群聊头像/Friday Night Plans.jpg",
+    "memberIds": ["user_002", "user_003", "user_007", "user_011"],
+    "adminIds": ["user_002"],
+    "description": null,
+    "createdBy": "Sarah Mitchell",
+    "createdAtDisplay": "Thu at 6:30 PM",
+    "isMuted": false,
+    "isLocked": false
+  }
+]

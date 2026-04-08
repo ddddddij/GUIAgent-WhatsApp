@@ -88,11 +88,9 @@ class ChatDetailActivity : ComponentActivity() {
                     },
                     onAddAttachmentClick = {
                         viewModel.onAddAttachmentClick()
-                        showComingSoon()
                     },
                     onCameraClick = {
                         viewModel.onCameraClick()
-                        showComingSoon()
                     },
                     onMicClick = {
                         viewModel.onMicClick()
@@ -104,10 +102,20 @@ class ChatDetailActivity : ComponentActivity() {
                     },
                     onAvatarClick = {
                         val contact = viewModel.contact.value
-                        if (contact != null) {
-                            startActivity(
-                                ContactInfoActivity.createIntent(this, contact.id)
-                            )
+                        val conversation = viewModel.conversation.value
+                        if (conversation?.isGroupChat == true) {
+                            startActivity(GroupInfoActivity.createIntent(this, conversation.id))
+                        } else if (contact != null) {
+                            startActivity(ContactInfoActivity.createIntent(this, contact.id))
+                        }
+                    },
+                    onTitleClick = {
+                        val contact = viewModel.contact.value
+                        val conversation = viewModel.conversation.value
+                        if (conversation?.isGroupChat == true) {
+                            startActivity(GroupInfoActivity.createIntent(this, conversation.id))
+                        } else if (contact != null) {
+                            startActivity(ContactInfoActivity.createIntent(this, contact.id))
                         }
                     }
                 )

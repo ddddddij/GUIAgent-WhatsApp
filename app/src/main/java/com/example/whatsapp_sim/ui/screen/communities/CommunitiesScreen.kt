@@ -1,6 +1,7 @@
 package com.example.whatsapp_sim.ui.screen.communities
 
 import android.widget.Toast
+import com.example.whatsapp_sim.CommunityInfoActivity
 import com.example.whatsapp_sim.CommunityChannelDetailActivity
 import com.example.whatsapp_sim.data.repository.CommunityChannelStore
 import com.example.whatsapp_sim.data.repository.CommunityChannelType
@@ -86,7 +87,15 @@ fun CommunitiesScreen(viewModel: CommunitiesViewModel) {
                 announcementsTime = section.announcementsTime,
                 generalPreview = section.generalPreview,
                 generalTime = section.generalTime,
-                onSeeAllClick = { viewModel.onSeeAllClick(section.community.id); toast() },
+                onSeeAllClick = {
+                    viewModel.onSeeAllClick(section.community.id)
+                    context.startActivity(
+                        CommunityInfoActivity.createIntent(
+                            context = context,
+                            communityId = section.community.id
+                        )
+                    )
+                },
                 onAnnouncementsClick = {
                     viewModel.onAnnouncementsClick(section.community.id)
                     context.startActivity(
@@ -120,7 +129,6 @@ fun CommunitiesScreen(viewModel: CommunitiesViewModel) {
             onDismiss = { viewModel.onNewCommunitySheetDismiss() },
             onCreateCommunity = { community ->
                 viewModel.addCommunity(community)
-                CommunityChannelStore.initialize(listOf(community))
             }
         )
     }

@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 class RuntimeContactStore private constructor(
-    initialContacts: List<Contact>
+    private val assetsHelper: AssetsHelper
 ) {
-    private val _contacts = MutableStateFlow(initialContacts)
+    private val _contacts = MutableStateFlow(assetsHelper.loadContacts())
     val contacts: StateFlow<List<Contact>> = _contacts.asStateFlow()
 
     fun getAllContacts(): List<Contact> = contacts.value
@@ -39,6 +39,7 @@ class RuntimeContactStore private constructor(
         _contacts.update { contacts ->
             (contacts + contact).sortedBy { it.displayName.lowercase() }
         }
+        assetsHelper.saveContacts(_contacts.value)
         return contact
     }
 
@@ -48,9 +49,7 @@ class RuntimeContactStore private constructor(
 
         fun getInstance(assetsHelper: AssetsHelper): RuntimeContactStore {
             return instance ?: synchronized(this) {
-                instance ?: RuntimeContactStore(
-                    initialContacts = assetsHelper.loadContacts()
-                ).also { instance = it }
+                instance ?: RuntimeContactStore(assetsHelper).also { instance = it }
             }
         }
     }

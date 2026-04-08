@@ -18,6 +18,10 @@ class YouViewModel(private val repository: AccountRepository) : ViewModel() {
     val currentUser: StateFlow<Account?> = _currentUser.asStateFlow()
 
     init {
+        refreshCurrentUser()
+    }
+
+    fun refreshCurrentUser() {
         _currentUser.value = repository.getCurrentUser()
     }
 

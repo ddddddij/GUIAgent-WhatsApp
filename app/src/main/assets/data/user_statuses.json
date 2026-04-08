@@ -1,0 +1,81 @@
+[
+  {
+    "id": "my_status_001",
+    "senderName": "My status",
+    "preview": "Living the moment \ud83c\udf05",
+    "timeLabel": "10:32 AM",
+    "isViewed": false,
+    "bgColor": 4279923294,
+    "likeCount": 0,
+    "userLiked": false,
+    "emojiReactions": [],
+    "userReaction": null,
+    "avatarUrl": null
+  },
+  {
+    "id": "status_002",
+    "senderName": "Emily Chen",
+    "preview": "Weekend vibes \u2600\ufe0f",
+    "timeLabel": "9:15 AM",
+    "isViewed": false,
+    "bgColor": 4292093952,
+    "likeCount": 5,
+    "userLiked": false,
+    "emojiReactions": [
+      {
+        "emoji": "\u2764\ufe0f",
+        "count": 3
+      },
+      {
+        "emoji": "\ud83d\ude0d",
+        "count": 2
+      }
+    ],
+    "userReaction": null,
+    "avatarUrl": "image/\u8054\u7cfb\u4eba\u5934\u50cf/\u827a\u672f.jpg"
+  },
+  {
+    "id": "status_003",
+    "senderName": "Marcus Davis",
+    "preview": "Coffee time \u2615",
+    "timeLabel": "8:47 AM",
+    "isViewed": true,
+    "bgColor": 4284238615,
+    "likeCount": 2,
+    "userLiked": false,
+    "emojiReactions": [
+      {
+        "emoji": "\ud83d\ude02",
+        "count": 2
+      }
+    ],
+    "userReaction": null,
+    "avatarUrl": "image/\u8054\u7cfb\u4eba\u5934\u50cf/\u8fd0\u52a8.jpg"
+  },
+  {
+    "id": "status_004",
+    "senderName": "Olivia Brown",
+    "preview": "New chapter begins \ud83d\udcd6",
+    "timeLabel": "Yesterday",
+    "isViewed": true,
+    "bgColor": 4283045004,
+    "likeCount": 12,
+    "userLiked": false,
+    "emojiReactions": [
+      {
+        "emoji": "\ud83c\udf89",
+        "count": 6
+      },
+      {
+        "emoji": "\u2764\ufe0f",
+        "count": 4
+      },
+      {
+        "emoji": "\ud83d\udc4d",
+        "count": 2
+      }
+    ],
+    "userReaction": null,
+    "avatarUrl": "image/\u8054\u7cfb\u4eba\u5934\u50cf/\u5c0f\u732b.jpg"
+  }
+]

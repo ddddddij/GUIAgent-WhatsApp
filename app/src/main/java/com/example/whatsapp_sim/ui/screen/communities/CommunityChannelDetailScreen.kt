@@ -44,8 +44,11 @@ private const val CURRENT_USER_ID = "user_001"
 fun CommunityChannelDetailScreen(
     viewModel: CommunityChannelDetailViewModel,
     onBackClick: () -> Unit,
+    avatarUrl: String? = null,
     onVideoCallClick: () -> Unit = {},
-    onVoiceCallClick: () -> Unit = {}
+    onVoiceCallClick: () -> Unit = {},
+    onAvatarClick: (() -> Unit)? = null,
+    onTitleClick: (() -> Unit)? = null
 ) {
     val messages by viewModel.messages.collectAsState()
     val inputText by viewModel.inputText.collectAsState()
@@ -90,9 +93,12 @@ fun CommunityChannelDetailScreen(
             ChatDetailTopBar(
                 title = viewModel.title,
                 showOnlineStatus = false,
+                avatarUrl = avatarUrl,
                 onBackClick = onBackClick,
                 onVideoCallClick = onVideoCallClick,
                 onVoiceCallClick = onVoiceCallClick,
+                onAvatarClick = onAvatarClick,
+                onTitleClick = onTitleClick,
                 modifier = Modifier.statusBarsPadding()
             )
 

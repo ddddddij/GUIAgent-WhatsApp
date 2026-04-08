@@ -118,7 +118,10 @@ fun YouScreen(viewModel: YouViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Status bubble above avatar
-                StatusBubble(onClick = { viewModel.onStatusBubbleClick(); toast() })
+                StatusBubble(
+                    about = currentUser?.about ?: "Free to chat",
+                    onClick = { viewModel.onStatusBubbleClick(); toast() }
+                )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -127,7 +130,11 @@ fun YouScreen(viewModel: YouViewModel) {
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)
-                        .clickable { viewModel.onAvatarClick(); toast() },
+                        .clickable {
+                            context.startActivity(
+                                com.example.whatsapp_sim.ProfileActivity.createIntent(context)
+                            )
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     ContactAvatar(avatarUrl = currentUser?.avatarUrl, size = 120.dp)
@@ -211,7 +218,10 @@ fun YouScreen(viewModel: YouViewModel) {
 }
 
 @Composable
-private fun StatusBubble(onClick: () -> Unit) {
+private fun StatusBubble(
+    about: String,
+    onClick: () -> Unit
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         // Bubble
         Box(
@@ -229,7 +239,7 @@ private fun StatusBubble(onClick: () -> Unit) {
                         .background(WhatsAppGreen)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                Text("Free to chat", fontSize = 14.sp, color = Color.Black)
+                Text(about, fontSize = 14.sp, color = Color.Black)
             }
         }
         // Triangle pointer (rotated square)

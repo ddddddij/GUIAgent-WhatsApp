@@ -2,131 +2,109 @@ package com.example.whatsapp_sim
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.domain.model.UserStatus
 import com.example.whatsapp_sim.domain.model.UserStatusReaction
 
 /**
- * In-memory singleton store for all UserStatus entries.
- * Both UpdatesViewModel and UserStatusDetailActivity operate on this shared state.
+ * Shared runtime store backed by files/data/user_statuses.json.
+ * Data is reset from assets on every fresh app process start by AssetsHelper.
  */
 object UserStatusStore {
 
-    private val _statuses = mutableStateOf(
-        listOf(
-            UserStatus(
-                id = "my_status_001",
-                senderName = "My status",
-                preview = "Living the moment 🌅",
-                timeLabel = "10:32 AM",
-                isViewed = false,
-                bgColor = 0xFF1A7A5E,
-                likeCount = 0,
-                userLiked = false
-            ),
-            UserStatus(
-                id = "status_002",
-                senderName = "Emily Chen",
-                preview = "Weekend vibes ☀️",
-                timeLabel = "9:15 AM",
-                isViewed = false,
-                bgColor = 0xFFD44000,
-                likeCount = 5,
-                userLiked = false,
-                emojiReactions = listOf(
-                    UserStatusReaction("❤️", 3),
-                    UserStatusReaction("😍", 2)
-                ),
-                avatarUrl = "image/联系人头像/艺术.jpg"
-            ),
-            UserStatus(
-                id = "status_003",
-                senderName = "Marcus Davis",
-                preview = "Coffee time ☕",
-                timeLabel = "8:47 AM",
-                isViewed = true,
-                bgColor = 0xFF5C3317,
-                likeCount = 2,
-                userLiked = false,
-                emojiReactions = listOf(UserStatusReaction("😂", 2)),
-                avatarUrl = "image/联系人头像/运动.jpg"
-            ),
-            UserStatus(
-                id = "status_004",
-                senderName = "Olivia Brown",
-                preview = "New chapter begins 📖",
-                timeLabel = "Yesterday",
-                isViewed = true,
-                bgColor = 0xFF4A148C,
-                likeCount = 12,
-                userLiked = false,
-                emojiReactions = listOf(
-                    UserStatusReaction("🎉", 6),
-                    UserStatusReaction("❤️", 4),
-                    UserStatusReaction("👍", 2)
-                ),
-                avatarUrl = "image/联系人头像/小猫.jpg"
-            )
-        )
-    )
+    private val _statuses = mutableStateOf<List<UserStatus>>(emptyList())
+    private var assetsHelper: AssetsHelper? = null
 
-    val statuses: List<UserStatus> get() = _statuses.value
+    val statuses: List<UserStatus>
+        get() = _statuses.value
+
+    fun initialize(assetsHelper: AssetsHelper) {
+        if (this.assetsHelper == null) {
+            this.assetsHelper = assetsHelper
+        }
+        _statuses.value = assetsHelper.loadUserStatuses()
+    }
 
     fun getStatus(id: String): UserStatus? = _statuses.value.firstOrNull { it.id == id }
 
     @Composable
-    fun observeStatus(id: String): UserStatus? {
-        // Reading _statuses.value inside Composable subscribes to recomposition
-        return _statuses.value.firstOrNull { it.id == id }
-    }
+    fun observeStatus(id: String): UserStatus? = _statuses.value.firstOrNull { it.id == id }
 
     @Composable
     fun observeAll(): List<UserStatus> = _statuses.value
 
-    /** Replace My Status content (called after publishing a new text status). */
     fun updateMyStatus(text: String, bgColor: Long, timeLabel: String) {
-        _statuses.value = _statuses.value.map { s ->
-            if (s.id == "my_status_001")
-                s.copy(preview = text, bgColor = bgColor, timeLabel = timeLabel, isViewed = false)
-            else s
+        mutateStatuses { statuses ->
+            statuses.map { status ->
+                if (status.id == "my_status_001") {
+                    status.copy(preview = text, bgColor = bgColor, timeLabel = timeLabel, isViewed = false)
+                } else {
+                    status
+                }
+            }
         }
     }
 
     fun markViewed(id: String) {
-        _statuses.value = _statuses.value.map { s ->
-            if (s.id == id) s.copy(isViewed = true) else s
+        mutateStatuses { statuses ->
+            statuses.map { status ->
+                if (status.id == id) status.copy(isViewed = true) else status
+            }
         }
     }
 
     fun toggleLike(id: String) {
-        _statuses.value = _statuses.value.map { s ->
-            if (s.id != id) s
-            else if (s.userLiked) s.copy(likeCount = s.likeCount - 1, userLiked = false)
-            else s.copy(likeCount = s.likeCount + 1, userLiked = true)
+        mutateStatuses { statuses ->
+            statuses.map { status ->
+                if (status.id != id) {
+                    status
+                } else if (status.userLiked) {
+                    status.copy(likeCount = status.likeCount - 1, userLiked = false)
+                } else {
+                    status.copy(likeCount = status.likeCount + 1, userLiked = true)
+                }
+            }
         }
     }
 
     fun sendReaction(id: String, emoji: String) {
-        _statuses.value = _statuses.value.map { s ->
-            if (s.id != id) s
-            else {
-                val prev = s.userReaction
-                val afterRemove = if (prev != null) {
-                    s.emojiReactions.mapNotNull { r ->
-                        if (r.emoji == prev) {
-                            if (r.count - 1 > 0) r.copy(count = r.count - 1) else null
-                        } else r
-                    }
-                } else s.emojiReactions.toList()
-                val existing = afterRemove.indexOfFirst { it.emoji == emoji }
-                val updated = if (existing >= 0) {
-                    afterRemove.toMutableList().also {
-                        it[existing] = it[existing].copy(count = it[existing].count + 1)
-                    }
+        mutateStatuses { statuses ->
+            statuses.map { status ->
+                if (status.id != id) {
+                    status
                 } else {
-                    afterRemove + UserStatusReaction(emoji, 1)
+                    val previousReaction = status.userReaction
+                    val reactionsAfterRemove = if (previousReaction != null) {
+                        status.emojiReactions.mapNotNull { reaction ->
+                            if (reaction.emoji == previousReaction) {
+                                val nextCount = reaction.count - 1
+                                if (nextCount > 0) reaction.copy(count = nextCount) else null
+                            } else {
+                                reaction
+                            }
+                        }
+                    } else {
+                        status.emojiReactions.toList()
+                    }
+
+                    val existingIndex = reactionsAfterRemove.indexOfFirst { it.emoji == emoji }
+                    val updatedReactions = if (existingIndex >= 0) {
+                        reactionsAfterRemove.toMutableList().also {
+                            it[existingIndex] = it[existingIndex].copy(count = it[existingIndex].count + 1)
+                        }
+                    } else {
+                        reactionsAfterRemove + UserStatusReaction(emoji, 1)
+                    }
+
+                    status.copy(emojiReactions = updatedReactions, userReaction = emoji)
                 }
-                s.copy(emojiReactions = updated, userReaction = emoji)
             }
         }
+    }
+
+    private fun mutateStatuses(transform: (List<UserStatus>) -> List<UserStatus>) {
+        val updated = transform(_statuses.value)
+        _statuses.value = updated
+        assetsHelper?.saveUserStatuses(updated)
     }
 }
