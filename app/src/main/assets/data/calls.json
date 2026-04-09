@@ -12,6 +12,66 @@
     "isSelf": true
   },
   {
+    "id": "call_004",
+    "conversationId": "conv_007",
+    "contactIds": ["user_007"],
+    "callType": "VIDEO",
+    "callResult": "COMPLETED",
+    "timestamp": "8:45 PM",
+    "dateLabel": "Today",
+    "durationSeconds": 960,
+    "durationDisplay": "16 min",
+    "isSelf": true
+  },
+  {
+    "id": "call_005",
+    "conversationId": "conv_012",
+    "contactIds": ["user_011"],
+    "callType": "VOICE",
+    "callResult": "COMPLETED",
+    "timestamp": "7:18 PM",
+    "dateLabel": "Today",
+    "durationSeconds": 1140,
+    "durationDisplay": "19 min",
+    "isSelf": false
+  },
+  {
+    "id": "call_006",
+    "conversationId": "conv_006",
+    "contactIds": ["user_006"],
+    "callType": "VOICE",
+    "callResult": "COMPLETED",
+    "timestamp": "5:02 PM",
+    "dateLabel": "Today",
+    "durationSeconds": 328,
+    "durationDisplay": "5 min",
+    "isSelf": true
+  },
+  {
+    "id": "call_007",
+    "conversationId": "conv_008",
+    "contactIds": ["user_008"],
+    "callType": "VIDEO",
+    "callResult": "MISSED",
+    "timestamp": "9:40 PM",
+    "dateLabel": "Yesterday",
+    "durationSeconds": 0,
+    "durationDisplay": "Missed",
+    "isSelf": false
+  },
+  {
+    "id": "call_008",
+    "conversationId": "conv_009",
+    "contactIds": ["user_009"],
+    "callType": "VOICE",
+    "callResult": "NO_ANSWER",
+    "timestamp": "4:12 PM",
+    "dateLabel": "Yesterday",
+    "durationSeconds": 0,
+    "durationDisplay": "No answer",
+    "isSelf": true
+  },
+  {
     "id": "call_002",
     "conversationId": "conv_002",
     "contactIds": ["user_003"],

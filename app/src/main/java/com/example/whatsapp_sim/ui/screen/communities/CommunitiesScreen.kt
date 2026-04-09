@@ -3,7 +3,6 @@ package com.example.whatsapp_sim.ui.screen.communities
 import android.widget.Toast
 import com.example.whatsapp_sim.CommunityInfoActivity
 import com.example.whatsapp_sim.CommunityChannelDetailActivity
-import com.example.whatsapp_sim.data.repository.CommunityChannelStore
 import com.example.whatsapp_sim.data.repository.CommunityChannelType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,11 +54,8 @@ private val AvatarGray = Color(0xFFB0B0B0)
 fun CommunitiesScreen(viewModel: CommunitiesViewModel) {
     val context = LocalContext.current
     val toast = { Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show() }
-    val communities by viewModel.communities.collectAsState()
     val communitySections by viewModel.communitySections.collectAsState()
     val showNewCommunitySheet by viewModel.showNewCommunitySheet.collectAsState()
-
-    CommunityChannelStore.initialize(communities)
 
     Column(
         modifier = Modifier

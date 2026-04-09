@@ -77,6 +77,11 @@ class AssetsHelper(private val context: Context) {
         return readRuntimeJson(RUNTIME_COMMUNITIES_FILE, type)
     }
 
+    fun loadCommunityChannelMessages(): List<Message> {
+        val type = object : TypeToken<List<Message>>() {}.type
+        return readRuntimeJson(RUNTIME_COMMUNITY_CHANNEL_MESSAGES_FILE, type)
+    }
+
     fun loadStatuses(): List<Status> {
         val type = object : TypeToken<List<Status>>() {}.type
         return readRuntimeJson(RUNTIME_STATUSES_FILE, type)
@@ -117,6 +122,10 @@ class AssetsHelper(private val context: Context) {
 
     fun saveCommunities(communities: List<Community>) {
         writeRuntimeJson(RUNTIME_COMMUNITIES_FILE, communities)
+    }
+
+    fun saveCommunityChannelMessages(messages: List<Message>) {
+        writeRuntimeJson(RUNTIME_COMMUNITY_CHANNEL_MESSAGES_FILE, messages)
     }
 
     fun saveStatuses(statuses: List<Status>) {
@@ -239,6 +248,7 @@ class AssetsHelper(private val context: Context) {
         private const val RUNTIME_CALLS_FILE = "calls.json"
         private const val RUNTIME_CHANNELS_FILE = "channels.json"
         private const val RUNTIME_COMMUNITIES_FILE = "communities.json"
+        private const val RUNTIME_COMMUNITY_CHANNEL_MESSAGES_FILE = "community_channel_messages.json"
         private const val RUNTIME_CONTACTS_FILE = "contacts.json"
         private const val RUNTIME_CONVERSATIONS_FILE = "conversations.json"
         private const val RUNTIME_GROUP_DETAILS_FILE = "group_details.json"

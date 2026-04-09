@@ -39,6 +39,11 @@ class CallViewModel(
     val contactName: String get() = displayName
     val avatarUrl: String? get() = avatarUrls.firstOrNull()
 
+    private val callId = "call_${UUID.randomUUID()}"
+    private val callStartedAt = System.currentTimeMillis()
+    private val timeFormat = SimpleDateFormat("h:mm a", Locale.US)
+    private var didFinalizeCall = false
+
     private val _isMuted = MutableStateFlow(false)
     val isMuted: StateFlow<Boolean> = _isMuted.asStateFlow()
 
@@ -50,6 +55,10 @@ class CallViewModel(
 
     private val _callDurationSeconds = MutableStateFlow(0)
     val callDurationSeconds: StateFlow<Int> = _callDurationSeconds.asStateFlow()
+
+    init {
+        createUnfinishedCallRecord()
+    }
 
     fun incrementTimer() {
         _callDurationSeconds.value += 1
@@ -68,33 +77,57 @@ class CallViewModel(
     }
 
     fun hangUp() {
+        finalizeCall()
+    }
+
+    override fun onCleared() {
+        finalizeCall()
+        super.onCleared()
+    }
+
+    private fun createUnfinishedCallRecord() {
+        val call = Call(
+            id = callId,
+            conversationId = conversationId,
+            contactIds = contactIds,
+            callType = callType,
+            callResult = CallResult.UNFINISHED,
+            timestamp = timeFormat.format(Date(callStartedAt)),
+            dateLabel = "Today",
+            durationSeconds = 0,
+            durationDisplay = "Calling...",
+            isSelf = true
+        )
+        callRepository.addCall(call, displayName, contactIds.firstOrNull(), avatarUrls.firstOrNull())
+    }
+
+    private fun finalizeCall() {
+        if (didFinalizeCall) return
+        didFinalizeCall = true
+
         val duration = _callDurationSeconds.value
-        val now = System.currentTimeMillis()
-        val timeFormat = SimpleDateFormat("h:mm a", Locale.US)
-        val timestamp = timeFormat.format(Date(now))
+        val endedAt = System.currentTimeMillis()
 
         val durationDisplay = when {
-            duration == 0 -> "No answer"
+            duration == 0 -> "0 sec"
             duration < 60 -> "$duration sec"
             duration < 3600 -> "${duration / 60} min"
             else -> "${duration / 3600}h ${(duration % 3600) / 60}m"
         }
 
-        val callResult = if (duration > 0) CallResult.COMPLETED else CallResult.NO_ANSWER
-
         val call = Call(
-            id = "call_${UUID.randomUUID()}",
+            id = callId,
             conversationId = conversationId,
             contactIds = contactIds,
             callType = callType,
-            callResult = callResult,
-            timestamp = timestamp,
+            callResult = CallResult.COMPLETED,
+            timestamp = timeFormat.format(Date(callStartedAt)),
             dateLabel = "Today",
             durationSeconds = duration,
             durationDisplay = durationDisplay,
             isSelf = true
         )
-        callRepository.addCall(call, displayName, contactIds.firstOrNull(), avatarUrls.firstOrNull())
+        callRepository.updateCall(call)
 
         // Resolve or create conversation for the call message
         val resolvedConversationId = if (conversationId.isNotEmpty()) {
@@ -126,10 +159,10 @@ class CallViewModel(
             textContent = null,
             mediaUrl = null,
             messageStatus = MessageStatus.SENT,
-            sentAt = now,
-            deliveredAt = now,
+            sentAt = endedAt,
+            deliveredAt = endedAt,
             readAt = null,
-            callResult = callResult,
+            callResult = CallResult.COMPLETED,
             callDurationDisplay = durationDisplay
         )
         chatRepository.addMessage(message)

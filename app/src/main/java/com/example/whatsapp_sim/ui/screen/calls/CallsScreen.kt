@@ -297,6 +297,8 @@ fun CallLogItem(
 
     // Determine call type display info using callResult, isSelf, and callType
     val (callIcon, callIconTint, callTypeText) = when {
+        call.callResult == CallResult.UNFINISHED ->
+            Triple(Icons.AutoMirrored.Filled.CallMade, TextSecondary, "Ongoing")
         call.callResult == CallResult.MISSED ->
             Triple(Icons.AutoMirrored.Filled.CallMissed, MissedRed, "Missed")
         call.callResult == CallResult.NO_ANSWER ->

@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
         val callRepository = CallRepository.getInstance(assetsHelper)
         val callsViewModel = CallsViewModel(callRepository, contactStore)
         val communityRepository = CommunityRepository(assetsHelper)
-        val communitiesViewModel = CommunitiesViewModel(communityRepository)
+        val communitiesViewModel = CommunitiesViewModel(communityRepository, assetsHelper)
         val broadcastListViewModel = BroadcastListViewModel(contactStore, chatRepository)
 
         setContent {

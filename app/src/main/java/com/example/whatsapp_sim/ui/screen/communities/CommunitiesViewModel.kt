@@ -2,6 +2,7 @@ package com.example.whatsapp_sim.ui.screen.communities
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.data.repository.CommunityChannelStore
 import com.example.whatsapp_sim.data.repository.CommunityChannelType
 import com.example.whatsapp_sim.data.repository.CommunityRepository
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -26,7 +26,10 @@ data class CommunitySectionUiModel(
     val generalTime: String
 )
 
-class CommunitiesViewModel(private val communityRepository: CommunityRepository) : ViewModel() {
+class CommunitiesViewModel(
+    private val communityRepository: CommunityRepository,
+    private val assetsHelper: AssetsHelper
+) : ViewModel() {
 
     private val _communities = MutableStateFlow<List<Community>>(emptyList())
     val communities: StateFlow<List<Community>> = _communities
@@ -66,6 +69,7 @@ class CommunitiesViewModel(private val communityRepository: CommunityRepository)
 
     init {
         _communities.value = communityRepository.getCommunities()
+        CommunityChannelStore.initialize(assetsHelper, _communities.value)
     }
 
     fun onNewCommunityClick() {
@@ -78,7 +82,7 @@ class CommunitiesViewModel(private val communityRepository: CommunityRepository)
 
     fun addCommunity(community: Community) {
         communityRepository.addCommunity(community)
-        CommunityChannelStore.initialize(listOf(community))
+        CommunityChannelStore.initialize(assetsHelper, listOf(community))
         _communities.value = communityRepository.getCommunities()
     }
 

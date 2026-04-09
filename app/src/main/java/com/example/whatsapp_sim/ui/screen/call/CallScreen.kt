@@ -150,7 +150,10 @@ fun CallScreen(
             isSpeakerOn = isSpeakerOn,
             isVideoEnabled = isVideoEnabled,
             onMoreClick = { toast() },
-            onVideoToggle = { onSwitchToVideo() },
+            onVideoToggle = {
+                viewModel.hangUp()
+                onSwitchToVideo()
+            },
             onSpeakerToggle = { viewModel.toggleSpeaker() },
             onMuteToggle = { viewModel.toggleMute() },
             onHangUp = {

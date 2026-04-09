@@ -1,5 +1,6 @@
 package com.example.whatsapp_sim.data.repository
 
+import com.example.whatsapp_sim.data.local.AssetsHelper
 import com.example.whatsapp_sim.domain.model.Community
 import com.example.whatsapp_sim.domain.model.Message
 import com.example.whatsapp_sim.domain.model.MessageStatus
@@ -19,20 +20,36 @@ object CommunityChannelStore {
     private val messagesByChannelId = mutableMapOf<String, MutableList<Message>>()
     private val _changeVersion = MutableStateFlow(0)
     val changeVersion: StateFlow<Int> = _changeVersion.asStateFlow()
+    private var assetsHelper: AssetsHelper? = null
+    private var hasLoadedPersistedMessages = false
 
     private const val CURRENT_USER_ID = "user_001"
     private const val CURRENT_USER_NAME = "JiayiDai"
 
-    fun initialize(communities: List<Community>) {
+    fun initialize(assetsHelper: AssetsHelper, communities: List<Community>) {
+        this.assetsHelper = assetsHelper
+
+        if (!hasLoadedPersistedMessages) {
+            loadPersistedMessages(assetsHelper)
+        }
+
+        var didSeedMissingChannels = false
         communities.forEach { community ->
             val generalChannelId = getChannelId(community.id, CommunityChannelType.GENERAL)
             val announcementsChannelId = getChannelId(community.id, CommunityChannelType.ANNOUNCEMENTS)
             if (messagesByChannelId[generalChannelId] == null) {
                 messagesByChannelId[generalChannelId] = seedGeneralMessages(community).toMutableList()
+                didSeedMissingChannels = true
             }
             if (messagesByChannelId[announcementsChannelId] == null) {
                 messagesByChannelId[announcementsChannelId] = seedAnnouncementMessages(community).toMutableList()
+                didSeedMissingChannels = true
             }
+        }
+
+        if (didSeedMissingChannels) {
+            persistMessages()
+            _changeVersion.value += 1
         }
     }
 
@@ -73,6 +90,7 @@ object CommunityChannelStore {
             forwardedImageResName = forwardedImageResName
         )
         messagesByChannelId.getOrPut(channelId) { mutableListOf() }.add(message)
+        persistMessages()
         _changeVersion.value += 1
     }
 
@@ -100,6 +118,7 @@ object CommunityChannelStore {
             readAt = null
         )
         messagesByChannelId.getOrPut(channelId) { mutableListOf() }.add(message)
+        persistMessages()
         _changeVersion.value += 1
         return message
     }
@@ -113,6 +132,24 @@ object CommunityChannelStore {
 
     fun getChannelId(communityId: String, channelType: CommunityChannelType): String {
         return "community_${communityId}_${channelType.name.lowercase()}"
+    }
+
+    private fun loadPersistedMessages(assetsHelper: AssetsHelper) {
+        messagesByChannelId.clear()
+        assetsHelper.loadCommunityChannelMessages()
+            .groupBy { it.conversationId }
+            .forEach { (conversationId, messages) ->
+                messagesByChannelId[conversationId] = messages.sortedBy { it.sentAt }.toMutableList()
+            }
+        hasLoadedPersistedMessages = true
+    }
+
+    private fun persistMessages() {
+        assetsHelper?.saveCommunityChannelMessages(
+            messagesByChannelId.values
+                .flatten()
+                .sortedBy { it.sentAt }
+        )
     }
 
     private fun seedGeneralMessages(community: Community): List<Message> {

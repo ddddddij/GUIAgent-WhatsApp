@@ -65,6 +65,21 @@ class CallRepository private constructor(
         _calls.value = listOf(callWithContact) + _calls.value
     }
 
+    fun updateCall(call: Call) {
+        val rawIndex = rawCalls.indexOfFirst { it.id == call.id }
+        if (rawIndex == -1) return
+
+        rawCalls[rawIndex] = call
+        assetsHelper.saveCalls(rawCalls)
+        _calls.value = _calls.value.map { callWithContact ->
+            if (callWithContact.call.id == call.id) {
+                callWithContact.copy(call = call)
+            } else {
+                callWithContact
+            }
+        }
+    }
+
     companion object {
         @Volatile
         private var instance: CallRepository? = null

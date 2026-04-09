@@ -104,6 +104,22 @@
     "readAt": null
   },
   {
+    "id": "msg_007b",
+    "conversationId": "conv_002",
+    "senderId": "user_003",
+    "senderName": "Marcus Davis",
+    "messageType": "FORWARDED_STATUS",
+    "textContent": "🎥 El Clásico highlights – relive every moment of last night's masterclass. Hala Madrid! 👑",
+    "mediaUrl": null,
+    "messageStatus": "DELIVERED",
+    "sentAt": 1774921200000,
+    "deliveredAt": 1774921200000,
+    "readAt": null,
+    "forwardedFrom": "Real Madrid C.F.",
+    "forwardedImageResName": "image/Madrid/IMG_2027.jpg",
+    "forwardedChannelId": "real_madrid"
+  },
+  {
     "id": "msg_008",
     "conversationId": "conv_003",
     "senderId": "user_004",
@@ -297,6 +313,19 @@
     "sentAt": 1774856000000,
     "deliveredAt": 1774856003000,
     "readAt": 1774856200000
+  },
+  {
+    "id": "msg_017b",
+    "conversationId": "conv_007",
+    "senderId": "user_007",
+    "senderName": "Noah Kim",
+    "messageType": "TEXT",
+    "textContent": "Me, you, and Ethan, let's have a call together.",
+    "mediaUrl": null,
+    "messageStatus": "READ",
+    "sentAt": 1774859600000,
+    "deliveredAt": 1774859603000,
+    "readAt": 1774859900000
   },
   {
     "id": "msg_018",

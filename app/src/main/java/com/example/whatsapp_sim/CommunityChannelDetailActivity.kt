@@ -28,10 +28,12 @@ class CommunityChannelDetailActivity : ComponentActivity() {
             .getOrDefault(CommunityChannelType.GENERAL)
     }
 
+    private val assetsHelper by lazy { AssetsHelper(this) }
+
     private val viewModel: CommunityChannelDetailViewModel by viewModels {
-        val repository = CommunityRepository(AssetsHelper(this))
+        val repository = CommunityRepository(assetsHelper)
         val communities = repository.getCommunities()
-        CommunityChannelStore.initialize(communities)
+        CommunityChannelStore.initialize(assetsHelper, communities)
         val community = communities.first { it.id == communityId }
         CommunityChannelDetailViewModelFactory(
             community = community,

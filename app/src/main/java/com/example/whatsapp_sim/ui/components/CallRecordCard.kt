@@ -58,6 +58,8 @@ fun CallRecordCard(
         else -> Color(0xFF4CAF50)
     }
 
+    val durationText = if (callResult == CallResult.UNFINISHED) "Calling..." else (callDurationDisplay ?: "0 sec")
+
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -100,7 +102,7 @@ fun CallRecordCard(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = callDurationDisplay ?: "0 sec",
+                    text = durationText,
                     fontSize = 13.sp,
                     color = TextSecondary
                 )

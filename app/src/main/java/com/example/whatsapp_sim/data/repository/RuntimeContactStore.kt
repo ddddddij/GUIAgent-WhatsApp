@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.UUID
 
 class RuntimeContactStore private constructor(
     private val assetsHelper: AssetsHelper
@@ -24,7 +23,7 @@ class RuntimeContactStore private constructor(
     ): Contact {
         val now = System.currentTimeMillis()
         val contact = Contact(
-            id = "contact_local_${UUID.randomUUID()}",
+            id = generateNextContactId(),
             phone = phone,
             displayName = displayName,
             avatarUrl = null,
@@ -41,6 +40,20 @@ class RuntimeContactStore private constructor(
         }
         assetsHelper.saveContacts(_contacts.value)
         return contact
+    }
+
+    private fun generateNextContactId(): String {
+        val maxIndex = _contacts.value
+            .mapNotNull { contact ->
+                contact.id
+                    .removePrefix("contact_")
+                    .takeIf { contact.id.startsWith("contact_") && it.all(Char::isDigit) }
+                    ?.toIntOrNull()
+            }
+            .maxOrNull()
+            ?: 0
+
+        return "contact_${(maxIndex + 1).toString().padStart(3, '0')}"
     }
 
     companion object {

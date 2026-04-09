@@ -2,7 +2,7 @@ package com.example.whatsapp_sim.domain.model
 
 enum class CallType { VOICE, VIDEO }
 
-enum class CallResult { COMPLETED, NO_ANSWER, MISSED }
+enum class CallResult { UNFINISHED, COMPLETED, NO_ANSWER, MISSED }
 
 enum class ContactStatus { SAVED, INVITED, BLOCKED }
 
