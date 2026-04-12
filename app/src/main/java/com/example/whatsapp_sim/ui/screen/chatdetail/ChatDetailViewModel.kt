@@ -45,8 +45,14 @@ class ChatDetailViewModel(
             .associate { it.displayName to it.avatarUrl!! }
     }
 
-    private val _messages = MutableStateFlow(repository.getMessages(conversationId))
-    val messages: StateFlow<List<Message>> = _messages.asStateFlow()
+    private val _messages: MutableStateFlow<List<Message>>
+    val messages: StateFlow<List<Message>>
+
+    init {
+        repository.markConversationAsRead(conversationId)
+        _messages = MutableStateFlow(repository.getMessages(conversationId))
+        messages = _messages.asStateFlow()
+    }
 
     private val _inputText = MutableStateFlow("")
     val inputText: MutableStateFlow<String> = _inputText

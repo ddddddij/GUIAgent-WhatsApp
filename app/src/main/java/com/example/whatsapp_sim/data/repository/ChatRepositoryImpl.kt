@@ -120,6 +120,26 @@ class ChatRepositoryImpl(
             .sortedBy { it.sentAt }
     }
 
+    override fun markConversationAsRead(conversationId: String) {
+        ensureDataLoaded()
+        // Update unreadCount to 0 (runtime only, not persisted so restart restores original)
+        cachedConversations = cachedConversations.map { conv ->
+            if (conv.id == conversationId) conv.copy(unreadCount = 0) else conv
+        }.toMutableList()
+        // Mark all DELIVERED messages in this conversation as READ
+        val now = System.currentTimeMillis()
+        cachedMessages = cachedMessages.map { msg ->
+            if (msg.conversationId == conversationId &&
+                msg.senderId != currentUserId &&
+                msg.messageStatus != MessageStatus.READ
+            ) {
+                msg.copy(messageStatus = MessageStatus.READ, readAt = now)
+            } else {
+                msg
+            }
+        }.toMutableList()
+    }
+
     override fun getContactForConversation(conversationId: String): Contact? {
         ensureDataLoaded()
         val conversation = getConversation(conversationId) ?: return null
