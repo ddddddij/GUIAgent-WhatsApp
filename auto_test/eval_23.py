@@ -1,11 +1,11 @@
-# 任务23：把Mia Harris和Noah Kim加入NYC Foodies社群。
+# Task 23: Add Mia Harris and Noah Kim to the NYC Foodies community.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_three(result=None, device_id=None, backup_dir=None):
-    """验证任务23：communities.json中NYC Foodies的members包含Mia Harris和Noah Kim。"""
+    """Verify task 23: NYC Foodies in communities.json has members containing Mia Harris and Noah Kim."""
     file_path = os.path.join(backup_dir, "communities.json") if backup_dir else "communities.json"
 
     cmd = ["adb"]

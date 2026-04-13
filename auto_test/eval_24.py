@@ -1,11 +1,11 @@
-# 任务24：进入Weekend Hiking Crew群聊打视频，持续5秒以上再挂断。
+# Task 24: Start a video call in the Weekend Hiking Crew group chat, keep it going for more than 5 seconds, then hang up.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_four(result=None, device_id=None, backup_dir=None):
-    """验证任务24：calls.json中第一条数据的conversationId为conv_005且durationSeconds大于5。"""
+    """Verify task 24: the first item in calls.json has conversationId conv_005 and durationSeconds greater than 5."""
     file_path = os.path.join(backup_dir, "calls.json") if backup_dir else "calls.json"
 
     cmd = ["adb"]

@@ -1,11 +1,11 @@
-# 任务17：新建一个联系人Jaye Zhang，电话号码为(415) 555-1230。
+# Task 17: Create a new contact named Jaye Zhang with the phone number (415) 555-1230.
 import json
 import os
 import subprocess
 
 
 def validate_task_seventeen(result=None, device_id=None, backup_dir=None):
-    """验证任务17：contacts.json中存在displayName为Jaye Zhang且phone为+1 (415) 555-1230的数据。"""
+    """Verify task 17: contacts.json contains an item with displayName Jaye Zhang and phone +1 (415) 555-1230."""
     file_path = os.path.join(backup_dir, "contacts.json") if backup_dir else "contacts.json"
 
     cmd = ["adb"]

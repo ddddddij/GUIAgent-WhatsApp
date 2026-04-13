@@ -1,11 +1,11 @@
-# 任务40：去Netflix频道查找Black Mirror S7的上映时间，并且把这个消息告诉Sophia Lee。
+# Task 40: Go to the Netflix channel, find the release date of Black Mirror S7, and tell Sophia Lee the information.
 import json
 import os
 import subprocess
 
 
 def validate_task_forty(result=None, device_id=None, backup_dir=None):
-    """验证任务40：messages.json中最后一条的conversationId为conv_008且textContent含May 30。"""
+    """Verify task 40: the last item in messages.json has conversationId conv_008 and textContent containing May 30."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

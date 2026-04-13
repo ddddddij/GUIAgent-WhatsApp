@@ -1,11 +1,11 @@
-# 任务32：进入Marcus Davis分享的状态所在的频道，给那条状态发送红色爱心，然后返回聊天给他发送"Thanks for sharing!"。
+# Task 32: Open the channel where Marcus Davis shared his status, send a red heart reaction to that status, then return to the chat and send him "Thanks for sharing!".
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_two(result=None, device_id=None, backup_dir=None):
-    """验证任务32：statuses.json中status_rm_001的userReaction为❤️；messages.json最后一条conv_002且textContent匹配。"""
+    """Verify task 32: status_rm_001 in statuses.json has userReaction ❤️; the last item in messages.json has conversationId conv_002 and matching textContent."""
     st_path = os.path.join(backup_dir, "statuses.json") if backup_dir else "statuses.json"
     msg_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 

@@ -1,11 +1,11 @@
-# 任务28：看看Noah Kim发给我的最新消息，阅读他交代的事情，按他说的做。
+# Task 28: Check the latest message Noah Kim sent me, read what he asked me to do, and do as he said.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_eight(result=None, device_id=None, backup_dir=None):
-    """验证任务28：calls.json中第一条数据的contactIds包含contact_009和contact_013。"""
+    """Verify task 28: the first item in calls.json has contactIds containing contact_009 and contact_013."""
     file_path = os.path.join(backup_dir, "calls.json") if backup_dir else "calls.json"
 
     cmd = ["adb"]

@@ -1,11 +1,11 @@
-# 任务19：将聊天列表第一个会话设为通知免打扰，返回列表确认已显示静音图标。
+# Task 19: Mute notifications for the first conversation in the chat list, then return to the list and confirm that the mute icon is shown.
 import json
 import os
 import subprocess
 
 
 def validate_task_nineteen(result=None, device_id=None, backup_dir=None):
-    """验证任务19：group_details.json中第一条数据的isMuted为true。"""
+    """Verify task 19: the first item in group_details.json has isMuted set to true."""
     file_path = os.path.join(backup_dir, "group_details.json") if backup_dir else "group_details.json"
 
     cmd = ["adb"]

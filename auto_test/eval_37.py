@@ -1,11 +1,11 @@
-# 任务37：添加新联系人Jessie Brown，电话为(415) 555-1013，将她加入SF Tech Squad群聊。
+# Task 37: Add a new contact Jessie Brown with the phone number (415) 555-1013, then add her to the SF Tech Squad group chat.
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_seven(result=None, device_id=None, backup_dir=None):
-    """验证任务37：contacts.json含Jessie Brown；group_details.json中SF Tech Squad的memberIds含contact_018。"""
+    """Verify task 37: contacts.json contains Jessie Brown; SF Tech Squad in group_details.json has memberIds containing contact_018."""
     ct_path = os.path.join(backup_dir, "contacts.json") if backup_dir else "contacts.json"
     gd_path = os.path.join(backup_dir, "group_details.json") if backup_dir else "group_details.json"
 

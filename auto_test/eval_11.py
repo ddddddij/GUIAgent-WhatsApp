@@ -1,11 +1,11 @@
-# 任务11：创建与James Walker的新对话，通知他"We should have a meeting at 2pm"。
+# Task 11: Create a new conversation with James Walker and tell him "We should have a meeting at 2pm".
 import json
 import os
 import subprocess
 
 
 def validate_task_eleven(result=None, device_id=None, backup_dir=None):
-    """验证任务11：conversations.json中最后一条数据的participantNames包含JiayiDai和James Walker。"""
+    """Verify task 11: the last item in conversations.json has participantNames containing JiayiDai and James Walker."""
     file_path = os.path.join(backup_dir, "conversations.json") if backup_dir else "conversations.json"
 
     cmd = ["adb"]

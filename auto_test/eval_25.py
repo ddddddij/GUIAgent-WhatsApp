@@ -1,11 +1,11 @@
-# 任务25：新建一个社群，名称为"Hip-hop music enthusiasts"，社群描述为指定内容。
+# Task 25: Create a new community named "Hip-hop music enthusiasts" with the specified description.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_five(result=None, device_id=None, backup_dir=None):
-    """验证任务25：communities.json中第一条数据的name和description匹配。"""
+    """Verify task 25: the first item in communities.json has the expected name and description."""
     file_path = os.path.join(backup_dir, "communities.json") if backup_dir else "communities.json"
 
     cmd = ["adb"]

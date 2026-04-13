@@ -1,11 +1,11 @@
-# 任务21：在Spotify频道找到有关Taylor Swift的状态，发一个火焰的表情。
+# Task 21: Find the status about Taylor Swift in the Spotify channel and react with a fire emoji.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_one(result=None, device_id=None, backup_dir=None):
-    """验证任务21：statuses.json中status_spotify_003的userReaction为🔥。"""
+    """Verify task 21: status_spotify_003 in statuses.json has userReaction set to 🔥."""
     file_path = os.path.join(backup_dir, "statuses.json") if backup_dir else "statuses.json"
 
     cmd = ["adb"]

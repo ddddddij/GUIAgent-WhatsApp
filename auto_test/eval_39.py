@@ -1,11 +1,11 @@
-# 任务39：向所有首字母为L的联系人发起通话，然后转成视频通话，持续10s后挂断。
+# Task 39: Start a call with all contacts whose names start with L, switch it to a video call, keep it going for 10 seconds, then hang up.
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_nine(result=None, device_id=None, backup_dir=None):
-    """验证任务39：calls.json中第一条的callType为VIDEO，contactIds含指定ids，durationSeconds大于10。"""
+    """Verify task 39: the first item in calls.json has callType VIDEO, contactIds containing the expected ids, and durationSeconds greater than 10."""
     file_path = os.path.join(backup_dir, "calls.json") if backup_dir else "calls.json"
 
     cmd = ["adb"]

@@ -1,11 +1,11 @@
-# 任务38：给所有好友的状态都评论一个紫色爱心。
+# Task 38: React to every friend's status with a purple heart.
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_eight(result=None, device_id=None, backup_dir=None):
-    """验证任务38：user_statuses.json中除第一条外每一条数据的userReaction都为💜。"""
+    """Verify task 38: every item except the first one in user_statuses.json has userReaction set to 💜."""
     file_path = os.path.join(backup_dir, "user_statuses.json") if backup_dir else "user_statuses.json"
 
     cmd = ["adb"]

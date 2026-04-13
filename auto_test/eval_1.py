@@ -1,6 +1,6 @@
-# 任务1：进入聊天列表的第一个会话，查看最新一条消息是谁发的，告诉我名字即可。
+# Task 1: Open the first conversation in the chat list, check who sent the latest message, and tell me the name only.
 def validate_task_one(result=None, device_id=None, backup_dir=None):
-    """验证任务1：回答"Emily Chen"。"""
+    """Verify task 1: answer "Emily Chen"."""
     if result and "final_message" in result and result["final_message"] is not None:
         if "Emily Chen" in result["final_message"]:
             return True

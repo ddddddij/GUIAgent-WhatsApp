@@ -1,6 +1,6 @@
-# 任务6：告诉我最近一条视频通话是和谁的，告诉我名字即可。
+# Task 6: Tell me who the most recent video call was with. Just give me the name.
 def validate_task_six(result=None, device_id=None, backup_dir=None):
-    """验证任务6：回答"Marcus Davis"。"""
+    """Verify task 6: answer "Marcus Davis"."""
     if result and "final_message" in result and result["final_message"] is not None:
         if "Marcus Davis" in result["final_message"]:
             return True

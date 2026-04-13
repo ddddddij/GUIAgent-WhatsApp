@@ -1,11 +1,11 @@
-# 任务33：依次将前三个群聊会话全部设为静音。
+# Task 33: Mute the first three group chat conversations in order.
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_three(result=None, device_id=None, backup_dir=None):
-    """验证任务33：group_details.json中前三条数据的isMuted都为true。"""
+    """Verify task 33: the first three items in group_details.json all have isMuted set to true."""
     file_path = os.path.join(backup_dir, "group_details.json") if backup_dir else "group_details.json"
 
     cmd = ["adb"]

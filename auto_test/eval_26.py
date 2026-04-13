@@ -1,11 +1,11 @@
-# 任务26：新建群聊，群成员包括Rachel Green、Sophia Lee、Tom Briggs，群名为"Project Discussion Group"，发送指定消息。
+# Task 26: Create a new group chat with Rachel Green, Sophia Lee, and Tom Briggs, name it "Project Discussion Group", and send the specified message.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_six(result=None, device_id=None, backup_dir=None):
-    """验证任务26：group_details.json最后一条groupName为Project Discussion Group且memberIds正确；messages.json最后一条textContent匹配。"""
+    """Verify task 26: the last item in group_details.json has groupName Project Discussion Group and the correct memberIds; the last item in messages.json has the expected textContent."""
     gd_path = os.path.join(backup_dir, "group_details.json") if backup_dir else "group_details.json"
     msg_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 

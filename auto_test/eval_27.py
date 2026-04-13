@@ -1,11 +1,11 @@
-# 任务27：创建一个新社区，命名为"Book Club"，选择前两个联系人加入。
+# Task 27: Create a new community named "Book Club" and add the first two contacts.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_seven(result=None, device_id=None, backup_dir=None):
-    """验证任务27：communities.json中第一条的name为Book Club且members包含user_010和user_004。"""
+    """Verify task 27: the first item in communities.json has name Book Club and members containing user_010 and user_004."""
     file_path = os.path.join(backup_dir, "communities.json") if backup_dir else "communities.json"
 
     cmd = ["adb"]

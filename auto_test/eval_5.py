@@ -1,11 +1,11 @@
-# 任务5：给"Friday Night Plans"群聊发送一条消息，内容是"I feel so excited!!!"。
+# Task 5: Send a message to the "Friday Night Plans" group chat saying "I feel so excited!!!".
 import json
 import os
 import subprocess
 
 
 def validate_task_five(result=None, device_id=None, backup_dir=None):
-    """验证任务5：messages.json中最后一条数据的conversationId为conv_015且textContent为指定内容。"""
+    """Verify task 5: the last item in messages.json has conversationId conv_015 and the expected textContent."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

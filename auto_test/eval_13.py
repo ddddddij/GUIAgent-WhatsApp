@@ -1,11 +1,11 @@
-# 任务13：在Updates页发布一条状态，背景采用黄色，内容为"Sunshine"。
+# Task 13: Post a status on the Updates page with a yellow background and the content "Sunshine".
 import json
 import os
 import subprocess
 
 
 def validate_task_thirteen(result=None, device_id=None, backup_dir=None):
-    """验证任务13：user_statuses.json中my_status_001的bgColor为-415707且preview为Sunshine。"""
+    """Verify task 13: my_status_001 in user_statuses.json has bgColor -415707 and preview Sunshine."""
     file_path = os.path.join(backup_dir, "user_statuses.json") if backup_dir else "user_statuses.json"
 
     cmd = ["adb"]

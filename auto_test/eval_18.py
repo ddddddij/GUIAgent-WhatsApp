@@ -1,11 +1,11 @@
-# 任务18：与Ethan Garcia和Lucas Anderson一起通话，然后再挂断。
+# Task 18: Start a call with Ethan Garcia and Lucas Anderson, then hang up.
 import json
 import os
 import subprocess
 
 
 def validate_task_eighteen(result=None, device_id=None, backup_dir=None):
-    """验证任务18：calls.json中第一条数据的contactIds包含contact_013和contact_017。"""
+    """Verify task 18: the first item in calls.json has contactIds containing contact_013 and contact_017."""
     file_path = os.path.join(backup_dir, "calls.json") if backup_dir else "calls.json"
 
     cmd = ["adb"]

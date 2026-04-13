@@ -1,11 +1,11 @@
-# 任务35：进入第一个社区，查看公告栏最新内容，然后进入General发送"Tip：[公告内容]"。
+# Task 35: Enter the first community, check the latest announcement, then go to General and send "Tip: [announcement content]".
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_five(result=None, device_id=None, backup_dir=None):
-    """验证任务35：community_channel_messages.json中最后一条的conversationId和textContent匹配。"""
+    """Verify task 35: the last item in community_channel_messages.json has the expected conversationId and textContent."""
     file_path = os.path.join(backup_dir, "community_channel_messages.json") if backup_dir else "community_channel_messages.json"
 
     cmd = ["adb"]

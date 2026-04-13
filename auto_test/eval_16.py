@@ -1,11 +1,11 @@
-# 任务16：将Netflix频道中评论量最高的状态转发给Emily Chen。
+# Task 16: Forward the most commented status from the Netflix channel to Emily Chen.
 import json
 import os
 import subprocess
 
 
 def validate_task_sixteen(result=None, device_id=None, backup_dir=None):
-    """验证任务16：messages.json中最后一条数据的conversationId为conv_003且textContent为指定内容。"""
+    """Verify task 16: the last item in messages.json has conversationId conv_003 and the expected textContent."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

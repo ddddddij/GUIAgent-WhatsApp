@@ -1,11 +1,11 @@
-# 任务36：给所有超过3条未读消息的会话发送"ok"。
+# Task 36: Send "ok" to every conversation with more than 3 unread messages.
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_six(result=None, device_id=None, backup_dir=None):
-    """验证任务36：messages.json中最后3条的conversationId分别为conv_004/010/015且textContent都为ok。"""
+    """Verify task 36: the last three items in messages.json have conversationId values conv_004, conv_010, and conv_015, and all textContent values are ok."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

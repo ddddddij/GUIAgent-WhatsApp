@@ -1,11 +1,11 @@
-# 任务4：为Olivia新上传的状态点赞。
+# Task 4: Like Olivia's newly uploaded status.
 import json
 import os
 import subprocess
 
 
 def validate_task_four(result=None, device_id=None, backup_dir=None):
-    """验证任务4：user_statuses.json中status_004的likeCount为13。"""
+    """Verify task 4: status_004 in user_statuses.json has likeCount equal to 13."""
     file_path = os.path.join(backup_dir, "user_statuses.json") if backup_dir else "user_statuses.json"
 
     cmd = ["adb"]

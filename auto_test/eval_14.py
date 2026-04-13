@@ -1,11 +1,11 @@
-# 任务14：打开聊天列表，找到有未读消息的第一个群聊，进入后回复"OK"。
+# Task 14: Open the chat list, find the first group chat with unread messages, enter it, and reply "OK".
 import json
 import os
 import subprocess
 
 
 def validate_task_fourteen(result=None, device_id=None, backup_dir=None):
-    """验证任务14：messages.json中最后一条数据的conversationId为conv_004且textContent为OK。"""
+    """Verify task 14: the last item in messages.json has conversationId conv_004 and textContent OK."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

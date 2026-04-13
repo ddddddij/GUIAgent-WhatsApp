@@ -1,11 +1,11 @@
-# 任务22：将Updates页面followers数量最多的频道设置静音。
+# Task 22: Mute the channel with the most followers on the Updates page.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_two(result=None, device_id=None, backup_dir=None):
-    """验证任务22：channels.json中real_madrid的isNotificationMuted为true。"""
+    """Verify task 22: real_madrid in channels.json has isNotificationMuted set to true."""
     file_path = os.path.join(backup_dir, "channels.json") if backup_dir else "channels.json"
 
     cmd = ["adb"]

@@ -1,11 +1,11 @@
-# 任务29：从聊天列表进入第3个群聊，查看群成员列表，找到群管理员的名字，然后给该管理员单独发一条消息。
+# Task 29: From the chat list, open the third group chat, view the member list, find the group admin's name, and send that admin a private message.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty_nine(result=None, device_id=None, backup_dir=None):
-    """验证任务29：messages.json中最后一条数据的conversationId为conv_001且textContent匹配。"""
+    """Verify task 29: the last item in messages.json has conversationId conv_001 and matching textContent."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

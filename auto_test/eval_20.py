@@ -1,11 +1,11 @@
-# 任务20：进入"Calls"页面，向通话记录中的第一个联系人发送一条文字消息"Hello, are you free?"。
+# Task 20: Go to the Calls page and send a text message saying "Hello, are you free?" to the first contact in the call log.
 import json
 import os
 import subprocess
 
 
 def validate_task_twenty(result=None, device_id=None, backup_dir=None):
-    """验证任务20：messages.json中最后一条数据的conversationId为conv_001且textContent为指定内容。"""
+    """Verify task 20: the last item in messages.json has conversationId conv_001 and the expected textContent."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

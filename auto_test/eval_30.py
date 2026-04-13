@@ -1,11 +1,11 @@
-# 任务30：找到Spotify频道中有关本周最火播放列表的状态，转发至Weekend Hiking Crew群聊中，并询问大家"Which song do you pick?"
+# Task 30: Find the status in the Spotify channel about this week's hottest playlist, forward it to the Weekend Hiking Crew group chat, and ask everyone "Which song do you pick?"
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty(result=None, device_id=None, backup_dir=None):
-    """验证任务30：messages.json中最后两条数据的conversationId都为conv_005，textContent分别匹配。"""
+    """Verify task 30: the last two items in messages.json both have conversationId conv_005, and their textContent values match the expected content respectively."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]

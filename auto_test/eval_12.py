@@ -1,11 +1,11 @@
-# 任务12：将个人在线状态改为Busy。
+# Task 12: Change my personal status to Busy.
 import json
 import os
 import subprocess
 
 
 def validate_task_twelve(result=None, device_id=None, backup_dir=None):
-    """验证任务12：accounts.json中user_001的about为Busy。"""
+    """Verify task 12: user_001 in accounts.json has about set to Busy."""
     file_path = os.path.join(backup_dir, "accounts.json") if backup_dir else "accounts.json"
 
     cmd = ["adb"]

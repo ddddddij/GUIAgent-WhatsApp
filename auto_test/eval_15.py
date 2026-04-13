@@ -1,11 +1,11 @@
-# 任务15：将Isabella Martinez加入Startup Ideas群聊。
+# Task 15: Add Isabella Martinez to the Startup Ideas group chat.
 import json
 import os
 import subprocess
 
 
 def validate_task_fifteen(result=None, device_id=None, backup_dir=None):
-    """验证任务15：group_details.json中conv_010的memberIds包含user_012。"""
+    """Verify task 15: conv_010 in group_details.json has memberIds containing user_012."""
     file_path = os.path.join(backup_dir, "group_details.json") if backup_dir else "group_details.json"
 
     cmd = ["adb"]

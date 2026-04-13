@@ -1,11 +1,11 @@
-# 任务31：新建一个广播列表，加入Ava、Emily Chen、Ethan Garcia、Isabella Martinez，向该列表发送指定消息。
+# Task 31: Create a new broadcast list with Ava, Emily Chen, Ethan Garcia, and Isabella Martinez, then send the specified message.
 import json
 import os
 import subprocess
 
 
 def validate_task_thirty_one(result=None, device_id=None, backup_dir=None):
-    """验证任务31：messages.json中最后四条数据的conversationId分别为conv_003/011/012/013且textContent一致。"""
+    """Verify task 31: the last four items in messages.json have conversationId values conv_003, conv_011, conv_012, and conv_013, and all have the same textContent."""
     file_path = os.path.join(backup_dir, "messages.json") if backup_dir else "messages.json"
 
     cmd = ["adb"]
